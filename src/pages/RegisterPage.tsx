@@ -40,14 +40,14 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-lg p-8 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-surface flex items-center justify-center p-4">
+      <div className="bg-surface w-full max-w-md rounded-2xl shadow-lg p-8 space-y-6">
         <div className="text-center">
           <div className="flex justify-center mb-3">
-            <GraduationCap size={40} className="text-indigo-600" />
+            <GraduationCap size={40} className="text-primary-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Crear cuenta</h1>
-          <p className="text-gray-500 text-sm mt-1">Únete a la comunidad STEM Link</p>
+          <h1 className="text-2xl font-bold text-text">Crear cuenta</h1>
+          <p className="text-muted text-sm mt-1">Únete a la comunidad STEM Link</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -56,10 +56,10 @@ export default function RegisterPage() {
           <Input label="Contraseña" type="password" placeholder="Mínimo 8 caracteres" error={errors.password?.message} {...register('password')} />
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Rol</label>
+            <label className="text-sm font-medium text-text">Rol</label>
             <div className="grid grid-cols-2 gap-3">
               {(['STUDENT', 'MENTOR'] as const).map((r) => (
-                <label key={r} className={`flex items-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition-colors ${role === r ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                <label key={r} className={`flex items-center gap-2 p-3 border-2 rounded-lg cursor-pointer transition-colors ${role === r ? 'border-primary-600 bg-primary-50' : 'border-border hover:border-primary-200'}`}>
                   <input type="radio" value={r} {...register('role')} className="hidden" />
                   <span className="text-sm font-medium">{r === 'STUDENT' ? '🎓 Estudiante' : '👨‍🏫 Mentor'}</span>
                 </label>
@@ -71,9 +71,9 @@ export default function RegisterPage() {
           <Button type="submit" loading={isSubmitting} className="w-full">Crear cuenta</Button>
         </form>
 
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-sm text-muted">
           ¿Ya tienes cuenta?{' '}
-          <Link to="/login" className="text-indigo-600 hover:underline font-medium">Inicia sesión</Link>
+          <Link to="/login" className="text-primary-600 hover:underline font-medium">Inicia sesión</Link>
         </p>
       </div>
     </div>

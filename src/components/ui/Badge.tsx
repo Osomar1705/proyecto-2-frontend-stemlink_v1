@@ -4,11 +4,11 @@ interface Props {
 }
 
 const colors = {
-  indigo: 'bg-indigo-100 text-indigo-700',
-  green:  'bg-green-100 text-green-700',
-  yellow: 'bg-yellow-100 text-yellow-700',
-  red:    'bg-red-100 text-red-700',
-  gray:   'bg-gray-100 text-gray-600',
+  indigo: 'bg-primary-50 text-primary-700',
+  green:  'bg-accent-50 text-accent-600',
+  yellow: 'bg-primary-100 text-primary-700',
+  red:    'bg-surface-alt text-muted',
+  gray:   'bg-surface-alt text-muted',
 }
 
 export function Badge({ label, color = 'indigo' }: Props) {

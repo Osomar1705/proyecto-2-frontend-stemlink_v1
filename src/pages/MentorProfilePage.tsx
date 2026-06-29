@@ -82,25 +82,25 @@ export default function MentorProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="text-3xl font-bold text-gray-900">Mi perfil de mentor</h1>
+      <h1 className="text-3xl font-bold text-text">Mi perfil de mentor</h1>
 
       <Card>
         <h2 className="text-lg font-semibold mb-4">Información básica</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Bio</label>
-            <textarea rows={4} {...register('bio')} className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 resize-none" placeholder="Cuéntales a los estudiantes sobre ti..." />
+            <label className="text-sm font-medium text-text">Bio</label>
+            <textarea rows={4} {...register('bio')} className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500 resize-none" placeholder="Cuéntales a los estudiantes sobre ti..." />
             {errors.bio && <span className="text-xs text-red-500">{errors.bio.message}</span>}
           </div>
           <Input label="URL de videollamada" placeholder="https://meet.google.com/..." error={errors.videoCallUrl?.message} {...register('videoCallUrl')} />
           <Input label="LinkedIn" placeholder="https://linkedin.com/in/..." error={errors.linkedinUrl?.message} {...register('linkedinUrl')} />
 
           <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">Habilidades</label>
+            <label className="text-sm font-medium text-text block mb-2">Habilidades</label>
             <div className="flex flex-wrap gap-2">
               {skills.map(s => (
                 <button type="button" key={s.id} onClick={() => setSelectedSkills(prev => prev.includes(s.id) ? prev.filter(x => x !== s.id) : [...prev, s.id])}
-                  className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${selectedSkills.includes(s.id) ? 'bg-indigo-600 text-white border-indigo-600' : 'border-gray-300 text-gray-600 hover:border-indigo-400'}`}>
+                  className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${selectedSkills.includes(s.id) ? 'bg-primary-600 text-surface border-primary-600' : 'border-border text-text hover:border-primary-400'}`}>
                   {s.name}
                 </button>
               ))}
@@ -114,27 +114,27 @@ export default function MentorProfilePage() {
       <Card>
         <h2 className="text-lg font-semibold mb-4">Disponibilidad semanal</h2>
         <div className="space-y-2 mb-4">
-          {availability.length === 0 ? <p className="text-sm text-gray-400">Sin bloques de disponibilidad</p> : availability.map(a => (
-            <div key={a.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-              <span className="text-sm text-gray-700">{DAY_ES[a.dayOfWeek]} · {a.startTime} – {a.endTime}</span>
+          {availability.length === 0 ? <p className="text-sm text-muted">Sin bloques de disponibilidad</p> : availability.map(a => (
+            <div key={a.id} className="flex items-center justify-between p-2 bg-surface-alt rounded-lg">
+              <span className="text-sm text-text">{DAY_ES[a.dayOfWeek]} · {a.startTime} – {a.endTime}</span>
               <button onClick={() => deleteAvailability(a.id)} className="text-red-400 hover:text-red-600 p-1"><Trash2 size={14} /></button>
             </div>
           ))}
         </div>
         <div className="flex flex-wrap gap-2 items-end">
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-gray-600">Día</label>
-            <select value={newAvail.dayOfWeek} onChange={e => setNewAvail(p => ({ ...p, dayOfWeek: e.target.value }))} className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+            <label className="text-xs font-medium text-muted">Día</label>
+            <select value={newAvail.dayOfWeek} onChange={e => setNewAvail(p => ({ ...p, dayOfWeek: e.target.value }))} className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500">
               {DAYS.map(d => <option key={d} value={d}>{DAY_ES[d]}</option>)}
             </select>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-gray-600">Inicio</label>
-            <input type="time" value={newAvail.startTime} onChange={e => setNewAvail(p => ({ ...p, startTime: e.target.value }))} className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+            <label className="text-xs font-medium text-muted">Inicio</label>
+            <input type="time" value={newAvail.startTime} onChange={e => setNewAvail(p => ({ ...p, startTime: e.target.value }))} className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-gray-600">Fin</label>
-            <input type="time" value={newAvail.endTime} onChange={e => setNewAvail(p => ({ ...p, endTime: e.target.value }))} className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+            <label className="text-xs font-medium text-muted">Fin</label>
+            <input type="time" value={newAvail.endTime} onChange={e => setNewAvail(p => ({ ...p, endTime: e.target.value }))} className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
           <Button onClick={addAvailability} className="flex items-center gap-1"><Plus size={14} /> Agregar</Button>
         </div>

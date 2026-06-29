@@ -48,8 +48,8 @@ export default function NotificationsPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Notificaciones</h1>
-        <p className="text-gray-500 mt-1">Mantente al día con tu actividad</p>
+        <h1 className="text-3xl font-bold text-text">Notificaciones</h1>
+        <p className="text-muted mt-1">Mantente al día con tu actividad</p>
       </div>
 
       {loading ? <Spinner size="lg" /> : data?.content.length === 0 ? (
@@ -58,13 +58,13 @@ export default function NotificationsPage() {
         <>
           <div className="space-y-2">
             {data?.content.map(n => (
-              <Card key={n.id} className={`transition-colors ${!n.read ? 'border-indigo-200 bg-indigo-50/50' : ''}`}>
+              <Card key={n.id} className={`transition-colors ${!n.read ? 'border-primary-200 bg-primary-50/50' : ''}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${!n.read ? 'bg-indigo-500' : 'bg-gray-300'}`} />
+                    <div className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${!n.read ? 'bg-primary-500' : 'bg-border'}`} />
                     <div>
-                      <p className="text-sm text-gray-800">{n.message}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">{new Date(n.createdAt).toLocaleString('es-PE')}</p>
+                      <p className="text-sm text-text">{n.message}</p>
+                      <p className="text-xs text-muted mt-0.5">{new Date(n.createdAt).toLocaleString('es-PE')}</p>
                     </div>
                   </div>
                   {!n.read && (

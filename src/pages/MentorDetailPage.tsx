@@ -71,17 +71,17 @@ export default function MentorDetailPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-      <button onClick={() => navigate('/mentors')} className="flex items-center gap-2 text-sm text-gray-500 hover:text-indigo-600 transition-colors">
+      <button onClick={() => navigate('/mentors')} className="flex items-center gap-2 text-sm text-muted hover:text-primary-600 transition-colors">
         <ArrowLeft size={16} /> Volver a mentores
       </button>
 
       <Card>
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-gray-900">{mentor.name}</h1>
+            <h1 className="text-2xl font-bold text-text">{mentor.name}</h1>
             <div className="flex gap-3">
               {mentor.linkedinUrl && (
-                <a href={mentor.linkedinUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-sm text-indigo-600 hover:underline">
+                <a href={mentor.linkedinUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-sm text-primary-600 hover:underline">
                   <ExternalLink size={14} /> LinkedIn
                 </a>
               )}
@@ -99,7 +99,7 @@ export default function MentorDetailPage() {
           )}
         </div>
 
-        <p className="text-gray-600 mt-4 leading-relaxed">{mentor.bio || 'Sin descripción'}</p>
+        <p className="text-text mt-4 leading-relaxed">{mentor.bio || 'Sin descripción'}</p>
 
         <div className="flex flex-wrap gap-2 mt-4">
           {mentor.skills?.map(s => <Badge key={s.id} label={s.name} />)}
@@ -108,15 +108,15 @@ export default function MentorDetailPage() {
 
       {isAuthenticated && availability.length > 0 && (
         <Card>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Calendar size={18} className="text-indigo-600" /> Disponibilidad
+          <h2 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
+            <Calendar size={18} className="text-primary-600" /> Disponibilidad
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {DAYS.filter(d => availability.some(a => a.dayOfWeek === d)).map(day => (
               <div key={day}>
-                <p className="text-xs font-semibold text-gray-500 mb-1">{DAY_ES[day]}</p>
+                <p className="text-xs font-semibold text-muted mb-1">{DAY_ES[day]}</p>
                 {availability.filter(a => a.dayOfWeek === day).map(a => (
-                  <div key={a.id} className="text-sm text-gray-700 bg-indigo-50 px-3 py-1.5 rounded-lg mb-1">
+                  <div key={a.id} className="text-sm text-text bg-primary-50 px-3 py-1.5 rounded-lg mb-1">
                     {a.startTime} – {a.endTime}
                   </div>
                 ))}
@@ -129,21 +129,21 @@ export default function MentorDetailPage() {
       <Modal open={bookingOpen} onClose={() => setBookingOpen(false)} title="Reservar sesión con mentor">
         <div className="space-y-3">
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Tema de la sesión</label>
-            <input value={form.topic} onChange={e => setForm(f => ({ ...f, topic: e.target.value }))} placeholder="ej: Introducción a Java" className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+            <label className="text-sm font-medium text-text">Tema de la sesión</label>
+            <input value={form.topic} onChange={e => setForm(f => ({ ...f, topic: e.target.value }))} placeholder="ej: Introducción a Java" className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Fecha</label>
-            <input type="date" value={form.date} min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+            <label className="text-sm font-medium text-text">Fecha</label>
+            <input type="date" value={form.date} min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Hora inicio</label>
-              <input type="time" value={form.startTime} onChange={e => setForm(f => ({ ...f, startTime: e.target.value }))} className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+              <label className="text-sm font-medium text-text">Hora inicio</label>
+              <input type="time" value={form.startTime} onChange={e => setForm(f => ({ ...f, startTime: e.target.value }))} className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Hora fin</label>
-              <input type="time" value={form.endTime} onChange={e => setForm(f => ({ ...f, endTime: e.target.value }))} className="px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
+              <label className="text-sm font-medium text-text">Hora fin</label>
+              <input type="time" value={form.endTime} onChange={e => setForm(f => ({ ...f, endTime: e.target.value }))} className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
           </div>
           <div className="flex gap-2 pt-2">

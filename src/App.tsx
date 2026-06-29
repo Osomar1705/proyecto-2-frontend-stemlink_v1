@@ -1,9 +1,10 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from './contexts/AuthContext'
 import { Navbar } from './components/layout/Navbar'
 import { PrivateRoute } from './components/layout/PrivateRoute'
+import { PublicRoute } from './components/layout/PublicRoute'
 import { ErrorBoundary } from './components/layout/ErrorBoundary'
 import { Spinner } from './components/ui/Spinner'
 
@@ -15,6 +16,7 @@ const MentorDetailPage  = lazy(() => import('./pages/MentorDetailPage'))
 const SessionsPage      = lazy(() => import('./pages/SessionsPage'))
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'))
 const MentorProfilePage = lazy(() => import('./pages/MentorProfilePage'))
+const LandingPage       = lazy(() => import('./pages/LandingPage'))
 const NotFoundPage      = lazy(() => import('./pages/NotFoundPage'))
 
 function PageLoader() {
@@ -26,14 +28,14 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <ErrorBoundary>
-          <div className="min-h-screen bg-gray-50">
+          <div className="min-h-screen bg-surface">
             <Navbar />
             <main>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
-                  <Route path="/" element={<Navigate to="/mentors" replace />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+                  <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
                   <Route path="/mentors" element={<MentorsPage />} />
                   <Route path="/mentors/:id" element={<MentorDetailPage />} />
 

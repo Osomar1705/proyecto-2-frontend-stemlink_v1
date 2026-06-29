@@ -71,18 +71,18 @@ export default function MentorsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Explorar Mentores</h1>
-        <p className="text-gray-500 mt-1">Encuentra el mentor STEM perfecto para ti</p>
+        <h1 className="text-3xl font-bold text-text">Explorar Mentores</h1>
+        <p className="text-muted mt-1">Encuentra el mentor STEM perfecto para ti</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(0) }}
             placeholder="Buscar por nombre..."
-            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-9 pr-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500"
           />
         </div>
       </div>
@@ -93,7 +93,7 @@ export default function MentorsPage() {
             <button
               key={s.id}
               onClick={() => toggleSkill(s.id)}
-              className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${selectedSkills.includes(s.id) ? 'bg-indigo-600 text-white border-indigo-600' : 'border-gray-300 text-gray-600 hover:border-indigo-400'}`}
+              className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${selectedSkills.includes(s.id) ? 'bg-primary-600 text-surface border-primary-600' : 'border-border text-text hover:border-primary-400'}`}
             >
               {s.name}
             </button>
@@ -114,17 +114,17 @@ export default function MentorsPage() {
               <Card key={mentor.id} onClick={() => navigate(`/mentors/${mentor.id}`)} className="space-y-3">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-semibold text-gray-900">{mentor.name}</h3>
+                    <h3 className="font-semibold text-text">{mentor.name}</h3>
                     {mentor.linkedinUrl && (
                       <a href={mentor.linkedinUrl} target="_blank" rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
-                        className="text-xs text-indigo-500 flex items-center gap-1 mt-0.5 hover:underline">
+                        className="text-xs text-primary-500 flex items-center gap-1 mt-0.5 hover:underline">
                         <ExternalLink size={12} /> LinkedIn
                       </a>
                     )}
                   </div>
                 </div>
-                <p className="text-sm text-gray-500 line-clamp-2">{mentor.bio || 'Sin descripción'}</p>
+                <p className="text-sm text-muted line-clamp-2">{mentor.bio || 'Sin descripción'}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {mentor.skills?.slice(0, 3).map(sk => <Badge key={sk.id} label={sk.name} />)}
                   {mentor.skills?.length > 3 && <Badge label={`+${mentor.skills.length - 3}`} color="gray" />}

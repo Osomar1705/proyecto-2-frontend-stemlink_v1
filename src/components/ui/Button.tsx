@@ -1,16 +1,18 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost'
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'accent' | 'outline'
   loading?: boolean
   children: ReactNode
 }
 
 const variants = {
-  primary: 'bg-indigo-600 hover:bg-indigo-700 text-white',
-  secondary: 'bg-white border border-gray-300 hover:bg-gray-50 text-gray-700',
-  danger: 'bg-red-600 hover:bg-red-700 text-white',
-  ghost: 'hover:bg-gray-100 text-gray-600',
+  primary:   'bg-primary-600 hover:bg-primary-700 text-white',
+  secondary: 'bg-white border border-border hover:bg-surface-alt text-text',
+  danger:    'bg-red-600 hover:bg-red-700 text-white',
+  ghost:     'hover:bg-surface-alt text-muted',
+  accent:    'bg-accent-500 hover:bg-accent-600 text-white',
+  outline:   'border-2 border-white bg-transparent hover:bg-white/10 text-white',
 }
 
 export function Button({ variant = 'primary', loading, children, className = '', disabled, ...props }: Props) {

@@ -33,14 +33,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-lg p-8 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-surface flex items-center justify-center p-4">
+      <div className="bg-surface w-full max-w-md rounded-2xl shadow-lg p-8 space-y-6">
         <div className="text-center">
           <div className="flex justify-center mb-3">
-            <GraduationCap size={40} className="text-indigo-600" />
+            <GraduationCap size={40} className="text-primary-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Bienvenido a STEM Link</h1>
-          <p className="text-gray-500 text-sm mt-1">Inicia sesión para continuar</p>
+          <h1 className="text-2xl font-bold text-text">Bienvenido a STEM Link</h1>
+          <p className="text-muted text-sm mt-1">Inicia sesión para continuar</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -49,14 +49,14 @@ export default function LoginPage() {
           <Button type="submit" loading={isSubmitting} className="w-full">Iniciar sesión</Button>
         </form>
 
-        <p className="text-center text-sm text-gray-500">
+        <p className="text-center text-sm text-muted">
           ¿No tienes cuenta?{' '}
-          <Link to="/register" className="text-indigo-600 hover:underline font-medium">Regístrate</Link>
+          <Link to="/register" className="text-primary-600 hover:underline font-medium">Regístrate</Link>
         </p>
 
-        <div className="border-t pt-4">
-          <p className="text-xs text-gray-400 text-center mb-2">Cuentas demo:</p>
-          <div className="text-xs text-gray-500 space-y-1 text-center">
+        <div className="border-t border-border pt-4">
+          <p className="text-xs text-muted text-center mb-2">Cuentas demo:</p>
+          <div className="text-xs text-muted space-y-1 text-center">
             <p>Estudiante: lucia.student@stemlink.com / Student@123</p>
             <p>Mentor: carlos.mentor@stemlink.com / Mentor@123</p>
           </div>
