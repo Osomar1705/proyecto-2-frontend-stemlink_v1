@@ -28,8 +28,21 @@ export default function MentorsPage() {
   const debouncedSearch = useDebounce(search, 300)
 
   useEffect(() => {
-    setSearch(searchParams.get('search') || '')
+    const nextSearch = searchParams.get('search') || ''
+    setSearch((current) => current === nextSearch ? current : nextSearch)
   }, [searchParams])
+
+  useEffect(() => {
+    const next = new URLSearchParams(searchParams)
+    const currentSearch = searchParams.get('search') || ''
+
+    if (debouncedSearch) next.set('search', debouncedSearch)
+    else next.delete('search')
+
+    if (currentSearch !== debouncedSearch) {
+      setSearchParams(next, { replace: true })
+    }
+  }, [debouncedSearch, searchParams, setSearchParams])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -50,13 +63,8 @@ export default function MentorsPage() {
       size,
     }, signal)
 
-    const next = new URLSearchParams(searchParams)
-    if (debouncedSearch) next.set('search', debouncedSearch)
-    else next.delete('search')
-    setSearchParams(next, { replace: true })
-
     return res.data
-  }, [debouncedSearch, selectedSkills, page, size, searchParams, setSearchParams])
+  }, [debouncedSearch, selectedSkills, page, size])
 
   const { data, loading, error, reload } = useAsyncResource<Page<MentorProfileResponse> | null>({
     initialData: null,
