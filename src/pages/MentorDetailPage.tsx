@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { mentorsApi } from '../api/mentors.api'
 import { bookingsApi } from '../api/bookings.api'
 import type { MentorProfileResponse, AvailabilityBlockDTO } from '../types'
@@ -29,21 +32,19 @@ const DAY_ES: Record<string, string> = {
 const EMPTY_BOOKING_FORM = { date: '', startTime: '', endTime: '', topic: '' }
 const TOMORROW = new Date(Date.now() + 86400000).toISOString().split('T')[0]
 
-type BookingForm = typeof EMPTY_BOOKING_FORM
-type BookingFormErrors = Partial<Record<keyof BookingForm, string>>
+const bookingSchema = z.object({
+  topic: z.string().trim().min(1, 'Ingresa el tema de la sesión'),
+  date: z.string().min(1, 'Selecciona una fecha').refine((value) => value >= TOMORROW, {
+    message: 'La fecha debe ser posterior a hoy',
+  }),
+  startTime: z.string().min(1, 'Selecciona la hora de inicio'),
+  endTime: z.string().min(1, 'Selecciona la hora de fin'),
+}).refine((data) => data.endTime > data.startTime, {
+  path: ['endTime'],
+  message: 'La hora de fin debe ser posterior al inicio',
+})
 
-function validateBookingForm(form: BookingForm): BookingFormErrors {
-  const errors: BookingFormErrors = {}
-
-  if (!form.topic.trim()) errors.topic = 'Ingresa el tema de la sesión'
-  if (!form.date) errors.date = 'Selecciona una fecha'
-  else if (form.date < TOMORROW) errors.date = 'La fecha debe ser posterior a hoy'
-  if (!form.startTime) errors.startTime = 'Selecciona la hora de inicio'
-  if (!form.endTime) errors.endTime = 'Selecciona la hora de fin'
-  else if (form.startTime && form.endTime <= form.startTime) errors.endTime = 'La hora de fin debe ser posterior al inicio'
-
-  return errors
-}
+type BookingForm = z.infer<typeof bookingSchema>
 
 function parseMentorId(id: string | undefined): number | null {
   if (!id) return null
@@ -60,9 +61,10 @@ export default function MentorDetailPage() {
   const [availability, setAvailability] = useState<AvailabilityBlockDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [bookingOpen, setBookingOpen] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [form, setForm] = useState<BookingForm>(EMPTY_BOOKING_FORM)
-  const [formErrors, setFormErrors] = useState<BookingFormErrors>({})
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<BookingForm>({
+    resolver: zodResolver(bookingSchema),
+    defaultValues: EMPTY_BOOKING_FORM,
+  })
 
   useEffect(() => {
     if (!mentorId) {
@@ -93,31 +95,21 @@ export default function MentorDetailPage() {
     return () => controller.abort()
   }, [mentorId, isAuthenticated])
 
-  const handleBook = async () => {
-    const errors = validateBookingForm(form)
-    setFormErrors(errors)
-    if (Object.keys(errors).length > 0) {
-      toast.error('Revisa los datos de la reserva')
-      return
-    }
-    setSubmitting(true)
+  const handleBook = async (data: BookingForm) => {
     try {
       if (!mentorId) throw new Error('Mentor inválido')
-      await bookingsApi.create({ mentorProfileId: mentorId, ...form, topic: form.topic.trim() })
+      await bookingsApi.create({ mentorProfileId: mentorId, ...data, topic: data.topic.trim() })
       toast.success('¡Reserva enviada! El mentor la revisará pronto.')
       setBookingOpen(false)
-      setForm(EMPTY_BOOKING_FORM)
-      setFormErrors({})
+      reset(EMPTY_BOOKING_FORM)
     } catch (e) {
       toast.error(parseApiError(e))
-    } finally {
-      setSubmitting(false)
     }
   }
 
   const closeBookingModal = () => {
     setBookingOpen(false)
-    setFormErrors({})
+    reset(EMPTY_BOOKING_FORM)
   }
 
   const availabilityDays = DAYS.filter(day => availability.some(a => a.dayOfWeek === day))
@@ -377,7 +369,7 @@ export default function MentorDetailPage() {
       </div>
 
       <Modal open={bookingOpen} onClose={closeBookingModal} title="Reservar sesión con mentor">
-        <div className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit(handleBook)}>
           <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
             <p className="text-sm font-semibold text-text">{mentor.name}</p>
             <p className="mt-1 text-xs leading-5 text-muted">
@@ -388,36 +380,33 @@ export default function MentorDetailPage() {
           <Input
             id="booking-topic"
             label="Tema de la sesión"
-            value={form.topic}
-            onChange={e => setForm(f => ({ ...f, topic: e.target.value }))}
             placeholder="Ej: Introducción a Java"
-            error={formErrors.topic}
+            autoComplete="off"
+            error={errors.topic?.message}
+            {...register('topic')}
           />
           <Input
             id="booking-date"
             label="Fecha"
             type="date"
-            value={form.date}
             min={TOMORROW}
-            onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-            error={formErrors.date}
+            error={errors.date?.message}
+            {...register('date')}
           />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Input
               id="booking-start-time"
               label="Hora inicio"
               type="time"
-              value={form.startTime}
-              onChange={e => setForm(f => ({ ...f, startTime: e.target.value }))}
-              error={formErrors.startTime}
+              error={errors.startTime?.message}
+              {...register('startTime')}
             />
             <Input
               id="booking-end-time"
               label="Hora fin"
               type="time"
-              value={form.endTime}
-              onChange={e => setForm(f => ({ ...f, endTime: e.target.value }))}
-              error={formErrors.endTime}
+              error={errors.endTime?.message}
+              {...register('endTime')}
             />
           </div>
 
@@ -425,11 +414,11 @@ export default function MentorDetailPage() {
             <Button variant="secondary" className="flex-1" onClick={closeBookingModal}>
               Cancelar
             </Button>
-            <Button className="flex-1" loading={submitting} onClick={handleBook}>
+            <Button type="submit" className="flex-1" loading={isSubmitting}>
               Confirmar reserva
             </Button>
           </div>
-        </div>
+        </form>
       </Modal>
     </div>
   )
