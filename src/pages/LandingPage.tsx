@@ -42,13 +42,13 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-surface-alt text-text">
-      <section className="relative overflow-hidden px-4 py-10 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden px-4 py-12 sm:px-6 lg:px-8">
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute right-10 top-16 h-72 w-72 rounded-full bg-primary-100/70 blur-3xl" />
           <div className="absolute bottom-12 left-8 h-80 w-80 rounded-full bg-accent-100/70 blur-3xl" />
         </div>
 
-        <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-10 lg:grid-cols-[1.02fr_0.98fr]">
+        <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="max-w-2xl">
             <div className="mb-8 flex items-center gap-3">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 shadow-[0_12px_30px_rgba(79,70,229,0.25)]">
@@ -94,8 +94,8 @@ export default function LandingPage() {
 
             <div className="mt-10 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
               {highlights.map((item) => (
-                <div key={item.label} className="rounded-xl border border-border bg-surface p-4 shadow-sm">
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50">
+                <div key={item.label} className="rounded-2xl border border-border/70 bg-surface/90 p-4 shadow-sm">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50">
                     <item.icon size={20} className="text-primary-600" aria-hidden />
                   </div>
                   <p className="text-2xl font-bold text-text">{item.value}</p>
@@ -106,21 +106,24 @@ export default function LandingPage() {
           </div>
 
           <div className="w-full">
-            <Card className="overflow-hidden rounded-2xl border-border bg-surface p-0 shadow-lg">
-              <div className="border-b border-border px-6 py-5 sm:px-8">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
+            <Card className="overflow-hidden rounded-[2rem] border-border/70 bg-surface p-0 shadow-[0_24px_80px_rgba(15,23,42,0.12)]">
+              <div className="border-b border-border/70 px-6 py-5 sm:px-8">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="max-w-xs">
                     <p className="text-sm font-semibold text-primary-600">Plataforma de mentoría</p>
-                    <h2 className="mt-1 text-2xl font-bold text-text">Aprende con acompañamiento real</h2>
+                    <h2 className="mt-1 text-2xl font-bold tracking-tight text-text">Aprende con acompañamiento real</h2>
+                    <p className="mt-2 text-sm leading-6 text-muted">
+                      Menos ruido visual, más claridad para descubrir, reservar y seguir tu progreso.
+                    </p>
                   </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent-100">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-100">
                     <GraduationCap size={24} className="text-accent-600" aria-hidden />
                   </div>
                 </div>
               </div>
 
               <div className="p-6 sm:p-8">
-                <div className="rounded-xl bg-surface-alt p-4">
+                <div className="rounded-2xl bg-surface-alt/80 p-5">
                   <img
                     src={heroImage}
                     alt="Estudiantes colaborando en una mentoría STEM"
@@ -130,8 +133,8 @@ export default function LandingPage() {
 
                 <div className="mt-6 space-y-3">
                   {steps.map((step, index) => (
-                    <div key={step} className="flex items-center gap-3 rounded-lg border border-border bg-surface p-3">
-                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary-50 text-sm font-bold text-primary-600">
+                    <div key={step} className="flex items-center gap-3 rounded-2xl border border-border/70 bg-surface/90 p-3">
+                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-primary-50 text-sm font-bold text-primary-600">
                         {index + 1}
                       </div>
                       <p className="text-sm font-medium text-text">{step}</p>
@@ -140,11 +143,11 @@ export default function LandingPage() {
                 </div>
 
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-border bg-surface p-4">
+                  <div className="rounded-2xl border border-border/70 bg-surface/90 p-4">
                     <p className="text-sm font-semibold text-text">Sesiones a tu ritmo</p>
                     <p className="mt-1 text-sm leading-6 text-muted">Agenda con mentores según tu disponibilidad.</p>
                   </div>
-                  <div className="rounded-xl border border-border bg-surface p-4">
+                  <div className="rounded-2xl border border-border/70 bg-surface/90 p-4">
                     <p className="text-sm font-semibold text-text">Ruta de aprendizaje</p>
                     <p className="mt-1 text-sm leading-6 text-muted">Organiza tus objetivos y avances en un solo lugar.</p>
                   </div>
@@ -156,9 +159,9 @@ export default function LandingPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mb-10 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+        <div className="mb-10 grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
           <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-sm font-medium text-muted">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/85 px-3 py-1 text-sm font-semibold text-muted shadow-sm backdrop-blur-sm">
               <Sparkles size={16} className="text-accent-500" aria-hidden />
               Experiencia diseñada para estudiantes STEM
             </div>
@@ -173,7 +176,7 @@ export default function LandingPage() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {features.map(({ icon: Icon, title, description }) => (
-            <Card key={title} className="group flex flex-col gap-4 border-border bg-surface p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+            <Card key={title} className="group flex flex-col gap-4 border-border/70 bg-surface/90 p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-50 transition-colors group-hover:bg-primary-100">
                 <Icon size={24} className="text-primary-600" aria-hidden />
               </div>
@@ -185,7 +188,7 @@ export default function LandingPage() {
       </section>
 
       <section className="px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-6 rounded-2xl border border-border bg-surface p-6 shadow-sm lg:grid-cols-[1fr_auto] lg:items-center lg:p-8">
+        <div className="mx-auto grid max-w-7xl gap-6 rounded-[2rem] border border-border/70 bg-surface/90 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] lg:grid-cols-[1fr_auto] lg:items-center lg:p-8">
           <div>
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500">
               <Zap size={24} className="text-surface" aria-hidden />

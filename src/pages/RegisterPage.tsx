@@ -45,7 +45,7 @@ export default function RegisterPage() {
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.12),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(20,184,166,0.10),_transparent_26%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_52%,_#f8fafc_100%)]" />
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 lg:grid-cols-[1.02fr_0.98fr]">
+      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1fr]">
         <div className="max-w-xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/80 px-3 py-1 text-sm font-semibold text-muted shadow-sm backdrop-blur-sm">
             <Sparkles size={16} className="text-accent-500" aria-hidden />
@@ -76,8 +76,8 @@ export default function RegisterPage() {
             <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
 
             <div className="relative">
-              <div className="mb-8 space-y-3 text-center">
-                <div className="flex justify-center">
+              <div className="mb-8 space-y-3 text-left">
+                <div className="flex justify-start">
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 shadow-[0_12px_30px_rgba(79,70,229,0.25)]">
                     <Zap className="h-7 w-7 text-surface" aria-hidden />
                   </div>
@@ -128,8 +128,8 @@ export default function RegisterPage() {
                   {...register('email')}
                 />
 
-                <div className="space-y-2">
-                  <Input
+                  <div className="space-y-2">
+                    <Input
                     id="password"
                     label="Contraseña"
                     type={showPassword ? 'text' : 'password'}
