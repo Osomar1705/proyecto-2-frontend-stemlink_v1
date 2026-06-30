@@ -9,12 +9,15 @@ import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
 import { Input } from '../components/ui/Input'
 import { Button } from '../components/ui/Button'
+import { Select } from '../components/ui/Select'
+import { TextArea } from '../components/ui/TextArea'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { EmptyState } from '../components/ui/EmptyState'
 import { PageHero } from '../components/ui/PageHero'
+import { Modal } from '../components/ui/Modal'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { parseApiError } from '../utils/errors'
-import { Calendar, Camera, Clock, ExternalLink, Plus, Sparkles, Trash2, UserRound, Video } from 'lucide-react'
+import { AlertTriangle, Calendar, Camera, Clock, ExternalLink, Plus, Sparkles, Trash2, UserRound, Video } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const profileSchema = z.object({
@@ -71,6 +74,7 @@ export default function MentorProfilePage() {
   const [skills, setSkills] = useState<TechnicalSkillDTO[]>([])
   const [selectedSkills, setSelectedSkills] = useState<number[]>([])
   const [availability, setAvailability] = useState<AvailabilityBlockDTO[]>([])
+  const [availabilityToDelete, setAvailabilityToDelete] = useState<{ id: number; label: string } | null>(null)
 
   const {
     register,
@@ -172,13 +176,13 @@ export default function MentorProfilePage() {
     }
   }
 
-  const deleteAvailability = async (id: number, label: string) => {
-    if (!window.confirm(`¿Eliminar el bloque ${label}?`)) return
-
+  const deleteAvailability = async () => {
+    if (!availabilityToDelete) return
     try {
-      await mentorsApi.deleteAvailability(id)
-      setAvailability((previous) => previous.filter((item) => item.id !== id))
+      await mentorsApi.deleteAvailability(availabilityToDelete.id)
+      setAvailability((previous) => previous.filter((item) => item.id !== availabilityToDelete.id))
       toast.success('Disponibilidad eliminada')
+      setAvailabilityToDelete(null)
     } catch (error) {
       toast.error(parseApiError(error))
     }
@@ -253,17 +257,14 @@ export default function MentorProfilePage() {
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="mentor-bio" className="text-sm font-semibold text-text">Bio</label>
-                  <textarea
-                    id="mentor-bio"
+                <TextArea
+                  id="mentor-bio"
+                  label="Bio"
                   rows={6}
                   {...register('bio')}
-                  className="field-shell resize-none rounded-2xl px-4 py-3 text-sm text-text outline-none placeholder:text-muted focus:border-primary-400 focus:ring-4 focus:ring-primary-500/10"
                   placeholder="Cuéntales a los estudiantes sobre tu experiencia y en qué puedes ayudarlos..."
+                  error={errors.bio?.message}
                 />
-                {errors.bio && <span className="text-xs text-primary-700">{errors.bio.message}</span>}
-              </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                 <Input
@@ -330,19 +331,14 @@ export default function MentorProfilePage() {
               onSubmit={handleAvailabilitySubmit(onAddAvailability)}
               className="surface-tint grid grid-cols-1 items-end gap-3 rounded-[1.5rem] p-4 sm:grid-cols-4"
             >
-              <div className="flex flex-col gap-1">
-                <label htmlFor="availability-day" className="text-xs font-medium text-muted">Día</label>
-                <select
+              <Select
                   id="availability-day"
+                  label="Día"
                   {...registerAvailability('dayOfWeek')}
-                  aria-invalid={!!availabilityErrors.dayOfWeek}
-                  aria-describedby={availabilityErrors.dayOfWeek ? 'availability-day-error' : undefined}
-                  className={`field-shell rounded-xl px-3 py-2 text-sm text-text outline-none focus:ring-4 focus:ring-primary-500/10 ${availabilityErrors.dayOfWeek ? 'border-primary-600' : ''}`}
-                >
-                  {DAYS.map((day) => <option key={day} value={day}>{DAY_ES[day]}</option>)}
-                </select>
-                {availabilityErrors.dayOfWeek && <span id="availability-day-error" className="text-xs text-primary-700">{availabilityErrors.dayOfWeek.message}</span>}
-              </div>
+                  error={availabilityErrors.dayOfWeek?.message}
+                  options={DAYS.map((day) => ({ value: day, label: DAY_ES[day] }))}
+                  className="rounded-xl px-3 py-2"
+              />
 
               <Input
                 id="availability-start"
@@ -384,7 +380,7 @@ export default function MentorProfilePage() {
                           </span>
                           <button
                             type="button"
-                            onClick={() => deleteAvailability(item.id, `${DAY_ES[day]} ${item.startTime} - ${item.endTime}`)}
+                            onClick={() => setAvailabilityToDelete({ id: item.id, label: `${DAY_ES[day]} ${item.startTime} - ${item.endTime}` })}
                             aria-label={`Eliminar disponibilidad de ${DAY_ES[day]} ${item.startTime} a ${item.endTime}`}
                             className="rounded-lg p-2 text-primary-500 transition-colors hover:bg-primary-50 hover:text-primary-700"
                           >
@@ -453,6 +449,33 @@ export default function MentorProfilePage() {
           </Card>
         </div>
       </AsyncContent>
+
+      <Modal open={availabilityToDelete !== null} onClose={() => setAvailabilityToDelete(null)} title="Eliminar bloque">
+        <div className="space-y-4">
+          <div className="surface-tint rounded-[1.35rem] border border-border/70 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+                <AlertTriangle size={18} aria-hidden />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-text">Confirma la eliminación</p>
+                <p className="mt-1 text-sm leading-6 text-muted">
+                  Se eliminará el bloque <span className="font-semibold text-text">{availabilityToDelete?.label}</span>.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <Button type="button" variant="secondary" className="flex-1" onClick={() => setAvailabilityToDelete(null)}>
+              Cancelar
+            </Button>
+            <Button type="button" variant="danger" className="flex-1" onClick={deleteAvailability}>
+              Eliminar
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

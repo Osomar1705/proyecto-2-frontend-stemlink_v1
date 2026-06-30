@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { authApi } from '../api/auth.api'
+import { bookingsApi } from '../api/bookings.api'
 import { notificationsApi } from '../api/notifications.api'
-import { sessionsApi } from '../api/sessions.api'
-import type { UserResponse, MentorshipSessionResponse } from '../types'
+import type { UserResponse, BookingResponse } from '../types'
 import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
 import { EmptyState } from '../components/ui/EmptyState'
@@ -15,27 +15,27 @@ import toast from 'react-hot-toast'
 
 type ProfileSummary = {
   user: UserResponse
-  sessions: MentorshipSessionResponse[]
+  bookings: BookingResponse[]
   unreadCount: number
 }
 
 const EMPTY_PROFILE: ProfileSummary = {
   user: { id: 0, name: '', email: '', role: '' },
-  sessions: [],
+  bookings: [],
   unreadCount: 0,
 }
 
 export default function ProfilePage() {
   const loadProfile = useCallback(async (signal: AbortSignal) => {
-    const [userRes, sessionsRes, notificationsRes] = await Promise.all([
+    const [userRes, bookingsRes, notificationsRes] = await Promise.all([
       authApi.me(),
-      sessionsApi.list(undefined, signal),
+      bookingsApi.list({ page: 0, size: 20 }, signal),
       notificationsApi.list({ page: 0, size: 20 }, signal),
     ])
 
     return {
       user: userRes.data,
-      sessions: sessionsRes.data,
+      bookings: bookingsRes.data.content,
       unreadCount: notificationsRes.data.content.filter((notification) => !notification.read).length,
     }
   }, [])
@@ -47,8 +47,13 @@ export default function ProfilePage() {
   })
 
   const profileData = data ?? EMPTY_PROFILE
-  const completedSessions = profileData.sessions.filter((session) => session.status === 'COMPLETED').length
-  const nextSessions = profileData.sessions.filter((session) => session.status === 'CONFIRMED' || session.status === 'PENDING').length
+  const confirmedBookings = profileData.bookings.filter((booking) => booking.status === 'CONFIRMED').length
+  const pendingBookings = profileData.bookings.filter((booking) => booking.status === 'PENDING').length
+  const upcomingBookings = profileData.bookings.filter((booking) => booking.status === 'CONFIRMED' || booking.status === 'PENDING').length
+  const roleLabel = profileData.user.role === 'MENTOR' ? 'MENTOR' : 'STUDENT'
+  const roleDescription = profileData.user.role === 'MENTOR'
+    ? 'Cuenta activa como mentor.'
+    : 'Cuenta activa como estudiante.'
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
@@ -91,11 +96,11 @@ export default function ProfilePage() {
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Próximas</p>
-                <p className="mt-2 text-2xl font-bold text-text">{nextSessions}</p>
+                <p className="mt-2 text-2xl font-bold text-text">{upcomingBookings}</p>
               </div>
               <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Completadas</p>
-                <p className="mt-2 text-2xl font-bold text-text">{completedSessions}</p>
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Confirmadas</p>
+                <p className="mt-2 text-2xl font-bold text-text">{confirmedBookings}</p>
               </div>
               <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Alertas</p>
@@ -141,11 +146,11 @@ export default function ProfilePage() {
             <div className="surface-subtle rounded-[1.35rem] p-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50/80">
-                  <Badge label="STUDENT" color="neutral" />
+                  <Badge label={roleLabel} color="neutral" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-text">Rol</p>
-                  <p className="mt-1 text-sm text-muted">Cuenta activa como estudiante.</p>
+                  <p className="mt-1 text-sm text-muted">{roleDescription}</p>
                 </div>
               </div>
             </div>
@@ -161,27 +166,27 @@ export default function ProfilePage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-text">Actividad</h2>
-              <p className="mt-1 text-sm text-muted">Resumen de tus sesiones recientes.</p>
+              <p className="mt-1 text-sm text-muted">Resumen de tus reservas recientes.</p>
             </div>
           </div>
 
           <div className="space-y-3">
-            {profileData.sessions.slice(0, 4).map((session) => (
-              <div key={session.id} className="surface-subtle rounded-[1.35rem] px-4 py-4">
+            {profileData.bookings.slice(0, 4).map((booking) => (
+              <div key={booking.id} className="surface-subtle rounded-[1.35rem] px-4 py-4">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-semibold text-text">{session.topic}</p>
-                  <Badge label={session.status} color="neutral" />
+                  <p className="font-semibold text-text">{booking.topic}</p>
+                  <Badge label={booking.status} color="neutral" />
                 </div>
                 <p className="mt-2 text-sm text-muted">
-                  {session.date} · {session.startTime} - {session.endTime}
+                  {booking.date} · {booking.startTime} - {booking.endTime}
                 </p>
               </div>
             ))}
 
-            {profileData.sessions.length === 0 && (
+            {profileData.bookings.length === 0 && (
               <EmptyState
                 icon={<Calendar size={36} />}
-                title="Sin sesiones registradas"
+                title="Sin reservas registradas"
                 description="Cuando reserves tu primera mentoría verás su resumen aquí."
               />
             )}

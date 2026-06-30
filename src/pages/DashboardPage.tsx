@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { sessionsApi } from '../api/sessions.api'
+import { bookingsApi } from '../api/bookings.api'
 import { notificationsApi } from '../api/notifications.api'
 import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
@@ -11,8 +11,8 @@ import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { PageHero } from '../components/ui/PageHero'
 import { StatCard } from '../components/ui/StatCard'
 import { useAsyncResource } from '../hooks/useAsyncResource'
-import { ArrowRight, Bell, BookOpen, Calendar, CheckCircle2, Clock3, GraduationCap, Sparkles, TrendingUp, UserRound, Users } from 'lucide-react'
-import type { MentorshipSessionResponse } from '../types'
+import { ArrowRight, Bell, BookOpen, Calendar, CheckCircle2, Clock3, GraduationCap, Sparkles, TrendingUp, UserRound, Users, XCircle } from 'lucide-react'
+import type { BookingResponse } from '../types'
 import toast from 'react-hot-toast'
 
 function formatSessionDate(value: string) {
@@ -31,54 +31,54 @@ export default function DashboardPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const loadDashboard = useCallback(async (signal: AbortSignal) => {
-    const [sessRes, notifRes] = await Promise.all([
-      sessionsApi.list(undefined, signal),
+    const [bookingsRes, notifRes] = await Promise.all([
+      bookingsApi.list({ page: 0, size: 50 }, signal),
       notificationsApi.list({ page: 0, size: 50 }, signal),
     ])
 
     return {
-      sessions: sessRes.data,
+      bookings: bookingsRes.data.content,
       unreadCount: notifRes.data.content.filter((notification) => !notification.read).length,
     }
   }, [])
 
   const { data, loading, error, reload } = useAsyncResource({
-    initialData: { sessions: [] as MentorshipSessionResponse[], unreadCount: 0 },
+    initialData: { bookings: [] as BookingResponse[], unreadCount: 0 },
     load: loadDashboard,
     onError: (message) => toast.error(message),
   })
 
-  const { sessions, unreadCount } = data
+  const { bookings, unreadCount } = data
 
-  const confirmed = sessions.filter(s => s.status === 'CONFIRMED')
-  const pending = sessions.filter(s => s.status === 'PENDING')
-  const completed = sessions.filter(s => s.status === 'COMPLETED')
+  const confirmed = bookings.filter((booking) => booking.status === 'CONFIRMED')
+  const pending = bookings.filter((booking) => booking.status === 'PENDING')
+  const cancelled = bookings.filter((booking) => booking.status === 'CANCELLED')
   const nextSessions = confirmed.slice(0, 3)
-  const totalSessions = sessions.length
-  const completionRate = totalSessions > 0 ? Math.round((completed.length / totalSessions) * 100) : 0
+  const totalSessions = bookings.length
+  const activeRate = totalSessions > 0 ? Math.round((confirmed.length / totalSessions) * 100) : 0
   const primaryLabel = user?.role === 'MENTOR' ? 'Mi perfil de mentor' : 'Explorar mentores'
   const primaryAction = () => navigate(user?.role === 'MENTOR' ? '/mentor/profile' : '/mentors')
 
   const stats = [
     {
-      title: 'Sesiones completadas',
-      value: completed.length,
-      helper: `${completionRate}% del total`,
+      title: 'Reservas confirmadas',
+      value: confirmed.length,
+      helper: `${activeRate}% del total activo`,
       icon: CheckCircle2,
       iconClass: 'bg-primary-50 text-primary-600',
     },
     {
-      title: 'Sesiones confirmadas',
-      value: confirmed.length,
-      helper: nextSessions.length > 0 ? `${nextSessions.length} próximas agendadas` : 'Sin próximas sesiones',
-      icon: Calendar,
+      title: 'Reservas pendientes',
+      value: pending.length,
+      helper: pending.length > 0 ? 'Requieren respuesta o seguimiento' : 'Sin pendientes ahora',
+      icon: Clock3,
       iconClass: 'bg-accent-100 text-accent-600',
     },
     {
-      title: 'Reservas pendientes',
-      value: pending.length,
-      helper: pending.length > 0 ? 'Requieren seguimiento' : 'Sin pendientes ahora',
-      icon: Clock3,
+      title: 'Reservas canceladas',
+      value: cancelled.length,
+      helper: cancelled.length > 0 ? 'Revisar historial reciente' : 'Sin cancelaciones',
+      icon: XCircle,
       iconClass: 'bg-accent-100 text-accent-600',
     },
     {
@@ -104,7 +104,7 @@ export default function DashboardPage() {
     {
       key: 'sessions',
       title: 'Mis sesiones',
-      description: 'Visualiza tus mentorías confirmadas, pendientes y completadas.',
+      description: 'Visualiza tus reservas confirmadas, pendientes y canceladas.',
       icon: Calendar,
       tone: 'bg-accent-100 text-accent-600',
       onClick: () => navigate('/sessions'),
@@ -161,8 +161,8 @@ export default function DashboardPage() {
               </div>
               <div className="rounded-2xl bg-surface/80 p-4 ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Progreso</p>
-                <p className="mt-2 text-2xl font-bold text-text">{completionRate}%</p>
-                <p className="mt-1 text-sm text-muted">de sesiones marcadas como completadas</p>
+                <p className="mt-2 text-2xl font-bold text-text">{activeRate}%</p>
+                <p className="mt-1 text-sm text-muted">de reservas actualmente confirmadas</p>
               </div>
               <div className="rounded-2xl bg-surface/80 p-4 ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Estado actual</p>
@@ -339,25 +339,25 @@ export default function DashboardPage() {
                 </div>
                 <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm text-muted">Completadas</span>
-                    <span className="text-lg font-bold text-text">{completed.length}</span>
+                    <span className="text-sm text-muted">Canceladas</span>
+                    <span className="text-lg font-bold text-text">{cancelled.length}</span>
                   </div>
                 </div>
               </div>
 
               <div className="rounded-xl border border-border bg-surface-alt p-4">
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium text-text">Progreso de sesiones</p>
-                  <span className="text-sm font-semibold text-primary-600">{completionRate}%</span>
+                  <p className="text-sm font-medium text-text">Tasa de confirmación</p>
+                  <span className="text-sm font-semibold text-primary-600">{activeRate}%</span>
                 </div>
                 <div className="h-2 rounded-full bg-border/70">
                   <div
                     className="h-2 rounded-full bg-primary-600 transition-all"
-                    style={{ width: `${completionRate}%` }}
+                    style={{ width: `${activeRate}%` }}
                   />
                 </div>
                 <p className="mt-3 text-xs leading-5 text-muted">
-                  Este indicador usa únicamente el estado actual de las sesiones que ya devuelve el backend.
+                  Este indicador usa el porcentaje de reservas confirmadas dentro del resultado actual del backend.
                 </p>
               </div>
 

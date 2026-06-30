@@ -1,3 +1,4 @@
+import { Select } from './Select'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Props {
@@ -20,15 +21,13 @@ export function Pagination({ page, totalPages, totalElements, size, onPageChange
       </span>
       <div className="flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-border/80 bg-surface-alt/70 p-2">
         {onSizeChange && (
-          <select
+          <Select
             value={size}
             onChange={(e) => onSizeChange(Number(e.target.value))}
-            className="field-shell rounded-xl px-3 py-2 text-sm outline-none transition-shadow focus:ring-4 focus:ring-primary-500/10"
-          >
-            {[10, 25, 50].map((s) => (
-              <option key={s} value={s}>{s} por página</option>
-            ))}
-          </select>
+            aria-label="Seleccionar cantidad por página"
+            options={[10, 25, 50].map((s) => ({ value: s, label: `${s} por página` }))}
+            className="min-w-[9.5rem] rounded-xl px-3 py-2"
+          />
         )}
         <button
           type="button"

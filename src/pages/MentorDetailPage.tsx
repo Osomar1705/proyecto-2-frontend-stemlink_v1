@@ -14,6 +14,7 @@ import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { Modal } from '../components/ui/Modal'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Input } from '../components/ui/Input'
+import { Select } from '../components/ui/Select'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { useAuth } from '../contexts/AuthContext'
 import { parseApiError } from '../utils/errors'
@@ -31,7 +32,7 @@ const DAY_ES: Record<string, string> = {
   SATURDAY: 'Sábado',
   SUNDAY: 'Domingo',
 }
-const EMPTY_BOOKING_FORM = { date: '', startTime: '', endTime: '', topic: '' }
+const EMPTY_BOOKING_FORM = { date: '', availabilityBlockId: '', topic: '' }
 const TOMORROW = new Date(Date.now() + 86400000).toISOString().split('T')[0]
 
 const bookingSchema = z.object({
@@ -39,11 +40,7 @@ const bookingSchema = z.object({
   date: z.string().min(1, 'Selecciona una fecha').refine((value) => value >= TOMORROW, {
     message: 'La fecha debe ser posterior a hoy',
   }),
-  startTime: z.string().min(1, 'Selecciona la hora de inicio'),
-  endTime: z.string().min(1, 'Selecciona la hora de fin'),
-}).refine((data) => data.endTime > data.startTime, {
-  path: ['endTime'],
-  message: 'La hora de fin debe ser posterior al inicio',
+  availabilityBlockId: z.string().min(1, 'Selecciona un horario disponible'),
 })
 
 type BookingForm = z.infer<typeof bookingSchema>
@@ -64,7 +61,7 @@ export default function MentorDetailPage() {
   const navigate = useNavigate()
   const { isAuthenticated, user } = useAuth()
   const [bookingOpen, setBookingOpen] = useState(false)
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<BookingForm>({
+  const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm<BookingForm>({
     resolver: zodResolver(bookingSchema),
     defaultValues: EMPTY_BOOKING_FORM,
   })
@@ -95,11 +92,45 @@ export default function MentorDetailPage() {
 
   const mentor = data.mentor
   const availability = data.availability
+  const selectedAvailabilityId = watch('availabilityBlockId')
+  const selectedAvailability = useMemo(
+    () => availability.find((slot) => String(slot.id) === selectedAvailabilityId) ?? null,
+    [availability, selectedAvailabilityId],
+  )
+
+  const availabilityOptions = useMemo(
+    () => [
+      { value: '', label: 'Selecciona un bloque disponible' },
+      ...availability.map((slot) => ({
+        value: String(slot.id),
+        label: `${DAY_ES[slot.dayOfWeek]} · ${slot.startTime} - ${slot.endTime}`,
+      })),
+    ],
+    [availability],
+  )
 
   const handleBook = async (data: BookingForm) => {
     try {
       if (!mentorId) throw new Error('Mentor inválido')
-      await bookingsApi.create({ mentorProfileId: mentorId, ...data, topic: data.topic.trim() })
+
+      if (!selectedAvailability) {
+        throw new Error('Selecciona un bloque disponible')
+      }
+
+      const selectedDate = new Date(`${data.date}T00:00:00`)
+      const selectedDay = DAYS[(selectedDate.getDay() + 6) % 7]
+
+      if (Number.isNaN(selectedDate.getTime()) || selectedDay !== selectedAvailability.dayOfWeek) {
+        toast.error(`La fecha debe corresponder a ${DAY_ES[selectedAvailability.dayOfWeek]}.`)
+        return
+      }
+
+      await bookingsApi.create({
+        mentorProfileId: mentorId,
+        date: data.date,
+        availabilityBlockId: Number(data.availabilityBlockId),
+        topic: data.topic.trim(),
+      })
       toast.success('¡Reserva enviada! El mentor la revisará pronto.')
       setBookingOpen(false)
       reset(EMPTY_BOOKING_FORM)
@@ -246,8 +277,12 @@ export default function MentorDetailPage() {
             </div>
 
             {isAuthenticated && user?.role === 'STUDENT' ? (
-              <Button onClick={() => setBookingOpen(true)} className="w-full bg-accent-500 hover:bg-accent-600">
-                <Calendar size={16} /> Reservar sesión
+              <Button
+                onClick={() => setBookingOpen(true)}
+                disabled={availability.length === 0}
+                className="w-full bg-accent-500 hover:bg-accent-600"
+              >
+                <Calendar size={16} /> {availability.length === 0 ? 'Sin horarios disponibles' : 'Reservar sesión'}
               </Button>
             ) : !isAuthenticated ? (
               <Button variant="secondary" onClick={() => navigate('/login')} className="w-full">
@@ -389,7 +424,7 @@ export default function MentorDetailPage() {
           <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
             <p className="text-sm font-semibold text-text">{mentor?.name ?? 'Mentor STEM'}</p>
             <p className="mt-1 text-xs leading-5 text-muted">
-              Completa los datos de la sesión. La reserva conservará el mismo flujo actual contra el backend.
+              Elige una fecha compatible con el bloque del mentor. La reserva se enviará usando los horarios reales publicados.
             </p>
           </div>
 
@@ -409,22 +444,17 @@ export default function MentorDetailPage() {
             error={errors.date?.message}
             {...register('date')}
           />
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Input
-              id="booking-start-time"
-              label="Hora inicio"
-              type="time"
-              error={errors.startTime?.message}
-              {...register('startTime')}
-            />
-            <Input
-              id="booking-end-time"
-              label="Hora fin"
-              type="time"
-              error={errors.endTime?.message}
-              {...register('endTime')}
-            />
-          </div>
+
+          <Select
+            id="booking-availability"
+            label="Bloque disponible"
+            options={availabilityOptions}
+            error={errors.availabilityBlockId?.message}
+            helperText={selectedAvailability
+              ? `Horario seleccionado: ${DAY_ES[selectedAvailability.dayOfWeek]} de ${selectedAvailability.startTime} a ${selectedAvailability.endTime}.`
+              : 'Selecciona uno de los bloques publicados por el mentor.'}
+            {...register('availabilityBlockId')}
+          />
 
           <div className="flex gap-2 pt-2">
             <Button variant="secondary" className="flex-1" onClick={closeBookingModal}>

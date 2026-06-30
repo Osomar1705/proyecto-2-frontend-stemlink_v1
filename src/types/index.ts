@@ -58,8 +58,9 @@ export interface AvailabilityBlockDTO {
 export interface BookingRequest {
   mentorProfileId: number
   date: string
-  startTime: string
-  endTime: string
+  availabilityBlockId?: number
+  startTime?: string
+  endTime?: string
   topic: string
 }
 
@@ -68,9 +69,12 @@ export interface BookingResponse {
   date: string
   startTime: string
   endTime: string
+  topic: string
   status: string
   studentName: string
+  studentEmail: string
   mentorName: string
+  mentorEmail: string
 }
 
 export interface MentorshipSessionResponse {
