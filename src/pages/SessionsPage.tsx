@@ -1,4 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { sessionsApi } from '../api/sessions.api'
 import { bookingsApi } from '../api/bookings.api'
 import type { MentorshipSessionResponse } from '../types'
@@ -35,8 +38,13 @@ const statusLabel: Record<SessionStatus, string> = {
 }
 
 const DEFAULT_FEEDBACK = { stars: 5, mentorComments: '', impactRecord: '' }
-type FeedbackForm = typeof DEFAULT_FEEDBACK
-type FeedbackErrors = Partial<Record<keyof FeedbackForm, string>>
+const feedbackSchema = z.object({
+  stars: z.number().min(1, 'Selecciona una calificación válida').max(5, 'Selecciona una calificación válida'),
+  mentorComments: z.string().trim().min(10, 'Escribe al menos 10 caracteres'),
+  impactRecord: z.string().trim().min(10, 'Describe el impacto en al menos 10 caracteres'),
+})
+
+type FeedbackForm = z.infer<typeof feedbackSchema>
 
 function getStatusColor(status: string): BadgeColor {
   return status in statusColor ? statusColor[status as SessionStatus] : 'neutral'
@@ -44,16 +52,6 @@ function getStatusColor(status: string): BadgeColor {
 
 function getStatusLabel(status: string) {
   return status in statusLabel ? statusLabel[status as SessionStatus] : status
-}
-
-function validateFeedback(feedback: FeedbackForm): FeedbackErrors {
-  const errors: FeedbackErrors = {}
-
-  if (feedback.stars < 1 || feedback.stars > 5) errors.stars = 'Selecciona una calificación válida'
-  if (feedback.mentorComments.trim().length < 10) errors.mentorComments = 'Escribe al menos 10 caracteres'
-  if (feedback.impactRecord.trim().length < 10) errors.impactRecord = 'Describe el impacto en al menos 10 caracteres'
-
-  return errors
 }
 
 function parseDate(value: string) {
@@ -196,10 +194,19 @@ export default function SessionsPage() {
   const { user } = useAuth()
   const [filter, setFilter] = useState('')
   const [feedbackModal, setFeedbackModal] = useState<{ open: boolean; sessionId: number | null }>({ open: false, sessionId: null })
-  const [feedback, setFeedback] = useState<FeedbackForm>(DEFAULT_FEEDBACK)
-  const [feedbackErrors, setFeedbackErrors] = useState<FeedbackErrors>({})
-  const [submitting, setSubmitting] = useState(false)
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors: feedbackErrors, isSubmitting: submitting, isValid },
+  } = useForm<FeedbackForm>({
+    resolver: zodResolver(feedbackSchema),
+    defaultValues: DEFAULT_FEEDBACK,
+    mode: 'onChange',
+  })
 
   const load = useCallback(async (signal: AbortSignal) => {
     const res = await sessionsApi.list(filter || undefined, signal)
@@ -239,45 +246,35 @@ export default function SessionsPage() {
     }
   }
 
-  const handleFeedback = async () => {
+  const handleFeedback = async (data: FeedbackForm) => {
     if (!feedbackModal.sessionId) return
-    const errors = validateFeedback(feedback)
-    setFeedbackErrors(errors)
-    if (Object.keys(errors).length > 0) {
-      toast.error('Revisa tu feedback antes de enviarlo')
-      return
-    }
 
-    setSubmitting(true)
     try {
       await sessionsApi.submitFeedback(feedbackModal.sessionId, {
-        stars: feedback.stars,
-        mentorComments: feedback.mentorComments.trim(),
-        impactRecord: feedback.impactRecord.trim(),
+        stars: data.stars,
+        mentorComments: data.mentorComments.trim(),
+        impactRecord: data.impactRecord.trim(),
       })
       toast.success('¡Gracias por tu feedback!')
       setFeedbackModal({ open: false, sessionId: null })
-      setFeedback(DEFAULT_FEEDBACK)
-      setFeedbackErrors({})
+      reset(DEFAULT_FEEDBACK)
       reload()
     } catch (e) {
       toast.error(parseApiError(e))
-    } finally {
-      setSubmitting(false)
     }
   }
 
   const closeFeedbackModal = () => {
     setFeedbackModal({ open: false, sessionId: null })
-    setFeedback(DEFAULT_FEEDBACK)
-    setFeedbackErrors({})
+    reset(DEFAULT_FEEDBACK)
   }
 
   const openFeedbackModal = (sessionId: number) => {
-    setFeedback(DEFAULT_FEEDBACK)
-    setFeedbackErrors({})
+    reset(DEFAULT_FEEDBACK)
     setFeedbackModal({ open: true, sessionId })
   }
+
+  const selectedStars = watch('stars')
 
   const sortedSessions = useMemo(
     () => [...sessions].sort(compareSessionsByDate),
@@ -528,7 +525,7 @@ export default function SessionsPage() {
       </AsyncContent>
 
       <Modal open={feedbackModal.open} onClose={closeFeedbackModal} title="Enviar feedback">
-        <div className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit(handleFeedback)} noValidate>
           <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
             <p className="text-sm font-semibold text-text">Feedback de la sesión</p>
             <p className="mt-1 text-xs leading-5 text-muted">
@@ -543,16 +540,16 @@ export default function SessionsPage() {
                 <button
                   key={n}
                   type="button"
-                  onClick={() => setFeedback(f => ({ ...f, stars: n }))}
+                  onClick={() => setValue('stars', n, { shouldDirty: true, shouldTouch: true, shouldValidate: true })}
                   aria-label={`${n} ${n === 1 ? 'estrella' : 'estrellas'}`}
-                  aria-pressed={n <= feedback.stars}
-                  className={`text-2xl transition-transform hover:scale-110 ${n <= feedback.stars ? 'text-accent-500' : 'text-border'}`}
+                  aria-pressed={n <= selectedStars}
+                  className={`text-2xl transition-transform hover:scale-110 ${n <= selectedStars ? 'text-accent-500' : 'text-border'}`}
                 >
                   ★
                 </button>
               ))}
             </div>
-            {feedbackErrors.stars && <span className="text-xs text-primary-700">{feedbackErrors.stars}</span>}
+            {feedbackErrors.stars && <span className="text-xs text-primary-700">{feedbackErrors.stars.message}</span>}
           </div>
 
           <div>
@@ -562,15 +559,14 @@ export default function SessionsPage() {
             <textarea
               id="feedback-mentor-comments"
               rows={3}
-              value={feedback.mentorComments}
-              onChange={e => setFeedback(f => ({ ...f, mentorComments: e.target.value }))}
+              {...register('mentorComments')}
               aria-invalid={!!feedbackErrors.mentorComments}
               aria-describedby={feedbackErrors.mentorComments ? 'feedback-mentor-comments-error' : undefined}
               className={`w-full resize-none rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500 ${feedbackErrors.mentorComments ? 'border-primary-600' : 'border-border'}`}
             />
             {feedbackErrors.mentorComments && (
               <span id="feedback-mentor-comments-error" className="text-xs text-primary-700">
-                {feedbackErrors.mentorComments}
+                {feedbackErrors.mentorComments.message}
               </span>
             )}
           </div>
@@ -582,28 +578,27 @@ export default function SessionsPage() {
             <textarea
               id="feedback-impact"
               rows={2}
-              value={feedback.impactRecord}
-              onChange={e => setFeedback(f => ({ ...f, impactRecord: e.target.value }))}
+              {...register('impactRecord')}
               aria-invalid={!!feedbackErrors.impactRecord}
               aria-describedby={feedbackErrors.impactRecord ? 'feedback-impact-error' : undefined}
               className={`w-full resize-none rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500 ${feedbackErrors.impactRecord ? 'border-primary-600' : 'border-border'}`}
             />
             {feedbackErrors.impactRecord && (
               <span id="feedback-impact-error" className="text-xs text-primary-700">
-                {feedbackErrors.impactRecord}
+                {feedbackErrors.impactRecord.message}
               </span>
             )}
           </div>
 
           <div className="flex gap-2">
-            <Button variant="secondary" className="flex-1" onClick={closeFeedbackModal}>
+            <Button type="button" variant="secondary" className="flex-1" onClick={closeFeedbackModal}>
               Cancelar
             </Button>
-            <Button className="flex-1" loading={submitting} onClick={handleFeedback}>
+            <Button type="submit" className="flex-1" loading={submitting} disabled={!isValid || submitting}>
               Enviar feedback
             </Button>
           </div>
-        </div>
+        </form>
       </Modal>
     </div>
   )
