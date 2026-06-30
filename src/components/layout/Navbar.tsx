@@ -13,28 +13,30 @@ export function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-40 bg-surface border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary-600">
-          <GraduationCap size={24} />
-          STEM Link
+    <nav className="sticky top-0 z-40 border-b border-border/70 bg-surface/85 backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex items-center gap-3 text-xl font-bold tracking-tight text-primary-700">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 text-surface shadow-[0_12px_30px_rgba(79,70,229,0.25)]">
+            <GraduationCap size={20} />
+          </span>
+          <span>STEM Link</span>
         </Link>
 
-        <div className="flex items-center gap-4">
-          <Link to="/mentors" className="text-sm text-muted hover:text-primary-600 transition-colors">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Link to="/mentors" className="text-sm font-medium text-muted transition-colors hover:text-primary-700">
             Mentores
           </Link>
 
           {isAuthenticated ? (
             <>
-              <Link to="/notifications" className="text-muted hover:text-primary-600 transition-colors">
+              <Link to="/notifications" className="rounded-xl p-2 text-muted transition-colors hover:bg-surface-alt hover:text-primary-700">
                 <Bell size={20} />
               </Link>
-              <Link to="/dashboard" className="flex items-center gap-1.5 text-sm text-text hover:text-primary-600 transition-colors">
+              <Link to="/dashboard" className="flex items-center gap-2 rounded-xl border border-border/70 bg-surface px-3 py-2 text-sm font-medium text-text transition-colors hover:border-primary-200 hover:text-primary-700">
                 <User size={16} />
                 {user?.name}
               </Link>
-              <Button variant="ghost" onClick={handleLogout} className="!px-2">
+              <Button variant="ghost" onClick={handleLogout} className="!px-3">
                 <LogOut size={16} />
               </Button>
             </>

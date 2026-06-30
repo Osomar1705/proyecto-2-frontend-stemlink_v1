@@ -74,11 +74,12 @@ export function AuthenticatedLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-alt">
-      <aside className="hidden border-r border-border bg-surface lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
-        <div className="border-b border-border px-6 py-6">
+    <div className="min-h-screen">
+      <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.10),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(20,184,166,0.10),_transparent_26%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_48%,_#f8fafc_100%)]" />
+      <aside className="hidden border-r border-border/70 bg-surface/90 backdrop-blur-sm lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
+        <div className="border-b border-border/70 px-6 py-6">
           <NavLink to="/dashboard" className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary-600 to-accent-500 text-surface shadow-lg">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 text-surface shadow-[0_12px_30px_rgba(79,70,229,0.25)]">
               <Zap size={22} aria-hidden />
             </div>
             <div>
@@ -96,10 +97,10 @@ export function AuthenticatedLayout() {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                `flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200 ${
                   isActive
-                    ? 'bg-primary-600 text-surface shadow-sm'
-                    : 'text-muted hover:bg-surface-alt hover:text-text'
+                    ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-surface shadow-[0_10px_24px_rgba(79,70,229,0.24)]'
+                    : 'text-muted hover:bg-surface-alt/80 hover:text-text'
                 }`
               }
             >
@@ -109,8 +110,8 @@ export function AuthenticatedLayout() {
           ))}
         </nav>
 
-        <div className="border-t border-border p-4">
-          <div className="mb-3 rounded-2xl border border-border bg-surface-alt p-4">
+        <div className="border-t border-border/70 p-4">
+          <div className="mb-3 rounded-[1.25rem] border border-border/70 bg-surface-alt/80 p-4">
             <p className="text-sm font-semibold text-text">{user?.name}</p>
             <p className="mt-1 text-xs text-muted">{user ? roleLabel[user.role] : 'Usuario'}</p>
           </div>
@@ -118,7 +119,7 @@ export function AuthenticatedLayout() {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted transition-colors hover:bg-surface-alt hover:text-text"
+            className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-muted transition-colors hover:bg-surface-alt/80 hover:text-text"
           >
             <LogOut size={18} aria-hidden />
             Cerrar sesión
@@ -127,11 +128,11 @@ export function AuthenticatedLayout() {
       </aside>
 
       <div className="lg:pl-72">
-        <header className="sticky top-0 z-30 border-b border-border bg-surface/95 backdrop-blur">
+        <header className="sticky top-0 z-30 border-b border-border/70 bg-surface/85 backdrop-blur-xl">
           <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between gap-4 lg:hidden">
               <NavLink to="/dashboard" className="flex items-center gap-2 text-text">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-600 to-accent-500 text-surface shadow-lg">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 text-surface shadow-[0_12px_30px_rgba(79,70,229,0.25)]">
                   <GraduationCap size={20} aria-hidden />
                 </div>
                 <div>
@@ -143,7 +144,7 @@ export function AuthenticatedLayout() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="rounded-lg border border-border px-3 py-2 text-sm font-medium text-text transition-colors hover:bg-surface-alt"
+                className="rounded-xl border border-border/70 px-3 py-2 text-sm font-semibold text-text transition-colors hover:bg-surface-alt/80"
               >
                 Salir
               </button>
@@ -163,11 +164,11 @@ export function AuthenticatedLayout() {
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Buscar mentores..."
-                    className="w-full rounded-xl border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-text outline-none transition-colors placeholder:text-muted focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    className="w-full rounded-2xl border border-border/70 bg-surface/90 py-2.5 pl-10 pr-4 text-sm text-text outline-none transition-colors placeholder:text-muted focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
                   />
                 </form>
 
-                <div className="hidden items-center gap-2 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-muted sm:flex">
+                <div className="hidden items-center gap-2 rounded-2xl border border-border/70 bg-surface/90 px-4 py-2.5 text-sm text-muted sm:flex">
                   <BookOpen size={16} className="text-primary-600" aria-hidden />
                   <span>{user?.email}</span>
                 </div>
@@ -180,10 +181,10 @@ export function AuthenticatedLayout() {
                   key={to}
                   to={to}
                   className={({ isActive }) =>
-                    `whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                    `whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
                       isActive
-                        ? 'border-primary-600 bg-primary-600 text-surface'
-                        : 'border-border bg-surface text-muted hover:text-text'
+                        ? 'border-primary-600 bg-gradient-to-r from-primary-600 to-primary-500 text-surface'
+                        : 'border-border/70 bg-surface/90 text-muted hover:text-text'
                     }`
                   }
                 >
