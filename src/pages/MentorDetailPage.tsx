@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -6,13 +6,14 @@ import { z } from 'zod'
 import { mentorsApi } from '../api/mentors.api'
 import { bookingsApi } from '../api/bookings.api'
 import type { MentorProfileResponse, AvailabilityBlockDTO } from '../types'
+import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Badge } from '../components/ui/Badge'
 import { Modal } from '../components/ui/Modal'
-import { Spinner } from '../components/ui/Spinner'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Input } from '../components/ui/Input'
+import { useAsyncResource } from '../hooks/useAsyncResource'
 import { useAuth } from '../contexts/AuthContext'
 import { parseApiError } from '../utils/errors'
 import { ArrowLeft, Award, Calendar, Clock, ExternalLink, GraduationCap, Sparkles, Users, Video } from 'lucide-react'
@@ -45,6 +46,10 @@ const bookingSchema = z.object({
 })
 
 type BookingForm = z.infer<typeof bookingSchema>
+interface MentorDetailResource {
+  mentor: MentorProfileResponse | null
+  availability: AvailabilityBlockDTO[]
+}
 
 function parseMentorId(id: string | undefined): number | null {
   if (!id) return null
@@ -57,43 +62,39 @@ export default function MentorDetailPage() {
   const mentorId = parseMentorId(id)
   const navigate = useNavigate()
   const { isAuthenticated, user } = useAuth()
-  const [mentor, setMentor] = useState<MentorProfileResponse | null>(null)
-  const [availability, setAvailability] = useState<AvailabilityBlockDTO[]>([])
-  const [loading, setLoading] = useState(true)
   const [bookingOpen, setBookingOpen] = useState(false)
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<BookingForm>({
     resolver: zodResolver(bookingSchema),
     defaultValues: EMPTY_BOOKING_FORM,
   })
 
-  useEffect(() => {
+  const loadMentorDetail = useCallback(async (signal: AbortSignal): Promise<MentorDetailResource> => {
     if (!mentorId) {
-      setLoading(false)
-      setMentor(null)
-      setAvailability([])
-      return
+      return { mentor: null, availability: [] }
     }
 
-    const controller = new AbortController()
-    const load = async () => {
-      setLoading(true)
-      try {
-        const [mRes, aRes] = await Promise.all([
-          mentorsApi.getById(mentorId, controller.signal),
-          isAuthenticated ? mentorsApi.getAvailability(mentorId) : Promise.resolve({ data: [] }),
-        ])
-        setMentor(mRes.data)
-        setAvailability(aRes.data)
-      } catch (e: unknown) {
-        const err = e as { name?: string }
-        if (err.name !== 'CanceledError') toast.error(parseApiError(e))
-      } finally {
-        setLoading(false)
-      }
+    const [mentorResponse, availabilityResponse] = await Promise.all([
+      mentorsApi.getById(mentorId, signal),
+      isAuthenticated
+        ? mentorsApi.getAvailability(mentorId, signal)
+        : Promise.resolve({ data: [] as AvailabilityBlockDTO[] }),
+    ])
+
+    return {
+      mentor: mentorResponse.data,
+      availability: availabilityResponse.data,
     }
-    load()
-    return () => controller.abort()
   }, [mentorId, isAuthenticated])
+
+  const { data, loading, error, reload } = useAsyncResource<MentorDetailResource>({
+    initialData: { mentor: null, availability: [] },
+    load: loadMentorDetail,
+    deps: [loadMentorDetail],
+    onError: (message) => toast.error(message),
+  })
+
+  const mentor = data.mentor
+  const availability = data.availability
 
   const handleBook = async (data: BookingForm) => {
     try {
@@ -112,11 +113,12 @@ export default function MentorDetailPage() {
     reset(EMPTY_BOOKING_FORM)
   }
 
-  const availabilityDays = DAYS.filter(day => availability.some(a => a.dayOfWeek === day))
+  const availabilityDays = useMemo(
+    () => DAYS.filter(day => availability.some(a => a.dayOfWeek === day)),
+    [availability],
+  )
 
-  if (loading) return <div className="flex justify-center py-20"><Spinner size="lg" /></div>
-
-  if (!mentor) {
+  if (!mentorId) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         <button onClick={() => navigate('/mentors')} className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-primary-600">
@@ -125,8 +127,8 @@ export default function MentorDetailPage() {
         <div className="mt-8 rounded-[2rem] border border-border/70 bg-surface p-6 shadow-sm">
           <EmptyState
             icon={<Users size={48} />}
-            title="Mentor no encontrado"
-            description="Revisa el enlace o vuelve al listado para elegir otro mentor."
+            title="Mentor inválido"
+            description="El identificador del mentor no es válido. Vuelve al listado para elegir otro perfil."
             action={{ label: 'Ver mentores', onClick: () => navigate('/mentors') }}
           />
         </div>
@@ -143,235 +145,248 @@ export default function MentorDetailPage() {
         <ArrowLeft size={18} /> Volver a mentores
       </button>
 
-      <div className="mb-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <div className="overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm">
-          <div className="relative p-6 sm:p-8">
-            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-primary-100/70 blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
+      <AsyncContent
+        loading={loading}
+        error={error}
+        isEmpty={!mentor}
+        errorIcon={<Users size={48} />}
+        errorTitle="No pudimos cargar el perfil del mentor"
+        onRetry={reload}
+        emptyIcon={<Users size={48} />}
+        emptyTitle="Mentor no encontrado"
+        emptyDescription="Revisa el enlace o vuelve al listado para elegir otro mentor."
+        emptyAction={{ label: 'Ver mentores', onClick: () => navigate('/mentors') }}
+      >
+        <div className="mb-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+          <div className="overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm">
+            <div className="relative p-6 sm:p-8">
+              <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-primary-100/70 blur-3xl" />
+              <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
 
-            <div className="relative">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
-                <Sparkles size={16} className="text-accent-500" aria-hidden />
-                Perfil de mentor STEM
-              </div>
+              <div className="relative">
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
+                  <Sparkles size={16} className="text-accent-500" aria-hidden />
+                  Perfil de mentor STEM
+                </div>
 
-              <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-start">
-                <MentorAvatar name={mentor.name} size="xl" className="mx-auto sm:mx-0" />
+                <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-start">
+                  <MentorAvatar name={mentor!.name} size="xl" className="mx-auto sm:mx-0" />
 
-                <div className="min-w-0 flex-1 text-center sm:text-left">
-                  <h1 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">
-                    {mentor.name}
-                  </h1>
-                  <p className="mt-2 text-base text-muted sm:text-lg">
-                    Mentor especializado en áreas STEM
-                  </p>
-                  <p className="mt-4 max-w-3xl leading-8 text-text">
-                    {mentor.bio || 'Mentor especializado en áreas STEM listo para acompañarte con sesiones personalizadas.'}
-                  </p>
+                  <div className="min-w-0 flex-1 text-center sm:text-left">
+                    <h1 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">
+                      {mentor!.name}
+                    </h1>
+                    <p className="mt-2 text-base text-muted sm:text-lg">
+                      Mentor especializado en áreas STEM
+                    </p>
+                    <p className="mt-4 max-w-3xl leading-8 text-text">
+                      {mentor!.bio || 'Mentor especializado en áreas STEM listo para acompañarte con sesiones personalizadas.'}
+                    </p>
 
-                  <div className="mt-6 flex flex-wrap justify-center gap-3 sm:justify-start">
-                    {mentor.linkedinUrl && (
-                      <a
-                        href={mentor.linkedinUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-colors hover:border-primary-400 hover:text-primary-700"
-                      >
-                        <ExternalLink size={14} className="text-primary-600" aria-hidden />
-                        LinkedIn
-                      </a>
-                    )}
-                    {mentor.videoCallUrl && (
-                      <a
-                        href={mentor.videoCallUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-colors hover:border-accent-400 hover:text-accent-700"
-                      >
-                        <Video size={14} className="text-accent-500" aria-hidden />
-                        Videollamada
-                      </a>
-                    )}
+                    <div className="mt-6 flex flex-wrap justify-center gap-3 sm:justify-start">
+                      {mentor!.linkedinUrl && (
+                        <a
+                          href={mentor!.linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-colors hover:border-primary-400 hover:text-primary-700"
+                        >
+                          <ExternalLink size={14} className="text-primary-600" aria-hidden />
+                          LinkedIn
+                        </a>
+                      )}
+                      {mentor!.videoCallUrl && (
+                        <a
+                          href={mentor!.videoCallUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-colors hover:border-accent-400 hover:text-accent-700"
+                        >
+                          <Video size={14} className="text-accent-500" aria-hidden />
+                          Videollamada
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            <div className="grid gap-4 border-t border-border bg-surface-alt/60 p-6 sm:grid-cols-3 sm:p-8">
+              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+                <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
+                  <Award size={16} className="text-accent-500" aria-hidden />
+                  {mentor!.skills?.length || 0}
+                </div>
+                <p className="text-xs text-muted">Especialidades registradas</p>
+              </div>
+              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+                <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
+                  <Calendar size={16} className="text-primary-600" aria-hidden />
+                  {availability.length}
+                </div>
+                <p className="text-xs text-muted">Bloques disponibles</p>
+              </div>
+              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+                <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
+                  <GraduationCap size={16} className="text-primary-600" aria-hidden />
+                  STEM
+                </div>
+                <p className="text-xs text-muted">Área principal</p>
+              </div>
+            </div>
           </div>
 
-          <div className="grid gap-4 border-t border-border bg-surface-alt/60 p-6 sm:grid-cols-3 sm:p-8">
-            <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
-              <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
-                <Award size={16} className="text-accent-500" aria-hidden />
-                {mentor.skills?.length || 0}
-              </div>
-              <p className="text-xs text-muted">Especialidades registradas</p>
+          <Card className="flex h-fit flex-col gap-5 border-border/80 p-6 shadow-sm">
+            <div>
+              <p className="text-sm font-semibold text-text">Acción principal</p>
+              <p className="mt-1 text-sm leading-6 text-muted">
+                Revisa el perfil, valida la disponibilidad y agenda una sesión cuando estés listo.
+              </p>
             </div>
-            <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
-              <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
-                <Calendar size={16} className="text-primary-600" aria-hidden />
-                {availability.length}
+
+            {isAuthenticated && user?.role === 'STUDENT' ? (
+              <Button onClick={() => setBookingOpen(true)} className="w-full bg-accent-500 hover:bg-accent-600">
+                <Calendar size={16} /> Reservar sesión
+              </Button>
+            ) : !isAuthenticated ? (
+              <Button variant="secondary" onClick={() => navigate('/login')} className="w-full">
+                Inicia sesión para reservar
+              </Button>
+            ) : null}
+
+            <div className="rounded-xl border border-border bg-surface-alt p-4">
+              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resumen</p>
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm text-muted">Especialidades</span>
+                  <span className="text-sm font-semibold text-text">{mentor!.skills?.length || 0}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm text-muted">Disponibilidad</span>
+                  <span className="text-sm font-semibold text-text">{availability.length}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm text-muted">Visibilidad</span>
+                  <span className="text-sm font-semibold text-text">{isAuthenticated ? 'Autenticada' : 'Pública'}</span>
+                </div>
               </div>
-              <p className="text-xs text-muted">Bloques disponibles</p>
             </div>
-            <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
-              <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
-                <GraduationCap size={16} className="text-primary-600" aria-hidden />
-                STEM
-              </div>
-              <p className="text-xs text-muted">Área principal</p>
+
+            <div className="rounded-xl border border-border bg-surface-alt p-4">
+              <p className="text-sm font-semibold text-text">Disponibilidad</p>
+              <p className="mt-1 text-sm leading-6 text-muted">
+                {isAuthenticated
+                  ? availability.length > 0
+                    ? 'Este mentor ya publicó horarios disponibles para coordinar sesiones.'
+                    : 'Aún no hay horarios publicados por este mentor.'
+                  : 'Inicia sesión para consultar los bloques disponibles y reservar.'}
+              </p>
             </div>
-          </div>
+          </Card>
         </div>
 
-        <Card className="flex h-fit flex-col gap-5 border-border/80 p-6 shadow-sm">
-          <div>
-            <p className="text-sm font-semibold text-text">Acción principal</p>
-            <p className="mt-1 text-sm leading-6 text-muted">
-              Revisa el perfil, valida la disponibilidad y agenda una sesión cuando estés listo.
-            </p>
-          </div>
-
-          {isAuthenticated && user?.role === 'STUDENT' ? (
-            <Button onClick={() => setBookingOpen(true)} className="w-full bg-accent-500 hover:bg-accent-600">
-              <Calendar size={16} /> Reservar sesión
-            </Button>
-          ) : !isAuthenticated ? (
-            <Button variant="secondary" onClick={() => navigate('/login')} className="w-full">
-              Inicia sesión para reservar
-            </Button>
-          ) : null}
-
-          <div className="rounded-xl border border-border bg-surface-alt p-4">
-            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resumen</p>
-            <div className="mt-4 space-y-3">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-sm text-muted">Especialidades</span>
-                <span className="text-sm font-semibold text-text">{mentor.skills?.length || 0}</span>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-sm text-muted">Disponibilidad</span>
-                <span className="text-sm font-semibold text-text">{availability.length}</span>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-sm text-muted">Visibilidad</span>
-                <span className="text-sm font-semibold text-text">{isAuthenticated ? 'Autenticada' : 'Pública'}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-xl border border-border bg-surface-alt p-4">
-            <p className="text-sm font-semibold text-text">Disponibilidad</p>
-            <p className="mt-1 text-sm leading-6 text-muted">
-              {isAuthenticated
-                ? availability.length > 0
-                  ? 'Este mentor ya publicó horarios disponibles para coordinar sesiones.'
-                  : 'Aún no hay horarios publicados por este mentor.'
-                : 'Inicia sesión para consultar los bloques disponibles y reservar.'}
-            </p>
-          </div>
-        </Card>
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <Card className="border-border/80 p-6 shadow-sm sm:p-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-text">Especialidades</h2>
-            <p className="mt-1 text-sm text-muted">
-              Áreas técnicas publicadas por el mentor dentro de la plataforma.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {mentor.skills?.map(skill => (
-              <Badge key={skill.id} label={skill.name} />
-            ))}
-            {!mentor.skills?.length && <Badge label="STEM" color="neutral" />}
-          </div>
-        </Card>
-
-        <Card className="border-border/80 p-6 shadow-sm">
-          <div className="mb-5 flex items-start justify-between gap-4">
-            <div>
-              <h2 className="text-xl font-bold text-text">Canales del mentor</h2>
+        <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <Card className="border-border/80 p-6 shadow-sm sm:p-8">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-text">Especialidades</h2>
               <p className="mt-1 text-sm text-muted">
-                Enlaces públicos asociados al perfil.
+                Áreas técnicas publicadas por el mentor dentro de la plataforma.
               </p>
             </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50">
-              <Users size={20} className="text-primary-600" aria-hidden />
-            </div>
-          </div>
 
-          <div className="space-y-3">
-            <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">LinkedIn</p>
-              <p className="mt-2 text-sm font-medium text-text">
-                {mentor.linkedinUrl || 'No disponible'}
-              </p>
-            </div>
-            <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Videollamada</p>
-              <p className="mt-2 text-sm font-medium text-text break-all">
-                {mentor.videoCallUrl || 'No disponible'}
-              </p>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div className="mt-8">
-        <Card className="border border-border/80 bg-surface p-6 shadow-sm sm:p-8">
-          <div className="mb-6 flex items-center justify-between gap-3">
-            <h2 className="flex items-center gap-2 text-2xl font-bold text-text">
-              <Calendar size={18} className="text-primary-600" aria-hidden />
-              Disponibilidad
-            </h2>
-            <span className="rounded-full border border-border bg-surface-alt px-3 py-1 text-xs font-medium text-muted">
-              {availability.length} bloques
-            </span>
-          </div>
-
-          {!isAuthenticated ? (
-            <div className="rounded-2xl border border-border bg-surface-alt p-6">
-              <EmptyState
-                icon={<Clock size={40} />}
-                title="Inicia sesión para ver la disponibilidad"
-                description="El listado de horarios se muestra solo a usuarios autenticados."
-                action={{ label: 'Iniciar sesión', onClick: () => navigate('/login') }}
-              />
-            </div>
-          ) : availability.length === 0 ? (
-            <div className="rounded-2xl border border-border bg-surface-alt p-6">
-              <EmptyState
-                icon={<Clock size={40} />}
-                title="Sin disponibilidad publicada"
-                description="Este mentor aún no ha registrado bloques de horario disponibles."
-              />
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              {availabilityDays.map(day => (
-                <div key={day} className="rounded-xl border border-border bg-surface-alt p-4 transition-colors hover:border-primary-300">
-                  <p className="mb-3 text-sm font-semibold text-text">{DAY_ES[day]}</p>
-                  <div className="space-y-2">
-                    {availability.filter(slot => slot.dayOfWeek === day).map(slot => (
-                      <div key={slot.id} className="flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-3 text-sm text-muted">
-                        <Clock size={16} className="text-primary-600" aria-hidden />
-                        <span className="font-medium text-text">{slot.startTime} - {slot.endTime}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            <div className="flex flex-wrap gap-2">
+              {mentor!.skills?.map(skill => (
+                <Badge key={skill.id} label={skill.name} />
               ))}
+              {!mentor!.skills?.length && <Badge label="STEM" color="neutral" />}
             </div>
-          )}
-        </Card>
-      </div>
+          </Card>
+
+          <Card className="border-border/80 p-6 shadow-sm">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold text-text">Canales del mentor</h2>
+                <p className="mt-1 text-sm text-muted">
+                  Enlaces públicos asociados al perfil.
+                </p>
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50">
+                <Users size={20} className="text-primary-600" aria-hidden />
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">LinkedIn</p>
+                <p className="mt-2 text-sm font-medium text-text">
+                  {mentor!.linkedinUrl || 'No disponible'}
+                </p>
+              </div>
+              <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Videollamada</p>
+                <p className="mt-2 text-sm font-medium text-text break-all">
+                  {mentor!.videoCallUrl || 'No disponible'}
+                </p>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        <div className="mt-8">
+          <Card className="border border-border/80 bg-surface p-6 shadow-sm sm:p-8">
+            <div className="mb-6 flex items-center justify-between gap-3">
+              <h2 className="flex items-center gap-2 text-2xl font-bold text-text">
+                <Calendar size={18} className="text-primary-600" aria-hidden />
+                Disponibilidad
+              </h2>
+              <span className="rounded-full border border-border bg-surface-alt px-3 py-1 text-xs font-medium text-muted">
+                {availability.length} bloques
+              </span>
+            </div>
+
+            {!isAuthenticated ? (
+              <div className="rounded-2xl border border-border bg-surface-alt p-6">
+                <EmptyState
+                  icon={<Clock size={40} />}
+                  title="Inicia sesión para ver la disponibilidad"
+                  description="El listado de horarios se muestra solo a usuarios autenticados."
+                  action={{ label: 'Iniciar sesión', onClick: () => navigate('/login') }}
+                />
+              </div>
+            ) : availability.length === 0 ? (
+              <div className="rounded-2xl border border-border bg-surface-alt p-6">
+                <EmptyState
+                  icon={<Clock size={40} />}
+                  title="Sin disponibilidad publicada"
+                  description="Este mentor aún no ha registrado bloques de horario disponibles."
+                />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {availabilityDays.map(day => (
+                  <div key={day} className="rounded-xl border border-border bg-surface-alt p-4 transition-colors hover:border-primary-300">
+                    <p className="mb-3 text-sm font-semibold text-text">{DAY_ES[day]}</p>
+                    <div className="space-y-2">
+                      {availability.filter(slot => slot.dayOfWeek === day).map(slot => (
+                        <div key={slot.id} className="flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-3 text-sm text-muted">
+                          <Clock size={16} className="text-primary-600" aria-hidden />
+                          <span className="font-medium text-text">{slot.startTime} - {slot.endTime}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        </div>
+      </AsyncContent>
 
       <Modal open={bookingOpen} onClose={closeBookingModal} title="Reservar sesión con mentor">
         <form className="space-y-4" onSubmit={handleSubmit(handleBook)}>
           <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
-            <p className="text-sm font-semibold text-text">{mentor.name}</p>
+            <p className="text-sm font-semibold text-text">{mentor?.name ?? 'Mentor STEM'}</p>
             <p className="mt-1 text-xs leading-5 text-muted">
               Completa los datos de la sesión. La reserva conservará el mismo flujo actual contra el backend.
             </p>

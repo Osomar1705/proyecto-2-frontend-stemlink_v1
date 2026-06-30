@@ -14,8 +14,8 @@ export const mentorsApi = {
   updateTags: (skillIds: number[]) =>
     client.post<MentorProfileResponse>('/api/users/me/tags', skillIds),
 
-  getAvailability: (id: number) =>
-    client.get<AvailabilityBlockDTO[]>(`/api/mentors/${id}/availability`),
+  getAvailability: (id: number, signal?: AbortSignal) =>
+    client.get<AvailabilityBlockDTO[]>(`/api/mentors/${id}/availability`, { signal }),
 
   addAvailability: (data: Omit<AvailabilityBlockDTO, 'id'>) =>
     client.post<AvailabilityBlockDTO>('/api/mentors/me/availability', data),
