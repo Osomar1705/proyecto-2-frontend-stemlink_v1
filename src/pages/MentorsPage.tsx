@@ -95,16 +95,16 @@ export default function MentorsPage() {
           title="Encuentra tu mentor ideal"
           description="Explora perfiles reales, filtra por habilidades y encuentra a la persona adecuada para tu siguiente reto técnico."
           aside={(
-            <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[25rem]">
-              <div className="rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
+            <div className="flex flex-wrap gap-3 lg:min-w-[25rem]">
+              <div className="min-w-[7rem] flex-1 rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resultados</p>
                 <p className="mt-1 text-lg font-bold text-text">{mentorCount}</p>
               </div>
-              <div className="rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
+              <div className="min-w-[7rem] flex-1 rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Filtros</p>
                 <p className="mt-1 text-lg font-bold text-text">{selectedSkills.length}</p>
               </div>
-              <div className="rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
+              <div className="min-w-[7rem] flex-1 rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Página</p>
                 <p className="mt-1 text-lg font-bold text-text">{page + 1}</p>
               </div>
@@ -166,7 +166,7 @@ export default function MentorsPage() {
               )}
 
               {hasFilters && (
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 border-t border-border/60 pt-4">
                   {debouncedSearch && (
                     <span className="inline-flex items-center gap-2 rounded-full bg-surface px-3 py-1 text-xs font-medium text-text ring-1 ring-border/60">
                       Búsqueda: {debouncedSearch}

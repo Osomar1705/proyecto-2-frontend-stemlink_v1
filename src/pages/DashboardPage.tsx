@@ -155,17 +155,17 @@ export default function DashboardPage() {
           )}
           footer={(
             <div className="grid gap-4 sm:grid-cols-3">
-              <div>
+              <div className="rounded-2xl bg-surface/80 p-4 ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Actividad total</p>
                 <p className="mt-2 text-2xl font-bold text-text">{totalSessions}</p>
                 <p className="mt-1 text-sm text-muted">sesiones registradas en tu cuenta</p>
               </div>
-              <div>
+              <div className="rounded-2xl bg-surface/80 p-4 ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Progreso</p>
                 <p className="mt-2 text-2xl font-bold text-text">{completionRate}%</p>
                 <p className="mt-1 text-sm text-muted">de sesiones marcadas como completadas</p>
               </div>
-              <div>
+              <div className="rounded-2xl bg-surface/80 p-4 ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Estado actual</p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   <Badge label={`${confirmed.length} confirmadas`} color="success" />
@@ -177,7 +177,7 @@ export default function DashboardPage() {
         />
 
         <div className="grid gap-4">
-          <Card className="border-border bg-surface p-6 shadow-sm">
+          <Card className="border-border/60 bg-surface/90 p-6 shadow-sm">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm text-muted">Resumen de hoy</p>
@@ -190,7 +190,7 @@ export default function DashboardPage() {
                     : 'Explora mentores o espera nuevas confirmaciones para continuar.'}
                 </p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-50">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50/80">
                 <TrendingUp size={22} className="text-primary-600" aria-hidden />
               </div>
             </div>
@@ -198,7 +198,7 @@ export default function DashboardPage() {
 
           <Card
             onClick={() => navigate('/notifications')}
-            className="border-border bg-surface p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+            className="border-border/60 bg-surface/90 p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -210,7 +210,7 @@ export default function DashboardPage() {
                     : 'No tienes novedades pendientes por revisar.'}
                 </p>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent-100">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-100/80">
                 <Bell size={22} className="text-accent-600" aria-hidden />
               </div>
             </div>
@@ -241,12 +241,12 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {quickActions.map(({ key, title, description, icon: Icon, tone, onClick }) => (
-            <Card
-              key={key}
-              className="group border-border bg-surface p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
-              onClick={onClick}
-            >
-              <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg ${tone}`}>
+          <Card
+            key={key}
+            className="group border-border/60 bg-surface/90 p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+            onClick={onClick}
+          >
+              <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${tone}`}>
                 <Icon size={24} aria-hidden />
               </div>
               <h3 className="mb-1 font-bold text-text">{title}</h3>
