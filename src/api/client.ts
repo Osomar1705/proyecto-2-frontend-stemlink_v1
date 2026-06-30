@@ -11,8 +11,10 @@ function wait(ms: number) {
   return new Promise((resolve) => window.setTimeout(resolve, ms))
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://stem-link-app-1.onrender.com'
+
 const client = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: API_BASE_URL,
   timeout: 10000,
   paramsSerializer: {
     serialize(params) {
