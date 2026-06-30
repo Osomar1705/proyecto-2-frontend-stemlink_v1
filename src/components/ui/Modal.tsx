@@ -67,22 +67,22 @@ export function Modal({ open, onClose, title, children }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-text/50" onClick={onClose} aria-hidden="true" />
+      <div className="absolute inset-0 bg-slate-950/45 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
         tabIndex={-1}
-        className="relative z-10 w-full max-w-md rounded-xl bg-surface p-6 shadow-xl"
+        className="relative z-10 w-full max-w-md rounded-[1.75rem] border border-border/70 bg-surface/96 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.22)] backdrop-blur-sm"
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           {title && <h3 id={titleId} className="text-lg font-semibold text-text">{title}</h3>}
           <button
             type="button"
             onClick={onClose}
             aria-label="Cerrar modal"
-            className="ml-auto rounded-lg p-1 transition-colors hover:bg-surface-alt focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="ml-auto rounded-xl p-2 transition-colors hover:bg-surface-alt focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
             <X size={20} className="text-muted" aria-hidden />
           </button>

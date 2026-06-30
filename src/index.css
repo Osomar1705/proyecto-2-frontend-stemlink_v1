@@ -25,6 +25,10 @@
   --color-muted:       #64748b;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -34,12 +38,23 @@
 body {
   font-family: Manrope, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-color: var(--color-surface);
+  background:
+    radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(20, 184, 166, 0.10), transparent 26%),
+    radial-gradient(circle at bottom center, rgba(99, 102, 241, 0.08), transparent 32%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 46%, #f8fafc 100%);
+  background-attachment: fixed;
   color: var(--color-text);
+  min-height: 100vh;
 }
 
 html,
 body,
 #root {
   min-height: 100%;
+}
+
+::selection {
+  background: var(--color-primary-100);
+  color: var(--color-text);
 }

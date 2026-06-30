@@ -7,12 +7,12 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary:   'bg-primary-600 hover:bg-primary-700 text-surface',
-  secondary: 'bg-surface border border-border hover:bg-surface-alt text-text',
-  danger:    'bg-primary-700 hover:bg-primary-900 text-surface',
-  ghost:     'hover:bg-surface-alt text-muted',
-  accent:    'bg-accent-500 hover:bg-accent-600 text-surface',
-  outline:   'border-2 border-surface bg-transparent hover:bg-surface/10 text-surface',
+  primary:   'bg-gradient-to-r from-primary-600 to-primary-500 text-surface shadow-[0_10px_24px_rgba(79,70,229,0.24)] hover:shadow-[0_14px_28px_rgba(79,70,229,0.28)]',
+  secondary: 'border border-border bg-surface/90 text-text hover:border-primary-200 hover:bg-surface-alt/90',
+  danger:    'bg-gradient-to-r from-primary-700 to-primary-800 text-surface shadow-[0_10px_24px_rgba(67,56,202,0.20)]',
+  ghost:     'text-muted hover:bg-surface-alt hover:text-text',
+  accent:    'bg-gradient-to-r from-accent-500 to-accent-600 text-surface shadow-[0_10px_24px_rgba(20,184,166,0.20)]',
+  outline:   'border border-surface/70 bg-transparent text-surface hover:bg-surface/10',
 }
 
 export function Button({ variant = 'primary', loading, children, className = '', disabled, type = 'button', ...props }: Props) {
@@ -21,9 +21,9 @@ export function Button({ variant = 'primary', loading, children, className = '',
       {...props}
       type={type}
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/40 disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${className}`}
     >
-      {loading && <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />}
+      {loading && <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />}
       {children}
     </button>
   )
