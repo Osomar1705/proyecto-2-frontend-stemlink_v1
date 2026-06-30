@@ -16,15 +16,15 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
   return (
     <Card
       onClick={onOpenProfile}
-      className="group flex h-full flex-col overflow-hidden border-border/80 p-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+      className="group flex h-full flex-col overflow-hidden border-border/60 p-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.12)]"
     >
-      <div className="relative border-b border-border bg-surface-alt/70 px-6 pb-5 pt-6">
-        <div className="absolute right-0 top-0 h-20 w-20 rounded-full bg-primary-100/70 blur-2xl" />
+      <div className="relative bg-surface-alt/60 px-6 pb-5 pt-6">
+        <div className="absolute right-0 top-0 h-20 w-20 rounded-full bg-primary-100/50 blur-2xl" />
 
         <div className="relative flex items-start justify-between gap-3">
           <MentorAvatar name={mentor.name} size="md" />
 
-          <div className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] font-medium text-muted">
+          <div className="inline-flex items-center gap-1 rounded-full bg-surface/90 px-2.5 py-1 text-[11px] font-semibold text-muted ring-1 ring-border/60">
             <Sparkles size={12} className="text-accent-500" aria-hidden />
             STEM
           </div>
@@ -41,12 +41,12 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
       </div>
 
       <div className="flex flex-1 flex-col px-6 py-5">
-        <div className="mb-4 grid grid-cols-2 gap-3">
-          <div className="rounded-xl border border-border bg-surface-alt px-3 py-3">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl bg-surface-alt/70 px-3 py-3 ring-1 ring-border/60">
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Skills</p>
             <p className="mt-1 text-lg font-bold text-text">{skills.length}</p>
           </div>
-          <div className="rounded-xl border border-border bg-surface-alt px-3 py-3">
+          <div className="rounded-2xl bg-surface-alt/70 px-3 py-3 ring-1 ring-border/60">
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Perfil</p>
             <p className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-text">
               <Award size={14} className="text-primary-600" aria-hidden />
@@ -55,7 +55,7 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
           </div>
         </div>
 
-        <div className="mb-5 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           {skills.slice(0, 3).map(skill => (
             <Badge key={skill.id} label={skill.name} />
           ))}
@@ -63,7 +63,7 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
           {!skills.length && <Badge label="STEM" color="neutral" />}
         </div>
 
-        <div className="mt-auto space-y-3">
+        <div className="mt-auto space-y-3 pt-5">
           {mentor.linkedinUrl ? (
             <a
               href={mentor.linkedinUrl}

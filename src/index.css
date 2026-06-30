@@ -31,8 +31,6 @@ html {
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
@@ -57,4 +55,12 @@ body,
 ::selection {
   background: var(--color-primary-100);
   color: var(--color-text);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

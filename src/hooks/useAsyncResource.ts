@@ -1,24 +1,23 @@
-import { useCallback, useEffect, useState } from 'react'
-import type { DependencyList } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { getApiErrorInfo } from '../utils/errors'
 
 interface UseAsyncResourceOptions<T> {
   initialData: T
   load: (signal: AbortSignal) => Promise<T>
-  deps: DependencyList
   onError?: (message: string) => void
 }
 
 export function useAsyncResource<T>({
   initialData,
   load,
-  deps,
   onError,
 }: UseAsyncResourceOptions<T>) {
   const [data, setData] = useState<T>(initialData)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [reloadToken, setReloadToken] = useState(0)
+  const onErrorRef = useRef(onError)
+  onErrorRef.current = onError
 
   const reload = useCallback(() => {
     setReloadToken((value) => value + 1)
@@ -33,22 +32,22 @@ export function useAsyncResource<T>({
 
       try {
         const result = await load(controller.signal)
-        setData(result)
+        if (!controller.signal.aborted) setData(result)
       } catch (error: unknown) {
         const err = error as { name?: string }
         if (err.name !== 'CanceledError') {
           const info = getApiErrorInfo(error)
           setError(info.message)
-          onError?.(info.message)
+          onErrorRef.current?.(info.message)
         }
       } finally {
-        setLoading(false)
+        if (!controller.signal.aborted) setLoading(false)
       }
     }
 
     run()
     return () => controller.abort()
-  }, [...deps, load, onError, reloadToken])
+  }, [load, reloadToken])
 
   return { data, setData, loading, error, reload }
 }

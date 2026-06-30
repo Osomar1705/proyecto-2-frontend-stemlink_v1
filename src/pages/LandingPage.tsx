@@ -1,152 +1,152 @@
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, BookOpen, Calendar, CheckCircle, GraduationCap, ShieldCheck, Sparkles, TrendingUp, Users, Zap } from 'lucide-react'
+import {
+  ArrowRight,
+  BookOpen,
+  Calendar,
+  Check,
+  CheckCircle,
+  Clock3,
+  Compass,
+  GraduationCap,
+  ShieldCheck,
+  Sparkles,
+  TrendingUp,
+  Users,
+} from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
-import heroImage from '../assets/hero.png'
 
-const features = [
-  {
-    icon: BookOpen,
-    title: 'Mentores especializados',
-    description:
-      'Conecta con expertos en Ciencia, Tecnología, Ingeniería y Matemáticas listos para guiarte.',
-  },
-  {
-    icon: Calendar,
-    title: 'Sesiones flexibles',
-    description:
-      'Agenda mentorías en el horario que más te convenga, de forma simple y sin complicaciones.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Crecimiento real',
-    description:
-      'Recibe orientación personalizada y acelera tu desarrollo académico y profesional.',
-  },
-]
-
-const highlights = [
+const stats = [
   { icon: Users, label: 'Mentores activos', value: '100+' },
-  { icon: Calendar, label: 'Sesiones flexibles', value: '24/7' },
+  { icon: Clock3, label: 'Disponibilidad', value: '24/7' },
   { icon: BookOpen, label: 'Áreas STEM', value: '6+' },
 ]
 
+const features = [
+  {
+    icon: Compass,
+    title: 'Encuentra al mentor ideal',
+    description: 'Explora perfiles por especialidad, experiencia y disponibilidad para elegir con confianza.',
+  },
+  {
+    icon: Calendar,
+    title: 'Reserva sin fricción',
+    description: 'Coordina sesiones en horarios compatibles y gestiona tus próximas mentorías en un solo lugar.',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Avanza con dirección',
+    description: 'Convierte tus objetivos académicos y profesionales en pasos claros con acompañamiento experto.',
+  },
+]
+
 const steps = [
-  'Explora mentores por especialidad.',
-  'Reserva una sesión según tu disponibilidad.',
-  'Recibe feedback y registra tu progreso.',
+  {
+    number: '01',
+    title: 'Explora',
+    description: 'Filtra mentores según el área STEM en la que quieres crecer.',
+  },
+  {
+    number: '02',
+    title: 'Conecta',
+    description: 'Revisa su perfil y reserva una sesión en el horario que prefieras.',
+  },
+  {
+    number: '03',
+    title: 'Progresa',
+    description: 'Recibe orientación práctica y mantén el foco en tus objetivos.',
+  },
 ]
 
 export default function LandingPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen bg-surface-alt text-text">
-      <section className="relative overflow-hidden px-4 py-10 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute right-10 top-16 h-72 w-72 rounded-full bg-primary-100/70 blur-3xl" />
-          <div className="absolute bottom-12 left-8 h-80 w-80 rounded-full bg-accent-100/70 blur-3xl" />
-        </div>
-
-        <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-10 lg:grid-cols-[1.02fr_0.98fr]">
-          <div className="max-w-2xl">
-            <div className="mb-8 flex items-center gap-3">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-primary-600 to-accent-600 shadow-lg">
-                <Zap size={30} className="text-surface" aria-hidden />
-              </div>
-              <div>
-                <p className="text-3xl font-bold tracking-tight text-text">
-                  STEM <span className="text-primary-600">Link</span>
-                </p>
-                <p className="text-sm text-muted">Mentoría STEM personalizada</p>
-              </div>
+    <div className="overflow-x-clip bg-surface text-text">
+      <section className="relative isolate px-4 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-18 lg:px-8 lg:pb-24 lg:pt-20">
+        <div
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(99,102,241,0.14),transparent_30%),radial-gradient(circle_at_85%_30%,rgba(20,184,166,0.12),transparent_28%)]"
+          aria-hidden="true"
+        />
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(22rem,0.92fr)] lg:gap-16">
+          <div className="max-w-3xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-200/80 bg-surface/80 px-3 py-1.5 text-sm font-semibold text-primary-700 shadow-sm backdrop-blur">
+              <Sparkles size={16} aria-hidden="true" />
+              Mentoría STEM hecha para avanzar
             </div>
 
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-sm font-medium text-primary-600 shadow-sm">
-              <ShieldCheck size={16} aria-hidden />
-              Mentores verificados para tu crecimiento
-            </div>
-
-            <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-text sm:text-5xl lg:text-6xl">
-              Conecta con expertos STEM y acelera tu aprendizaje
+            <h1 className="text-balance text-4xl font-bold leading-[1.08] tracking-[-0.035em] text-text sm:text-5xl lg:text-[3.75rem]">
+              Aprende más rápido con la guía de quienes ya recorrieron el camino.
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-8 text-muted sm:text-lg">
-              Encuentra mentores en ciencia, tecnología, ingeniería y matemáticas. Reserva sesiones,
-              recibe orientación personalizada y organiza tu progreso desde una sola plataforma.
+            <p className="mt-6 max-w-2xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
+              Conecta con mentores verificados en ciencia, tecnología, ingeniería y matemáticas. Encuentra la orientación que necesitas y transforma tus metas en progreso real.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button
                 variant="accent"
                 onClick={() => navigate('/mentors')}
-                className="px-8 py-3 text-base font-semibold shadow-sm transition-transform hover:scale-[1.01] active:scale-[0.99]"
+                className="w-full px-6 py-3 text-base shadow-[0_12px_30px_rgba(20,184,166,0.22)] sm:w-auto"
               >
-                Ver Mentores <ArrowRight size={18} />
+                Explorar mentores
+                <ArrowRight size={18} aria-hidden="true" />
               </Button>
               <Button
                 variant="secondary"
-                onClick={() => navigate('/login')}
-                className="px-8 py-3 text-base font-semibold shadow-sm transition-transform hover:scale-[1.01] active:scale-[0.99]"
+                onClick={() => navigate('/register')}
+                className="w-full px-6 py-3 text-base sm:w-auto"
               >
-                Iniciar Sesión
+                Crear cuenta gratis
               </Button>
             </div>
 
-            <div className="mt-10 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
-              {highlights.map((item) => (
-                <div key={item.label} className="rounded-xl border border-border bg-surface p-4 shadow-sm">
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50">
-                    <item.icon size={20} className="text-primary-600" aria-hidden />
-                  </div>
-                  <p className="text-2xl font-bold text-text">{item.value}</p>
-                  <p className="mt-1 text-sm text-muted">{item.label}</p>
-                </div>
-              ))}
+            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
+              <span className="inline-flex items-center gap-2">
+                <Check size={16} className="text-accent-600" aria-hidden="true" />
+                Registro gratuito
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Check size={16} className="text-accent-600" aria-hidden="true" />
+                Mentores verificados
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Check size={16} className="text-accent-600" aria-hidden="true" />
+                Horarios flexibles
+              </span>
             </div>
           </div>
 
-          <div className="w-full">
-            <Card className="overflow-hidden rounded-2xl border-border bg-surface p-0 shadow-lg">
-              <div className="border-b border-border px-6 py-5 sm:px-8">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold text-primary-600">Plataforma de mentoría</p>
-                    <h2 className="mt-1 text-2xl font-bold text-text">Aprende con acompañamiento real</h2>
-                  </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent-100">
-                    <GraduationCap size={24} className="text-accent-600" aria-hidden />
-                  </div>
+          <div className="relative mx-auto w-full max-w-xl lg:mx-0">
+            <div className="absolute -inset-5 -z-10 rounded-[2.5rem] bg-gradient-to-br from-primary-100/80 via-transparent to-accent-100/80 blur-2xl" aria-hidden="true" />
+            <Card className="rounded-[1.75rem] border-surface/80 bg-surface/85 p-5 shadow-[0_24px_70px_rgba(15,23,42,0.11)] sm:p-6">
+              <div className="flex items-start justify-between gap-5 border-b border-border/80 pb-5">
+                <div>
+                  <p className="text-sm font-semibold text-primary-600">Tu aprendizaje, bien acompañado</p>
+                  <h2 className="mt-1.5 text-xl font-bold tracking-tight text-text sm:text-2xl">Todo listo para tu próxima meta</h2>
                 </div>
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+                  <GraduationCap size={23} aria-hidden="true" />
+                </span>
               </div>
 
-              <div className="p-6 sm:p-8">
-                <div className="rounded-xl bg-surface-alt p-4">
-                  <img
-                    src={heroImage}
-                    alt="Estudiantes colaborando en una mentoría STEM"
-                    className="mx-auto h-auto w-full max-w-sm object-contain"
-                  />
-                </div>
-
-                <div className="mt-6 space-y-3">
-                  {steps.map((step, index) => (
-                    <div key={step} className="flex items-center gap-3 rounded-lg border border-border bg-surface p-3">
-                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary-50 text-sm font-bold text-primary-600">
-                        {index + 1}
-                      </div>
-                      <p className="text-sm font-medium text-text">{step}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-border bg-surface p-4">
-                    <p className="text-sm font-semibold text-text">Sesiones a tu ritmo</p>
-                    <p className="mt-1 text-sm leading-6 text-muted">Agenda con mentores según tu disponibilidad.</p>
+              <div className="grid grid-cols-3 gap-2.5 py-5 sm:gap-3">
+                {stats.map(({ icon: Icon, label, value }) => (
+                  <div key={label} className="min-w-0 rounded-2xl border border-border/70 bg-surface-alt/70 p-3 sm:p-4">
+                    <Icon size={18} className="mb-3 text-primary-600" aria-hidden="true" />
+                    <p className="text-xl font-bold tracking-tight text-text sm:text-2xl">{value}</p>
+                    <p className="mt-1 text-[0.7rem] leading-4 text-muted sm:text-xs">{label}</p>
                   </div>
-                  <div className="rounded-xl border border-border bg-surface p-4">
-                    <p className="text-sm font-semibold text-text">Ruta de aprendizaje</p>
-                    <p className="mt-1 text-sm leading-6 text-muted">Organiza tus objetivos y avances en un solo lugar.</p>
+                ))}
+              </div>
+
+              <div className="rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 p-4 text-surface sm:p-5">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface/15">
+                    <ShieldCheck size={21} aria-hidden="true" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-semibold">Conexiones de calidad</p>
+                    <p className="mt-0.5 text-sm leading-5 text-primary-100">Perfiles claros para que elijas al mentor adecuado.</p>
                   </div>
                 </div>
               </div>
@@ -155,66 +155,89 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mb-10 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
-          <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-sm font-medium text-muted">
-              <Sparkles size={16} className="text-accent-500" aria-hidden />
-              Experiencia diseñada para estudiantes STEM
-            </div>
-            <h2 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">
-              Una plataforma clara para aprender mejor
-            </h2>
-          </div>
-          <p className="text-sm leading-7 text-muted lg:text-base">
-            STEM Link centraliza descubrimiento de mentores, reservas, sesiones y seguimiento para que el estudiante pase menos tiempo organizando y más tiempo aprendiendo.
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          {features.map(({ icon: Icon, title, description }) => (
-            <Card key={title} className="group flex flex-col gap-4 border-border bg-surface p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary-50 transition-colors group-hover:bg-primary-100">
-                <Icon size={24} className="text-primary-600" aria-hidden />
-              </div>
-              <h3 className="text-lg font-semibold text-text">{title}</h3>
-              <p className="text-sm leading-relaxed text-muted">{description}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      <section className="px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-6 rounded-2xl border border-border bg-surface p-6 shadow-sm lg:grid-cols-[1fr_auto] lg:items-center lg:p-8">
-          <div>
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-600 to-accent-600">
-              <Zap size={24} className="text-surface" aria-hidden />
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight text-text sm:text-3xl">¿Listo para empezar?</h2>
-            <p className="mt-3 max-w-lg text-sm leading-7 text-muted">
-              Crea tu cuenta y empieza a conectar con mentores reales para impulsar tu formación STEM.
+      <section className="border-y border-border/70 bg-surface-alt/55 px-4 py-14 sm:px-6 sm:py-18 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-primary-600">Una mejor forma de aprender</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-text sm:text-4xl">Menos incertidumbre. Más progreso.</h2>
+            <p className="mt-4 text-base leading-7 text-muted">
+              STEM Link reúne las herramientas esenciales para descubrir expertos, organizar sesiones y mantener tu aprendizaje en movimiento.
             </p>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-            <Button onClick={() => navigate('/register')} className="px-8 py-3 text-base font-semibold shadow-sm">
+
+          <div className="mt-10 grid gap-4 md:grid-cols-3 lg:gap-5">
+            {features.map(({ icon: Icon, title, description }) => (
+              <Card key={title} className="h-full border-border/70 bg-surface p-5 shadow-sm sm:p-6">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+                  <Icon size={22} aria-hidden="true" />
+                </div>
+                <h3 className="mt-5 text-lg font-semibold tracking-tight text-text">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted">{description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-start lg:gap-16">
+            <div className="lg:sticky lg:top-24">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-50 text-accent-600">
+                <BookOpen size={22} aria-hidden="true" />
+              </span>
+              <h2 className="mt-5 text-3xl font-bold tracking-tight text-text sm:text-4xl">Empieza en tres pasos</h2>
+              <p className="mt-4 max-w-md text-base leading-7 text-muted">
+                Un flujo simple para que pases de una pregunta a una conversación útil sin perder tiempo.
+              </p>
+              <Button variant="secondary" onClick={() => navigate('/mentors')} className="mt-6 px-5">
+                Ver todos los mentores
+                <ArrowRight size={17} aria-hidden="true" />
+              </Button>
+            </div>
+
+            <ol className="grid gap-3">
+              {steps.map((step) => (
+                <li key={step.number} className="grid gap-3 rounded-2xl border border-border/70 bg-surface-alt/55 p-5 sm:grid-cols-[3.25rem_1fr] sm:items-start sm:p-6">
+                  <span className="text-sm font-bold tracking-[0.12em] text-primary-600">{step.number}</span>
+                  <div>
+                    <h3 className="text-lg font-semibold text-text">{step.title}</h3>
+                    <p className="mt-1.5 text-sm leading-6 text-muted">{step.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-primary-700 via-primary-600 to-primary-500 px-6 py-10 text-surface shadow-[0_24px_60px_rgba(67,56,202,0.2)] sm:px-10 sm:py-12 lg:flex lg:items-center lg:justify-between lg:gap-10 lg:px-12">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold text-primary-100">Tu siguiente paso puede empezar hoy</p>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Encuentra la guía que necesitas para avanzar.</h2>
+            <p className="mt-4 text-base leading-7 text-primary-100">Únete a STEM Link y conecta con especialistas dispuestos a compartir experiencia práctica.</p>
+          </div>
+          <div className="mt-7 flex shrink-0 flex-col gap-3 sm:flex-row lg:mt-0">
+            <Button variant="accent" onClick={() => navigate('/register')} className="w-full px-6 py-3 sm:w-auto">
               Crear cuenta gratis
             </Button>
-            <Button variant="secondary" onClick={() => navigate('/login')} className="px-8 py-3 text-base font-semibold shadow-sm">
+            <Button variant="outline" onClick={() => navigate('/login')} className="w-full px-6 py-3 sm:w-auto">
               Iniciar sesión
             </Button>
           </div>
         </div>
       </section>
 
-      <section className="border-t border-border bg-surface px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+      <footer className="border-t border-border bg-surface px-4 py-7 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2 font-semibold text-text">
-            <CheckCircle size={18} className="text-accent-500" aria-hidden />
+            <CheckCircle size={18} className="text-accent-500" aria-hidden="true" />
             STEM Link
           </div>
-          <p>Mentoría STEM personalizada para aprendizaje continuo.</p>
+          <p>Mentoría personalizada para la próxima generación STEM.</p>
         </div>
-      </section>
+      </footer>
     </div>
   )
 }

@@ -43,7 +43,6 @@ export default function ProfilePage() {
   const { data, loading, error, reload } = useAsyncResource<ProfileSummary | null>({
     initialData: null,
     load: loadProfile,
-    deps: [],
     onError: (message) => toast.error(message),
   })
 
@@ -52,7 +51,7 @@ export default function ProfilePage() {
   const nextSessions = profileData.sessions.filter((session) => session.status === 'CONFIRMED' || session.status === 'PENDING').length
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <Breadcrumbs items={[{ label: 'Inicio', to: '/dashboard' }, { label: 'Mi perfil' }]} />
 
       <AsyncContent
@@ -66,7 +65,8 @@ export default function ProfilePage() {
         emptyTitle="No encontramos tu perfil"
         emptyDescription="Intenta recargar la vista para volver a consultar tu información."
       >
-      <div className="mb-8 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+        <>
+          <div className="mb-8 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <PageHero
           badge={(
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
@@ -85,15 +85,15 @@ export default function ProfilePage() {
           )}
           footer={(
             <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+              <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Próximas</p>
                 <p className="mt-2 text-2xl font-bold text-text">{nextSessions}</p>
               </div>
-              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+              <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Completadas</p>
                 <p className="mt-2 text-2xl font-bold text-text">{completedSessions}</p>
               </div>
-              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+              <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Alertas</p>
                 <p className="mt-2 text-2xl font-bold text-text">{profileData.unreadCount}</p>
               </div>
@@ -101,7 +101,7 @@ export default function ProfilePage() {
           )}
         />
 
-        <Card className="border-border/70 p-6 shadow-sm sm:p-8">
+        <Card className="border-border/60 bg-surface/90 p-6 shadow-sm sm:p-8">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-text">Información principal</h2>
             <p className="mt-1 text-sm text-muted">
@@ -110,9 +110,9 @@ export default function ProfilePage() {
           </div>
 
           <div className="space-y-4">
-            <div className="rounded-xl border border-border bg-surface-alt p-4">
+            <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50/80">
                   <UserRound size={18} className="text-primary-600" aria-hidden />
                 </div>
                 <div>
@@ -122,9 +122,9 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="rounded-xl border border-border bg-surface-alt p-4">
+            <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50/80">
                   <Mail size={18} className="text-primary-600" aria-hidden />
                 </div>
                 <div>
@@ -134,9 +134,9 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="rounded-xl border border-border bg-surface-alt p-4">
+            <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50/80">
                   <Badge label="STUDENT" color="neutral" />
                 </div>
                 <div>
@@ -147,12 +147,12 @@ export default function ProfilePage() {
             </div>
           </div>
         </Card>
-      </div>
+          </div>
 
-      <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="border-border/70 p-6 shadow-sm sm:p-8">
+          <div className="grid gap-6 xl:grid-cols-2">
+        <Card className="border-border/60 bg-surface/90 p-6 shadow-sm sm:p-8">
           <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50/80">
               <Calendar size={20} className="text-primary-600" aria-hidden />
             </div>
             <div>
@@ -163,7 +163,7 @@ export default function ProfilePage() {
 
           <div className="space-y-3">
             {profileData.sessions.slice(0, 4).map((session) => (
-              <div key={session.id} className="rounded-xl border border-border bg-surface-alt px-4 py-4">
+              <div key={session.id} className="rounded-2xl bg-surface-alt/70 px-4 py-4 ring-1 ring-border/60">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="font-semibold text-text">{session.topic}</p>
                   <Badge label={session.status} color="neutral" />
@@ -184,9 +184,9 @@ export default function ProfilePage() {
           </div>
         </Card>
 
-        <Card className="border-border/70 p-6 shadow-sm sm:p-8">
+        <Card className="border-border/60 bg-surface/90 p-6 shadow-sm sm:p-8">
           <div className="mb-6 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50/80">
               <Bell size={20} className="text-primary-600" aria-hidden />
             </div>
             <div>
@@ -195,7 +195,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-surface-alt p-5">
+          <div className="rounded-2xl bg-surface-alt/70 p-5 ring-1 ring-border/60">
             <p className="text-sm font-semibold text-text">
               {profileData.unreadCount > 0
                 ? `Tienes ${profileData.unreadCount} notificación${profileData.unreadCount !== 1 ? 'es' : ''} sin revisar.`
@@ -206,7 +206,8 @@ export default function ProfilePage() {
             </p>
           </div>
         </Card>
-      </div>
+          </div>
+        </>
       </AsyncContent>
     </div>
   )

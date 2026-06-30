@@ -32,7 +32,7 @@ function detectNotificationTone(message: string) {
 
 function NotificationSkeleton() {
   return (
-    <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+    <div className="rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-border/60">
       <div className="animate-pulse space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-3">
@@ -61,7 +61,6 @@ export default function NotificationsPage() {
   const { data, setData, loading, error, reload } = useAsyncResource<Page<NotificationResponse> | null>({
     initialData: null,
     load: loadNotifications,
-    deps: [page, size],
     onError: (message) => toast.error(message),
   })
 
@@ -103,7 +102,7 @@ export default function NotificationsPage() {
           title="Notificaciones"
           description="Revisa recordatorios, confirmaciones y actividad reciente generada por tus sesiones y reservas."
           aside={(
-            <div className="rounded-xl border border-border bg-surface-alt px-4 py-4">
+            <div className="rounded-2xl bg-surface/80 px-4 py-4 ring-1 ring-border/60">
               <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resumen</p>
               <p className="mt-2 text-sm font-semibold text-text">
                 {unreadCount > 0
@@ -116,18 +115,18 @@ export default function NotificationsPage() {
             </div>
           )}
           footer={(
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 rounded-3xl bg-surface/70 p-3 ring-1 ring-border/60">
               <button
                 type="button"
                 onClick={() => setFilter('all')}
-                className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${filter === 'all' ? 'border-primary-600 bg-primary-600 text-surface' : 'border-border bg-surface text-muted hover:bg-surface-alt hover:text-text'}`}
+                className={`rounded-full px-4 py-2 text-sm font-medium ring-1 transition-colors ${filter === 'all' ? 'bg-primary-600 text-surface ring-primary-600' : 'bg-surface text-muted ring-border/60 hover:text-text hover:ring-primary-400'}`}
               >
                 Todas
               </button>
               <button
                 type="button"
                 onClick={() => setFilter('unread')}
-                className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${filter === 'unread' ? 'border-primary-600 bg-primary-600 text-surface' : 'border-border bg-surface text-muted hover:bg-surface-alt hover:text-text'}`}
+                className={`rounded-full px-4 py-2 text-sm font-medium ring-1 transition-colors ${filter === 'unread' ? 'bg-primary-600 text-surface ring-primary-600' : 'bg-surface text-muted ring-border/60 hover:text-text hover:ring-primary-400'}`}
               >
                 No leídas ({unreadCount})
               </button>
@@ -159,7 +158,7 @@ export default function NotificationsPage() {
             {visibleNotifications?.map(notification => {
               const tone = detectNotificationTone(notification.message)
               const icon = tone === 'confirmation'
-                ? <CheckCircle size={20} className="text-secondary-600" aria-hidden />
+                ? <CheckCircle size={20} className="text-accent-600" aria-hidden />
                 : tone === 'reminder'
                   ? <Calendar size={20} className="text-accent-500" aria-hidden />
                   : <Bell size={20} className="text-primary-600" aria-hidden />
@@ -167,10 +166,10 @@ export default function NotificationsPage() {
               return (
                 <Card
                   key={notification.id}
-                  className={`border transition-all hover:shadow-md ${!notification.read ? 'border-primary-300 bg-primary-50/70' : 'border-border bg-surface'}`}
+                  className={`transition-all hover:shadow-md ${!notification.read ? 'border-primary-300 bg-primary-50/70' : 'border-border/60 bg-surface/90'}`}
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                    <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-surface">
+                    <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-surface/80 ring-1 ring-border/60">
                       {icon}
                     </div>
 
@@ -204,7 +203,7 @@ export default function NotificationsPage() {
                             Marcar como leída
                           </Button>
                         ) : (
-                          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+                          <span className="inline-flex items-center gap-2 rounded-full bg-surface px-3 py-1 text-xs font-medium text-muted ring-1 ring-border/60">
                             <Sparkles size={12} className="text-accent-500" aria-hidden />
                             Leída
                           </span>
@@ -219,7 +218,7 @@ export default function NotificationsPage() {
 
           {data && filter === 'all' && (
             <div className="mt-6">
-              <Card className="border-border/70 p-5 sm:p-6">
+              <Card className="border-border/60 bg-surface/90 p-5 sm:p-6">
                 <Pagination
                   page={data.number}
                   totalPages={data.totalPages}

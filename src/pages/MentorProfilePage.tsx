@@ -134,7 +134,6 @@ export default function MentorProfilePage() {
   const { data, loading, error, reload } = useAsyncResource<MentorProfileResource | null>({
     initialData: null,
     load: loadMentorProfile,
-    deps: [loadMentorProfile],
     onError: (message) => toast.error(message),
   })
 
@@ -205,23 +204,23 @@ export default function MentorProfilePage() {
         emptyTitle="No encontramos tu perfil"
         emptyDescription="Intenta recargar la vista para obtener nuevamente tus datos de mentor."
       >
-        <div className="mb-8 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className="mb-8 grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
           <PageHero
             badge={(
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface-alt/80 px-3 py-1 text-sm font-medium text-muted">
                 <Sparkles size={16} className="text-accent-500" aria-hidden />
                 Perfil público de mentor
               </div>
             )}
-            title="Mi perfil"
-            description="Actualiza cómo te ven los estudiantes dentro de STEM Link."
-            aside={(
-              <div className="flex flex-col items-center text-center">
-                <div className="relative mb-5">
-                  <div className="flex size-28 items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 text-3xl font-bold text-surface shadow-lg">
+          title="Mi perfil"
+          description="Actualiza cómo te ven los estudiantes dentro de STEM Link."
+          aside={(
+            <div className="flex flex-col items-center text-center">
+              <div className="relative mb-5">
+                  <div className="flex size-28 items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-accent-500 text-3xl font-bold text-surface shadow-[0_18px_40px_rgba(79,70,229,0.25)]">
                     STEM
                   </div>
-                  <div className="absolute bottom-0 right-0 rounded-lg border border-border bg-surface p-2 text-muted shadow-sm">
+                  <div className="absolute bottom-0 right-0 rounded-full border border-border/70 bg-surface p-2 text-muted shadow-sm">
                     <Camera size={16} aria-hidden />
                   </div>
                 </div>
@@ -229,15 +228,15 @@ export default function MentorProfilePage() {
             )}
             footer={(
               <div className="grid gap-4 sm:grid-cols-3">
-                <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+                <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Skills</p>
                   <p className="mt-2 text-2xl font-bold text-text">{selectedSkills.length}</p>
                 </div>
-                <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+                <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Horarios</p>
                   <p className="mt-2 text-2xl font-bold text-text">{availability.length}</p>
                 </div>
-                <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+                <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Bio</p>
                   <p className="mt-2 text-2xl font-bold text-text">{bio?.trim().length || 0}</p>
                 </div>
@@ -245,19 +244,19 @@ export default function MentorProfilePage() {
             )}
           />
 
-          <Card className="border-border/70 p-6 shadow-sm sm:p-8">
+          <Card className="border-border/70 bg-surface/90 p-6 shadow-sm sm:p-8">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-text">Información básica</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-text">Información básica</h2>
               <p className="mt-1 text-sm text-muted">
                 Define tu presentación, enlaces y especialidades visibles para estudiantes.
               </p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              <div className="flex flex-col gap-1">
-                <label htmlFor="mentor-bio" className="text-sm font-medium text-text">Bio</label>
-                <textarea
-                  id="mentor-bio"
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="mentor-bio" className="text-sm font-medium text-text">Bio</label>
+                  <textarea
+                    id="mentor-bio"
                   rows={6}
                   {...register('bio')}
                   className="resize-none rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text outline-none placeholder:text-muted focus:ring-2 focus:ring-primary-200"
@@ -266,7 +265,7 @@ export default function MentorProfilePage() {
                 {errors.bio && <span className="text-xs text-primary-700">{errors.bio.message}</span>}
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                 <Input
                   label="URL de videollamada"
                   placeholder="https://meet.google.com/..."
@@ -283,9 +282,9 @@ export default function MentorProfilePage() {
                 />
               </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-medium text-text">Habilidades</label>
-                <div className="flex flex-wrap gap-2">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-text">Habilidades</label>
+                  <div className="flex flex-wrap gap-2">
                   {skills.map((skill) => {
                     const active = selectedSkills.includes(skill.id)
                     return (
@@ -313,15 +312,15 @@ export default function MentorProfilePage() {
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-          <Card className="border-border/70 p-6 shadow-sm sm:p-8">
-            <div className="mb-6 flex items-center justify-between gap-3">
+          <Card className="border-border/70 bg-surface/90 p-6 shadow-sm sm:p-8">
+            <div className="mb-6 flex items-start justify-between gap-3">
               <div>
-                <h2 className="text-2xl font-bold text-text">Disponibilidad semanal</h2>
+                <h2 className="text-2xl font-bold tracking-tight text-text">Disponibilidad semanal</h2>
                 <p className="mt-1 text-sm text-muted">
                   Administra los bloques de horario que podrán reservar los estudiantes.
                 </p>
               </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-xs font-medium text-muted">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface-alt/80 px-3 py-1 text-xs font-medium text-muted">
                 <Calendar size={14} className="text-primary-600" aria-hidden />
                 {availability.length} bloques
               </div>
@@ -329,7 +328,7 @@ export default function MentorProfilePage() {
 
             <form
               onSubmit={handleAvailabilitySubmit(onAddAvailability)}
-              className="grid grid-cols-1 items-end gap-3 rounded-xl border border-border bg-surface-alt p-4 sm:grid-cols-4"
+              className="grid grid-cols-1 items-end gap-3 rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60 sm:grid-cols-4"
             >
               <div className="flex flex-col gap-1">
                 <label htmlFor="availability-day" className="text-xs font-medium text-muted">Día</label>
@@ -374,11 +373,11 @@ export default function MentorProfilePage() {
                 />
               ) : (
                 groupedAvailability.map((day) => (
-                  <div key={day} className="rounded-xl border border-border bg-surface-alt p-4">
+                  <div key={day} className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
                     <p className="mb-3 text-sm font-semibold text-text">{DAY_ES[day]}</p>
                     <div className="space-y-2">
                       {availability.filter((item) => item.dayOfWeek === day).map((item) => (
-                        <div key={item.id} className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface px-3 py-3">
+                        <div key={item.id} className="flex items-center justify-between gap-3 rounded-2xl bg-surface px-3 py-3 ring-1 ring-border/60">
                           <span className="inline-flex items-center gap-2 text-sm font-medium text-text">
                             <Clock size={16} className="text-primary-600" aria-hidden />
                             {item.startTime} - {item.endTime}
@@ -400,18 +399,18 @@ export default function MentorProfilePage() {
             </div>
           </Card>
 
-          <Card className="border-border/70 p-6 shadow-sm sm:p-8">
+          <Card className="border-border/70 bg-surface/90 p-6 shadow-sm sm:p-8">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-text">Resumen público</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-text">Resumen público</h2>
               <p className="mt-1 text-sm text-muted">
                 Vista rápida de lo que el estudiante podrá interpretar de tu perfil.
               </p>
             </div>
 
             <div className="space-y-4">
-              <div className="rounded-xl border border-border bg-surface-alt p-4">
+              <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50/80">
                     <UserRound size={18} className="text-primary-600" aria-hidden />
                   </div>
                   <div>
@@ -423,9 +422,9 @@ export default function MentorProfilePage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-surface-alt p-4">
+              <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50/80">
                     <Video size={18} className="text-primary-600" aria-hidden />
                   </div>
                   <div>
@@ -437,9 +436,9 @@ export default function MentorProfilePage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-surface-alt p-4">
+              <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50/80">
                     <ExternalLink size={18} className="text-primary-600" aria-hidden />
                   </div>
                   <div>
