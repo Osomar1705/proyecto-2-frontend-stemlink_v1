@@ -72,6 +72,7 @@ export default function MentorsPage() {
     deps: [fetchMentors],
     onError: (message) => toast.error(message),
   })
+  const isInitialLoading = loading && !data
 
   const toggleSkill = (id: number) => {
     setSelectedSkills(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id])
@@ -193,7 +194,7 @@ export default function MentorsPage() {
       </div>
 
       <AsyncContent
-        loading={loading}
+        loading={isInitialLoading}
         error={error}
         isEmpty={(data?.content.length ?? 0) === 0}
         loadingFallback={(
