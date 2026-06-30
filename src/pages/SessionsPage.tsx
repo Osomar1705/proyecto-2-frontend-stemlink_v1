@@ -217,7 +217,6 @@ export default function SessionsPage() {
   const { data: sessions, loading, error, reload } = useAsyncResource<MentorshipSessionResponse[]>({
     initialData: [],
     load,
-    deps: [load],
     onError: (message) => toast.error(message),
   })
 
@@ -309,7 +308,7 @@ export default function SessionsPage() {
       value: completedSessions.length,
       helper: 'Base del historial de trabajo',
       icon: History,
-      tone: 'bg-secondary-100 text-secondary-700',
+      tone: 'bg-accent-100 text-accent-600',
     },
     {
       title: 'Canceladas',

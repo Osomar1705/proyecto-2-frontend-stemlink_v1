@@ -175,7 +175,7 @@ export function AuthenticatedLayout() {
               </div>
             </div>
 
-            <nav className="flex gap-2 overflow-x-auto pb-1 lg:hidden">
+            <nav className="no-scrollbar flex gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:hidden">
               {navItems.map(({ to, label }) => (
                 <NavLink
                   key={to}

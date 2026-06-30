@@ -45,7 +45,6 @@ export default function DashboardPage() {
   const { data, loading, error, reload } = useAsyncResource({
     initialData: { sessions: [] as MentorshipSessionResponse[], unreadCount: 0 },
     load: loadDashboard,
-    deps: [],
     onError: (message) => toast.error(message),
   })
 
@@ -73,7 +72,7 @@ export default function DashboardPage() {
       value: confirmed.length,
       helper: nextSessions.length > 0 ? `${nextSessions.length} próximas agendadas` : 'Sin próximas sesiones',
       icon: Calendar,
-      iconClass: 'bg-secondary-100 text-secondary-700',
+      iconClass: 'bg-accent-100 text-accent-600',
     },
     {
       title: 'Reservas pendientes',
@@ -107,7 +106,7 @@ export default function DashboardPage() {
       title: 'Mis sesiones',
       description: 'Visualiza tus mentorías confirmadas, pendientes y completadas.',
       icon: Calendar,
-      tone: 'bg-secondary-100 text-secondary-700',
+      tone: 'bg-accent-100 text-accent-600',
       onClick: () => navigate('/sessions'),
     },
     {

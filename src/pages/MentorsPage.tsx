@@ -11,7 +11,6 @@ import { PageHero } from '../components/ui/PageHero'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { usePagination } from '../hooks/usePagination'
 import { useDebounce } from '../hooks/useDebounce'
-import { parseApiError } from '../utils/errors'
 import { Search, Users, Sparkles, SlidersHorizontal, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { MentorCard } from '../components/mentors/MentorCard'
@@ -69,7 +68,6 @@ export default function MentorsPage() {
   const { data, loading, error, reload } = useAsyncResource<Page<MentorProfileResponse> | null>({
     initialData: null,
     load: fetchMentors,
-    deps: [fetchMentors],
     onError: (message) => toast.error(message),
   })
   const isInitialLoading = loading && !data

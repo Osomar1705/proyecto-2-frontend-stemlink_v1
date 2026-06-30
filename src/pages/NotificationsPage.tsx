@@ -61,7 +61,6 @@ export default function NotificationsPage() {
   const { data, setData, loading, error, reload } = useAsyncResource<Page<NotificationResponse> | null>({
     initialData: null,
     load: loadNotifications,
-    deps: [page, size],
     onError: (message) => toast.error(message),
   })
 
@@ -159,7 +158,7 @@ export default function NotificationsPage() {
             {visibleNotifications?.map(notification => {
               const tone = detectNotificationTone(notification.message)
               const icon = tone === 'confirmation'
-                ? <CheckCircle size={20} className="text-secondary-600" aria-hidden />
+                ? <CheckCircle size={20} className="text-accent-600" aria-hidden />
                 : tone === 'reminder'
                   ? <Calendar size={20} className="text-accent-500" aria-hidden />
                   : <Bell size={20} className="text-primary-600" aria-hidden />

@@ -90,7 +90,6 @@ export default function MentorDetailPage() {
   const { data, loading, error, reload } = useAsyncResource<MentorDetailResource>({
     initialData: { mentor: null, availability: [] },
     load: loadMentorDetail,
-    deps: [loadMentorDetail],
     onError: (message) => toast.error(message),
   })
 
@@ -160,7 +159,8 @@ export default function MentorDetailPage() {
         emptyDescription="Revisa el enlace o vuelve al listado para elegir otro mentor."
         emptyAction={{ label: 'Ver mentores', onClick: () => navigate('/mentors') }}
       >
-        <div className="mb-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        {mentor ? <>
+          <div className="mb-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <div className="overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm">
             <div className="relative p-6 sm:p-8">
               <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-primary-100/70 blur-3xl" />
@@ -289,7 +289,7 @@ export default function MentorDetailPage() {
           </Card>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <Card className="border-border/80 p-6 shadow-sm sm:p-8">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-text">Especialidades</h2>
@@ -336,7 +336,7 @@ export default function MentorDetailPage() {
           </Card>
         </div>
 
-        <div className="mt-8">
+          <div className="mt-8">
           <Card className="border border-border/80 bg-surface p-6 shadow-sm sm:p-8">
             <div className="mb-6 flex items-center justify-between gap-3">
               <h2 className="flex items-center gap-2 text-2xl font-bold text-text">
@@ -383,7 +383,8 @@ export default function MentorDetailPage() {
               </div>
             )}
           </Card>
-        </div>
+          </div>
+        </> : null}
       </AsyncContent>
 
       <Modal open={bookingOpen} onClose={closeBookingModal} title="Reservar sesión con mentor">

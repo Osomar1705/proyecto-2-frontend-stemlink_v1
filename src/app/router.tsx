@@ -1,24 +1,13 @@
-import { createBrowserRouter, Outlet } from 'react-router-dom'
-import { Navbar } from '../components/layout/Navbar'
+import { createBrowserRouter } from 'react-router-dom'
 import { AuthenticatedLayout } from '../components/layout/AuthenticatedLayout'
 import { PrivateRoute } from '../components/layout/PrivateRoute'
 import { PublicRoute } from '../components/layout/PublicRoute'
-import { RootLayout } from './RootLayout'
-
-function PublicLayout() {
-  return (
-    <div className="min-h-screen bg-surface">
-      <Navbar />
-      <main>
-        <Outlet />
-      </main>
-    </div>
-  )
-}
+import { PublicLayout, RootLayout, RouteLoading } from './RootLayout'
 
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
+    HydrateFallback: RouteLoading,
     children: [
       {
         element: <PublicLayout />,

@@ -13,7 +13,7 @@ export default function NotFoundPage() {
       </div>
 
       <div className="w-full max-w-xl rounded-2xl border border-border bg-surface p-8 text-center shadow-xl sm:p-10">
-        <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-secondary-500 text-surface shadow-lg">
+        <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 text-surface shadow-lg">
           <GraduationCap size={30} aria-hidden />
         </div>
 

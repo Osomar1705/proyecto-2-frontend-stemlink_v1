@@ -43,7 +43,6 @@ export default function ProfilePage() {
   const { data, loading, error, reload } = useAsyncResource<ProfileSummary | null>({
     initialData: null,
     load: loadProfile,
-    deps: [],
     onError: (message) => toast.error(message),
   })
 

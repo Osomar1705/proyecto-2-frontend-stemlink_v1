@@ -8,7 +8,7 @@ import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { Input } from '../components/ui/Input'
 import { parseApiError } from '../utils/errors'
-import { ArrowRight, Code, Eye, EyeOff, GraduationCap, ShieldCheck, Sparkles, Zap } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff, ShieldCheck, Sparkles, Zap } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const schema = z.object({
@@ -36,22 +36,22 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
+    <main className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.12),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(20,184,166,0.10),_transparent_26%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_52%,_#f8fafc_100%)]" />
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1fr]">
+      <div className="mx-auto grid max-w-7xl items-center gap-8 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_1fr] lg:gap-12">
         <div className="max-w-xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/80 px-3 py-1 text-sm font-semibold text-muted shadow-sm backdrop-blur-sm">
             <Sparkles size={16} className="text-accent-500" aria-hidden />
             Acceso seguro a STEM Link
           </div>
-          <h1 className="mt-5 text-4xl font-bold tracking-tight text-text sm:text-5xl">
+          <h1 className="mt-5 text-3xl font-bold tracking-tight text-text sm:text-5xl">
             Entra al espacio donde la mentoría STEM se siente clara y profesional
           </h1>
           <p className="mt-5 max-w-lg text-base leading-8 text-muted sm:text-lg">
             Continúa tu recorrido con una interfaz más limpia, sesiones mejor organizadas y acceso directo a mentores y reservas.
           </p>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+          <div className="mt-8 hidden gap-3 sm:grid sm:grid-cols-2">
             <Card className="border-border/70 p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Sesiones</p>
               <p className="mt-2 text-lg font-bold text-text">Reserva y seguimiento</p>
@@ -64,7 +64,7 @@ export default function LoginPage() {
         </div>
 
         <div className="w-full">
-          <Card className="relative overflow-hidden border-border/70 bg-surface/95 p-8 shadow-[0_24px_80px_rgba(15,23,42,0.14)] sm:p-10">
+          <Card className="relative overflow-hidden border-border/70 bg-surface/95 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.14)] sm:p-10">
             <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-primary-100/70 blur-3xl" />
             <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
 
@@ -131,19 +131,6 @@ export default function LoginPage() {
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between text-sm">
-                  <label className="flex cursor-pointer items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 cursor-pointer rounded border-border bg-surface text-primary-600"
-                    />
-                    <span className="text-muted">Recuérdame</span>
-                  </label>
-                  <a href="#login" className="font-semibold text-primary-600 transition-colors hover:text-primary-700">
-                    ¿Olvidaste tu contraseña?
-                  </a>
-                </div>
-
                 <Button
                   type="submit"
                   loading={isSubmitting}
@@ -157,31 +144,6 @@ export default function LoginPage() {
                   <Link to="/register" className="font-semibold text-primary-600 transition-colors hover:text-primary-700">Regístrate</Link>
                 </p>
               </form>
-
-              <div className="relative mt-8 border-t border-border/70 pt-8">
-                <p className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 bg-surface px-2 text-xs text-muted">
-                  O continúa con
-                </p>
-              </div>
-
-              <div className="mt-8 grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  className="flex items-center justify-center gap-2 rounded-2xl border border-border/70 bg-surface/90 px-4 py-3 text-sm font-semibold text-text transition-colors hover:border-primary-200 hover:bg-surface-alt"
-                  aria-label="Continuar con Google"
-                >
-                  <span className="text-base font-bold text-primary-600" aria-hidden>G</span>
-                  Google
-                </button>
-                <button
-                  type="button"
-                  className="flex items-center justify-center gap-2 rounded-2xl border border-border/70 bg-surface/90 px-4 py-3 text-sm font-semibold text-text transition-colors hover:border-primary-200 hover:bg-surface-alt"
-                  aria-label="Continuar con GitHub"
-                >
-                  <Code size={18} aria-hidden />
-                  GitHub
-                </button>
-              </div>
 
               <div className="mt-6 rounded-2xl border border-border/70 bg-surface-alt/80 p-4">
                 <p className="mb-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-muted">Cuentas demo</p>
