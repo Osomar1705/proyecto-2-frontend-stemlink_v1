@@ -115,7 +115,7 @@ export default function NotificationsPage() {
             </div>
           )}
           footer={(
-            <div className="flex flex-wrap gap-2 rounded-3xl bg-surface/70 p-3 ring-1 ring-border/60">
+            <div className="flex flex-wrap gap-2 rounded-xl border border-border bg-surface p-3">
               <button
                 type="button"
                 onClick={() => setFilter('all')}

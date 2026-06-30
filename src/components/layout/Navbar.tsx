@@ -13,10 +13,10 @@ export function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-40 border-b border-border/70 bg-surface/85 backdrop-blur-xl">
+    <nav className="sticky top-0 z-40 border-b border-border bg-surface/90 backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex shrink-0 items-center gap-2 text-base font-bold tracking-tight text-primary-700 sm:gap-3 sm:text-xl">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 text-surface shadow-[0_12px_30px_rgba(79,70,229,0.25)] sm:h-10 sm:w-10 sm:rounded-2xl">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-600 text-surface shadow-[0_4px_12px_rgba(79,70,229,0.18)] sm:h-10 sm:w-10">
             <GraduationCap size={20} aria-hidden />
           </span>
           <span className="hidden whitespace-nowrap min-[360px]:inline">STEM Link</span>
@@ -32,7 +32,7 @@ export function Navbar() {
               <Link to="/notifications" aria-label="Ver notificaciones" className="rounded-xl p-2 text-muted transition-colors hover:bg-surface-alt hover:text-primary-700">
                 <Bell size={20} aria-hidden />
               </Link>
-              <Link to="/dashboard" className="flex items-center gap-2 rounded-xl border border-border/70 bg-surface px-3 py-2 text-sm font-medium text-text transition-colors hover:border-primary-200 hover:text-primary-700">
+              <Link to="/dashboard" className="flex items-center gap-2 rounded-xl border border-border bg-surface px-3 py-2 text-sm font-medium text-text transition-colors hover:border-primary-200 hover:bg-surface-alt hover:text-primary-700">
                 <User size={16} aria-hidden />
                 {user?.name}
               </Link>

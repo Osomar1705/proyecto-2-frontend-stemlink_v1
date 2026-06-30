@@ -78,7 +78,7 @@ export default function ProfilePage() {
           description="Tu resumen personal dentro de STEM Link."
           aside={(
             <div className="flex flex-col items-center text-center">
-              <div className="mb-5 flex size-28 items-center justify-center rounded-full bg-gradient-to-br from-primary-600 to-accent-500 text-3xl font-bold text-surface shadow-lg">
+              <div className="mb-5 flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50">
                 {profileData.user.name.slice(0, 2).toUpperCase()}
               </div>
             </div>

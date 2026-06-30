@@ -121,7 +121,7 @@ function SessionCard({
   const canLeaveFeedback = role === 'STUDENT' && session.status === 'COMPLETED'
 
   return (
-    <Card className="border-border/60 bg-surface/90 p-6 shadow-sm transition-all hover:shadow-lg">
+    <Card className="border-border bg-surface p-6 hover:border-primary-200">
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
@@ -350,7 +350,7 @@ export default function SessionsPage() {
             </div>
           )}
           footer={(
-            <div className="flex flex-wrap gap-2 rounded-3xl bg-surface/70 p-4 ring-1 ring-border/60">
+            <div className="flex flex-wrap gap-2 rounded-xl border border-border bg-surface p-4">
               {SESSION_FILTERS.map(status => (
                 <button
                   key={status}

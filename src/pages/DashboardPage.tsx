@@ -197,7 +197,7 @@ export default function DashboardPage() {
 
           <Card
             onClick={() => navigate('/notifications')}
-            className="border-border/60 bg-surface/90 p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+            className="border-border bg-surface p-6 hover:border-primary-200"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -242,7 +242,7 @@ export default function DashboardPage() {
           {quickActions.map(({ key, title, description, icon: Icon, tone, onClick }) => (
           <Card
             key={key}
-            className="group border-border/60 bg-surface/90 p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+            className="group border-border bg-surface p-6 hover:border-primary-200"
             onClick={onClick}
           >
               <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${tone}`}>
@@ -281,7 +281,7 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {nextSessions.map(s => (
-                <Card key={s.id} className="group border border-border bg-surface p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+                <Card key={s.id} className="group border-border bg-surface p-6 hover:border-primary-200">
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-50 transition-colors group-hover:bg-primary-100">
                       <Calendar className="text-primary-600" size={24} aria-hidden />

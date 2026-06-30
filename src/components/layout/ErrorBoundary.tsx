@@ -24,9 +24,8 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="flex min-h-screen items-center justify-center px-4 py-8">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.12),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(20,184,166,0.10),_transparent_26%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_52%,_#f8fafc_100%)]" />
-          <div className="w-full max-w-lg rounded-[2rem] border border-border/70 bg-surface/95 p-8 text-center shadow-[0_24px_80px_rgba(15,23,42,0.18)] backdrop-blur-sm">
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 to-accent-500 text-surface shadow-lg">
+          <div className="w-full max-w-lg rounded-2xl border border-border bg-surface p-8 text-center shadow-[0_16px_48px_rgba(15,23,42,0.1)]">
+            <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 font-bold text-surface shadow-sm">
               !
             </div>
             <h2 className="text-2xl font-bold text-text">Algo salió mal</h2>

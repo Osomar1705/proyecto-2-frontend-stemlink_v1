@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   ArrowRight,
   BookOpen,
@@ -62,15 +62,15 @@ export default function LandingPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="overflow-x-clip bg-surface text-text">
+    <div className="overflow-x-clip text-text">
       <section className="relative isolate px-4 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-18 lg:px-8 lg:pb-24 lg:pt-20">
         <div
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(99,102,241,0.14),transparent_30%),radial-gradient(circle_at_85%_30%,rgba(20,184,166,0.12),transparent_28%)]"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(99,102,241,0.07),transparent_30%),radial-gradient(circle_at_85%_30%,rgba(20,184,166,0.06),transparent_28%)]"
           aria-hidden="true"
         />
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(22rem,0.92fr)] lg:gap-16">
           <div className="max-w-3xl">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-200/80 bg-surface/80 px-3 py-1.5 text-sm font-semibold text-primary-700 shadow-sm backdrop-blur">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50/70 px-3 py-1.5 text-sm font-semibold text-primary-700">
               <Sparkles size={16} aria-hidden="true" />
               Mentoría STEM hecha para avanzar
             </div>
@@ -86,7 +86,7 @@ export default function LandingPage() {
               <Button
                 variant="accent"
                 onClick={() => navigate('/mentors')}
-                className="w-full px-6 py-3 text-base shadow-[0_12px_30px_rgba(20,184,166,0.22)] sm:w-auto"
+                className="w-full px-6 py-3 text-base sm:w-auto"
               >
                 Explorar mentores
                 <ArrowRight size={18} aria-hidden="true" />
@@ -117,21 +117,20 @@ export default function LandingPage() {
           </div>
 
           <div className="relative mx-auto w-full max-w-xl lg:mx-0">
-            <div className="absolute -inset-5 -z-10 rounded-[2.5rem] bg-gradient-to-br from-primary-100/80 via-transparent to-accent-100/80 blur-2xl" aria-hidden="true" />
-            <Card className="rounded-[1.75rem] border-surface/80 bg-surface/85 p-5 shadow-[0_24px_70px_rgba(15,23,42,0.11)] sm:p-6">
+            <Card className="border-border bg-surface p-5 sm:p-6">
               <div className="flex items-start justify-between gap-5 border-b border-border/80 pb-5">
                 <div>
                   <p className="text-sm font-semibold text-primary-600">Tu aprendizaje, bien acompañado</p>
                   <h2 className="mt-1.5 text-xl font-bold tracking-tight text-text sm:text-2xl">Todo listo para tu próxima meta</h2>
                 </div>
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
                   <GraduationCap size={23} aria-hidden="true" />
                 </span>
               </div>
 
               <div className="grid grid-cols-3 gap-2.5 py-5 sm:gap-3">
                 {stats.map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="min-w-0 rounded-2xl border border-border/70 bg-surface-alt/70 p-3 sm:p-4">
+                  <div key={label} className="min-w-0 rounded-xl border border-border bg-surface-alt/70 p-3 sm:p-4">
                     <Icon size={18} className="mb-3 text-primary-600" aria-hidden="true" />
                     <p className="text-xl font-bold tracking-tight text-text sm:text-2xl">{value}</p>
                     <p className="mt-1 text-[0.7rem] leading-4 text-muted sm:text-xs">{label}</p>
@@ -139,7 +138,7 @@ export default function LandingPage() {
                 ))}
               </div>
 
-              <div className="rounded-2xl bg-gradient-to-r from-primary-600 to-primary-500 p-4 text-surface sm:p-5">
+              <div className="rounded-xl bg-primary-600 p-4 text-surface sm:p-5">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface/15">
                     <ShieldCheck size={21} aria-hidden="true" />
@@ -155,7 +154,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="border-y border-border/70 bg-surface-alt/55 px-4 py-14 sm:px-6 sm:py-18 lg:px-8">
+      <section className="border-y border-border bg-surface-alt/60 px-4 py-14 sm:px-6 sm:py-18 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-primary-600">Una mejor forma de aprender</p>
@@ -167,7 +166,7 @@ export default function LandingPage() {
 
           <div className="mt-10 grid gap-4 md:grid-cols-3 lg:gap-5">
             {features.map(({ icon: Icon, title, description }) => (
-              <Card key={title} className="h-full border-border/70 bg-surface p-5 shadow-sm sm:p-6">
+              <Card key={title} className="h-full border-border bg-surface p-5 sm:p-6">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
                   <Icon size={22} aria-hidden="true" />
                 </div>
@@ -198,7 +197,7 @@ export default function LandingPage() {
 
             <ol className="grid gap-3">
               {steps.map((step) => (
-                <li key={step.number} className="grid gap-3 rounded-2xl border border-border/70 bg-surface-alt/55 p-5 sm:grid-cols-[3.25rem_1fr] sm:items-start sm:p-6">
+                <li key={step.number} className="grid gap-3 rounded-2xl border border-border bg-surface p-5 shadow-[0_1px_2px_rgba(15,23,42,0.02)] transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-primary-200 sm:grid-cols-[3.25rem_1fr] sm:items-start sm:p-6">
                   <span className="text-sm font-bold tracking-[0.12em] text-primary-600">{step.number}</span>
                   <div>
                     <h3 className="text-lg font-semibold text-text">{step.title}</h3>
@@ -212,7 +211,7 @@ export default function LandingPage() {
       </section>
 
       <section className="px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8">
-        <div className="mx-auto max-w-7xl overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-primary-700 via-primary-600 to-primary-500 px-6 py-10 text-surface shadow-[0_24px_60px_rgba(67,56,202,0.2)] sm:px-10 sm:py-12 lg:flex lg:items-center lg:justify-between lg:gap-10 lg:px-12">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-2xl border border-primary-700 bg-primary-900 px-6 py-10 text-surface shadow-[0_12px_36px_rgba(49,46,129,0.16)] sm:px-10 sm:py-12 lg:flex lg:items-center lg:justify-between lg:gap-10 lg:px-12">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold text-primary-100">Tu siguiente paso puede empezar hoy</p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Encuentra la guía que necesitas para avanzar.</h2>
@@ -229,13 +228,20 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="border-t border-border bg-surface px-4 py-7 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2 font-semibold text-text">
-            <CheckCircle size={18} className="text-accent-500" aria-hidden="true" />
-            STEM Link
+      <footer className="border-t border-border bg-surface/80 px-4 py-8 backdrop-blur-sm sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2 font-semibold text-text">
+              <CheckCircle size={18} className="text-accent-500" aria-hidden="true" />
+              STEM Link
+            </div>
+            <p className="mt-2">Mentoría personalizada para la próxima generación STEM.</p>
           </div>
-          <p>Mentoría personalizada para la próxima generación STEM.</p>
+          <nav aria-label="Navegación del pie de página" className="flex flex-wrap gap-x-5 gap-y-2">
+            <Link to="/mentors" className="transition-colors hover:text-text">Mentores</Link>
+            <Link to="/login" className="transition-colors hover:text-text">Iniciar sesión</Link>
+            <Link to="/register" className="transition-colors hover:text-text">Crear cuenta</Link>
+          </nav>
         </div>
       </footer>
     </div>

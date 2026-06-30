@@ -15,9 +15,9 @@ export function RouteLoading() {
 
 export function PublicLayout() {
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen">
       <Navbar />
-      <main>
+      <main className="route-stage">
         <Outlet />
       </main>
     </div>

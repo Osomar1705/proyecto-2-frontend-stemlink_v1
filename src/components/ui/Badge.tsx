@@ -13,7 +13,7 @@ const colors = {
 
 export function Badge({ label, color = 'primary' }: Props) {
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${colors[color]}`}>
+    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${colors[color]}`}>
       {label}
     </span>
   )

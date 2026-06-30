@@ -124,7 +124,7 @@ export default function MentorDetailPage() {
         <button onClick={() => navigate('/mentors')} className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-primary-600">
           <ArrowLeft size={16} /> Volver a mentores
         </button>
-        <div className="mt-8 rounded-[2rem] border border-border/70 bg-surface p-6 shadow-sm">
+        <div className="mt-8 rounded-2xl border border-border bg-surface p-6 shadow-sm">
           <EmptyState
             icon={<Users size={48} />}
             title="Mentor inválido"
@@ -163,9 +163,6 @@ export default function MentorDetailPage() {
           <div className="mb-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <div className="overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm">
             <div className="relative p-6 sm:p-8">
-              <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-primary-100/70 blur-3xl" />
-              <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
-
               <div className="relative">
                 <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
                   <Sparkles size={16} className="text-accent-500" aria-hidden />

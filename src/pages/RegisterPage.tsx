@@ -44,7 +44,7 @@ export default function RegisterPage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(79,70,229,0.12),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(20,184,166,0.10),_transparent_26%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_52%,_#f8fafc_100%)]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(120deg,rgba(99,102,241,0.045),transparent_42%,rgba(20,184,166,0.035))]" />
       <div className="mx-auto grid max-w-7xl items-center gap-8 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_1fr] lg:gap-12">
         <div className="max-w-xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/80 px-3 py-1 text-sm font-semibold text-muted shadow-sm backdrop-blur-sm">
@@ -71,14 +71,12 @@ export default function RegisterPage() {
         </div>
 
         <div className="w-full">
-          <Card className="relative overflow-hidden border-border/70 bg-surface/95 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.14)] sm:p-10">
-            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-primary-100/70 blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
+          <Card className="relative overflow-hidden border-border bg-surface p-5 sm:p-10">
 
             <div className="relative">
               <div className="mb-8 space-y-3 text-left">
                 <div className="flex justify-start">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 shadow-[0_12px_30px_rgba(79,70,229,0.25)]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 shadow-[0_4px_12px_rgba(79,70,229,0.18)]">
                     <Zap className="h-7 w-7 text-surface" aria-hidden />
                   </div>
                 </div>

@@ -217,7 +217,7 @@ export default function MentorProfilePage() {
           aside={(
             <div className="flex flex-col items-center text-center">
               <div className="relative mb-5">
-                  <div className="flex size-28 items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-accent-500 text-3xl font-bold text-surface shadow-[0_18px_40px_rgba(79,70,229,0.25)]">
+                  <div className="flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50">
                     STEM
                   </div>
                   <div className="absolute bottom-0 right-0 rounded-full border border-border/70 bg-surface p-2 text-muted shadow-sm">

@@ -23,8 +23,8 @@ function getInitials(name: string) {
 
 export function MentorAvatar({ name, size = 'md', className = '' }: Props) {
   return (
-    <div className={`relative inline-flex rounded-full bg-gradient-to-br from-primary-500 via-primary-600 to-accent-500 p-[3px] shadow-lg ${className}`}>
-      <div className={`flex items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-accent-500 font-bold text-surface ring-4 ring-surface ${sizes[size]}`}>
+    <div className={`relative inline-flex rounded-full bg-primary-100 p-[3px] ${className}`}>
+      <div className={`flex items-center justify-center rounded-full bg-primary-600 font-bold text-surface ring-4 ring-surface ${sizes[size]}`}>
         {getInitials(name)}
       </div>
     </div>

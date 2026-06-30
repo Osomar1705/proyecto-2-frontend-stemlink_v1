@@ -20,16 +20,14 @@ export function PageHero({
   className = '',
 }: PageHeroProps) {
   return (
-    <section className={`relative overflow-hidden rounded-[2rem] border border-border/70 bg-surface/90 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-sm ${className}`}>
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary-600 via-accent-500 to-primary-500" />
+    <section className={`relative overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_1px_2px_rgba(15,23,42,0.03),0_12px_36px_rgba(15,23,42,0.05)] ${className}`}>
       <div className="relative p-6 sm:p-8">
-        <div className="absolute right-0 top-0 h-36 w-36 rounded-full bg-primary-100/70 blur-3xl" />
-        <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgba(99,102,241,0.045),transparent_42%,rgba(20,184,166,0.035))]" aria-hidden="true" />
 
         <div className={`relative flex flex-col gap-6 ${aside ? 'lg:flex-row lg:items-end lg:justify-between' : ''}`}>
           <div className="max-w-3xl">
             {badge}
-            <h1 className="mt-4 text-4xl font-bold tracking-tight text-text sm:text-5xl">{title}</h1>
+            <h1 className="mt-4 text-3xl font-bold tracking-[-0.025em] text-text sm:text-4xl">{title}</h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-muted sm:text-base">{description}</p>
             {actions && <div className="mt-6 flex flex-wrap gap-3">{actions}</div>}
           </div>
@@ -39,7 +37,7 @@ export function PageHero({
       </div>
 
       {footer && (
-        <div className="border-t border-border/70 bg-surface-alt/60 p-6 sm:p-8">
+        <div className="border-t border-border bg-surface-alt/55 p-5 sm:p-6">
           {footer}
         </div>
       )}

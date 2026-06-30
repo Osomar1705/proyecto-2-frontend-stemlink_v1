@@ -118,7 +118,7 @@ export default function MentorsPage() {
             </div>
           )}
           footer={(
-            <div className="space-y-4 rounded-3xl bg-surface/70 p-4 ring-1 ring-border/60 sm:p-5">
+            <div className="space-y-4 rounded-xl border border-border bg-surface p-4 sm:p-5">
               <div className="relative">
                 <Search size={20} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
                 <input
@@ -126,7 +126,7 @@ export default function MentorsPage() {
                   onChange={e => { setSearch(e.target.value); setPage(0) }}
                   placeholder="Buscar mentores por nombre..."
                   aria-label="Buscar mentores por nombre"
-                  className="w-full rounded-2xl border border-border/70 bg-surface/90 py-3 pl-10 pr-4 text-sm text-text outline-none transition placeholder:text-muted focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                  className="w-full rounded-xl border border-border bg-surface py-3 pl-10 pr-4 text-sm text-text shadow-sm outline-none transition-[border-color,box-shadow] placeholder:text-muted/75 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10"
                 />
               </div>
 
