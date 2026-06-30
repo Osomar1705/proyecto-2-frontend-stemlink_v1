@@ -5,6 +5,7 @@ import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Pagination } from '../components/ui/Pagination'
+import { PageHero } from '../components/ui/PageHero'
 import { usePagination } from '../hooks/usePagination'
 import { parseApiError } from '../utils/errors'
 import { Bell, Calendar, CheckCheck, CheckCircle, Sparkles } from 'lucide-react'
@@ -105,24 +106,18 @@ export default function NotificationsPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm">
-        <div className="relative p-6 sm:p-8">
-          <div className="absolute right-0 top-0 h-36 w-36 rounded-full bg-primary-100/70 blur-3xl" />
-          <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
-
-          <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
-                <Bell size={16} className="text-primary-600" aria-hidden />
-                Centro de alertas
-              </div>
-              <h1 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">Notificaciones</h1>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted sm:text-base">
-                Revisa recordatorios, confirmaciones y actividad reciente generada por tus sesiones y reservas.
-              </p>
+      <div className="mb-8">
+        <PageHero
+          badge={(
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
+              <Bell size={16} className="text-primary-600" aria-hidden />
+              Centro de alertas
             </div>
-
-            <div className="rounded-xl border border-border bg-surface-alt px-4 py-4 lg:max-w-sm">
+          )}
+          title="Notificaciones"
+          description="Revisa recordatorios, confirmaciones y actividad reciente generada por tus sesiones y reservas."
+          aside={(
+            <div className="rounded-xl border border-border bg-surface-alt px-4 py-4">
               <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resumen</p>
               <p className="mt-2 text-sm font-semibold text-text">
                 {unreadCount > 0
@@ -133,27 +128,26 @@ export default function NotificationsPage() {
                 {data?.totalElements ?? 0} elemento{(data?.totalElements ?? 0) !== 1 ? 's' : ''} en la página actual del backend.
               </p>
             </div>
-          </div>
-        </div>
-
-        <div className="border-t border-border bg-surface-alt/60 px-6 py-5 sm:px-8">
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setFilter('all')}
-              className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${filter === 'all' ? 'border-primary-600 bg-primary-600 text-surface' : 'border-border bg-surface text-muted hover:bg-surface-alt hover:text-text'}`}
-            >
-              Todas
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilter('unread')}
-              className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${filter === 'unread' ? 'border-primary-600 bg-primary-600 text-surface' : 'border-border bg-surface text-muted hover:bg-surface-alt hover:text-text'}`}
-            >
-              No leídas ({unreadCount})
-            </button>
-          </div>
-        </div>
+          )}
+          footer={(
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setFilter('all')}
+                className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${filter === 'all' ? 'border-primary-600 bg-primary-600 text-surface' : 'border-border bg-surface text-muted hover:bg-surface-alt hover:text-text'}`}
+              >
+                Todas
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilter('unread')}
+                className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${filter === 'unread' ? 'border-primary-600 bg-primary-600 text-surface' : 'border-border bg-surface text-muted hover:bg-surface-alt hover:text-text'}`}
+              >
+                No leídas ({unreadCount})
+              </button>
+            </div>
+          )}
+        />
       </div>
 
       {loading ? (

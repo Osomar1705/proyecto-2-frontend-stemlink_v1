@@ -8,6 +8,8 @@ import { Button } from '../components/ui/Button'
 import { Modal } from '../components/ui/Modal'
 import { Spinner } from '../components/ui/Spinner'
 import { EmptyState } from '../components/ui/EmptyState'
+import { PageHero } from '../components/ui/PageHero'
+import { StatCard } from '../components/ui/StatCard'
 import { useAuth } from '../contexts/AuthContext'
 import { parseApiError } from '../utils/errors'
 import { Calendar, CheckCircle2, Clock, History, Sparkles, Star, UserRound, XCircle } from 'lucide-react'
@@ -340,24 +342,18 @@ export default function SessionsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm">
-        <div className="relative p-6 sm:p-8">
-          <div className="absolute right-0 top-0 h-36 w-36 rounded-full bg-primary-100/70 blur-3xl" />
-          <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
-
-          <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
-                <Calendar size={16} className="text-primary-600" aria-hidden />
-                Gestión de sesiones
-              </div>
-              <h1 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">Mis sesiones</h1>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted sm:text-base">
-                Revisa próximas mentorías, confirma acciones pendientes y conserva un historial claro de tu actividad.
-              </p>
+      <div className="mb-8">
+        <PageHero
+          badge={(
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
+              <Calendar size={16} className="text-primary-600" aria-hidden />
+              Gestión de sesiones
             </div>
-
-            <div className="rounded-xl border border-border bg-surface-alt px-4 py-4 lg:max-w-sm">
+          )}
+          title="Mis sesiones"
+          description="Revisa próximas mentorías, confirma acciones pendientes y conserva un historial claro de tu actividad."
+          aside={(
+            <div className="rounded-xl border border-border bg-surface-alt px-4 py-4">
               <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Vista activa</p>
               <p className="mt-2 text-sm font-semibold text-text">
                 {filter ? `Filtro por ${getStatusLabel(filter)}` : 'Todas las sesiones'}
@@ -366,23 +362,22 @@ export default function SessionsPage() {
                 {sessions.length} resultado{sessions.length !== 1 ? 's' : ''} cargado{sessions.length !== 1 ? 's' : ''} desde el backend.
               </p>
             </div>
-          </div>
-        </div>
-
-        <div className="border-t border-border bg-surface-alt/60 px-6 py-5 sm:px-8">
-          <div className="flex flex-wrap gap-2">
-            {SESSION_FILTERS.map(status => (
-              <button
-                key={status}
-                type="button"
-                onClick={() => setFilter(status)}
-                className={`rounded-lg border px-4 py-2 text-sm font-medium transition-all ${filter === status ? 'border-primary-600 bg-primary-600 text-surface shadow-sm' : 'border-border bg-surface text-muted hover:bg-surface-alt hover:text-text'}`}
-              >
-                {status ? getStatusLabel(status) : 'Todas'}
-              </button>
-            ))}
-          </div>
-        </div>
+          )}
+          footer={(
+            <div className="flex flex-wrap gap-2">
+              {SESSION_FILTERS.map(status => (
+                <button
+                  key={status}
+                  type="button"
+                  onClick={() => setFilter(status)}
+                  className={`rounded-lg border px-4 py-2 text-sm font-medium transition-all ${filter === status ? 'border-primary-600 bg-primary-600 text-surface shadow-sm' : 'border-border bg-surface text-muted hover:bg-surface-alt hover:text-text'}`}
+                >
+                  {status ? getStatusLabel(status) : 'Todas'}
+                </button>
+              ))}
+            </div>
+          )}
+        />
       </div>
 
       {loading ? (
@@ -426,19 +421,15 @@ export default function SessionsPage() {
       ) : (
         <>
           <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {stats.map(({ title, value, helper, icon: Icon, tone }) => (
-              <Card key={title} className="border-border bg-surface p-6 shadow-sm">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm text-muted">{title}</p>
-                    <p className="mt-2 text-3xl font-bold text-text">{value}</p>
-                    <p className="mt-2 text-sm text-muted">{helper}</p>
-                  </div>
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${tone}`}>
-                    <Icon size={22} aria-hidden />
-                  </div>
-                </div>
-              </Card>
+            {stats.map(({ title, value, helper, icon, tone }) => (
+              <StatCard
+                key={title}
+                title={title}
+                value={value}
+                helper={helper}
+                icon={icon}
+                tone={tone}
+              />
             ))}
           </div>
 

@@ -8,6 +8,8 @@ import { Spinner } from '../components/ui/Spinner'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { EmptyState } from '../components/ui/EmptyState'
+import { PageHero } from '../components/ui/PageHero'
+import { StatCard } from '../components/ui/StatCard'
 import { ArrowRight, Bell, BookOpen, Calendar, CheckCircle2, Clock3, GraduationCap, Sparkles, TrendingUp, UserRound, Users } from 'lucide-react'
 import type { MentorshipSessionResponse } from '../types'
 import toast from 'react-hot-toast'
@@ -156,55 +158,47 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
-          <div className="relative p-6 sm:p-8">
-            <div className="absolute right-0 top-0 h-36 w-36 rounded-full bg-primary-100/70 blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/70 blur-3xl" />
-
-            <div className="relative">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
-                <Sparkles size={16} className="text-accent-500" aria-hidden />
-                {user?.role === 'MENTOR' ? 'Panel de mentor' : 'Panel de estudiante'}
+        <PageHero
+          badge={(
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
+              <Sparkles size={16} className="text-accent-500" aria-hidden />
+              {user?.role === 'MENTOR' ? 'Panel de mentor' : 'Panel de estudiante'}
+            </div>
+          )}
+          title="¡Bienvenido a STEM Link!"
+          description={`Hola, ${user?.name}. Revisa tu actividad, prioriza tus sesiones y mantén tu progreso visible desde un solo panel.`}
+          actions={(
+            <>
+              <Button onClick={primaryAction}>
+                {primaryLabel} <ArrowRight size={16} />
+              </Button>
+              <Button variant="secondary" onClick={() => navigate('/sessions')}>
+                Ver sesiones
+              </Button>
+            </>
+          )}
+          footer={(
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Actividad total</p>
+                <p className="mt-2 text-2xl font-bold text-text">{totalSessions}</p>
+                <p className="mt-1 text-sm text-muted">sesiones registradas en tu cuenta</p>
               </div>
-
-              <h1 className="mt-5 max-w-2xl text-4xl font-bold tracking-tight text-text sm:text-5xl">
-                ¡Bienvenido a STEM Link!
-              </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-muted sm:text-base">
-                Hola, {user?.name}. Revisa tu actividad, prioriza tus sesiones y mantén tu progreso visible desde un solo panel.
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Button onClick={primaryAction}>
-                  {primaryLabel} <ArrowRight size={16} />
-                </Button>
-                <Button variant="secondary" onClick={() => navigate('/sessions')}>
-                  Ver sesiones
-                </Button>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Progreso</p>
+                <p className="mt-2 text-2xl font-bold text-text">{completionRate}%</p>
+                <p className="mt-1 text-sm text-muted">de sesiones marcadas como completadas</p>
               </div>
-            </div>
-          </div>
-
-          <div className="grid gap-4 border-t border-border bg-surface-alt/60 p-6 sm:grid-cols-3 sm:p-8">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Actividad total</p>
-              <p className="mt-2 text-2xl font-bold text-text">{totalSessions}</p>
-              <p className="mt-1 text-sm text-muted">sesiones registradas en tu cuenta</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Progreso</p>
-              <p className="mt-2 text-2xl font-bold text-text">{completionRate}%</p>
-              <p className="mt-1 text-sm text-muted">de sesiones marcadas como completadas</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Estado actual</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                <Badge label={`${confirmed.length} confirmadas`} color="success" />
-                <Badge label={`${pending.length} pendientes`} color="warning" />
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Estado actual</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Badge label={`${confirmed.length} confirmadas`} color="success" />
+                  <Badge label={`${pending.length} pendientes`} color="warning" />
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          )}
+        />
 
         <div className="grid gap-4">
           <Card className="border-border bg-surface p-6 shadow-sm">
@@ -249,19 +243,15 @@ export default function DashboardPage() {
       </div>
 
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {stats.map(({ title, value, helper, icon: Icon, iconClass }) => (
-          <Card key={title} className="border-border bg-surface p-6 shadow-sm">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm text-muted">{title}</p>
-                <p className="mt-2 text-3xl font-bold text-text">{value}</p>
-                <p className="mt-2 text-sm text-muted">{helper}</p>
-              </div>
-              <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${iconClass}`}>
-                <Icon size={22} aria-hidden />
-              </div>
-            </div>
-          </Card>
+        {stats.map(({ title, value, helper, icon, iconClass }) => (
+          <StatCard
+            key={title}
+            title={title}
+            value={value}
+            helper={helper}
+            icon={icon}
+            tone={iconClass}
+          />
         ))}
       </div>
 

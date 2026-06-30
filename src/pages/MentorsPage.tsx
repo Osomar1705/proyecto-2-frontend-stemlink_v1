@@ -6,6 +6,7 @@ import { Card } from '../components/ui/Card'
 import { Pagination } from '../components/ui/Pagination'
 import { MentorCardSkeleton } from '../components/ui/Skeleton'
 import { EmptyState } from '../components/ui/EmptyState'
+import { PageHero } from '../components/ui/PageHero'
 import { usePagination } from '../hooks/usePagination'
 import { useDebounce } from '../hooks/useDebounce'
 import { parseApiError } from '../utils/errors'
@@ -96,25 +97,17 @@ export default function MentorsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm">
-        <div className="relative p-6 sm:p-8">
-          <div className="absolute right-0 top-0 h-36 w-36 rounded-full bg-primary-100/70 blur-3xl" />
-          <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
-
-          <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
-                <Users size={16} className="text-primary-600" aria-hidden />
-                Red de mentores STEM
-              </div>
-              <h1 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">
-                Encuentra tu mentor ideal
-              </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted sm:text-base">
-                Explora perfiles reales, filtra por habilidades y encuentra a la persona adecuada para tu siguiente reto técnico.
-              </p>
+      <div className="mb-8">
+        <PageHero
+          badge={(
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
+              <Users size={16} className="text-primary-600" aria-hidden />
+              Red de mentores STEM
             </div>
-
+          )}
+          title="Encuentra tu mentor ideal"
+          description="Explora perfiles reales, filtra por habilidades y encuentra a la persona adecuada para tu siguiente reto técnico."
+          aside={(
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[25rem]">
               <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resultados</p>
@@ -129,10 +122,9 @@ export default function MentorsPage() {
                 <p className="mt-1 text-lg font-bold text-text">{page + 1}</p>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="border-t border-border bg-surface-alt/60 px-6 py-5 sm:px-8">
+          )}
+          footer={(
+            <div className="px-0 py-0">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,0.9fr)]">
             <div className="relative">
               <Search size={20} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
@@ -201,7 +193,9 @@ export default function MentorsPage() {
               ))}
             </div>
           )}
-        </div>
+            </div>
+          )}
+        />
       </div>
 
       {loading ? (

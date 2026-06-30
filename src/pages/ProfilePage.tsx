@@ -7,6 +7,7 @@ import { Card } from '../components/ui/Card'
 import { Spinner } from '../components/ui/Spinner'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Badge } from '../components/ui/Badge'
+import { PageHero } from '../components/ui/PageHero'
 import { parseApiError } from '../utils/errors'
 import { Bell, Calendar, Mail, Sparkles, UserRound } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -84,42 +85,39 @@ export default function ProfilePage() {
   return (
     <div className="mx-auto max-w-6xl">
       <div className="mb-8 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-        <div className="overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm">
-          <div className="relative p-6 sm:p-8">
-            <div className="absolute right-0 top-0 h-36 w-36 rounded-full bg-primary-100/70 blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
-
-            <div className="relative">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
-                <Sparkles size={16} className="text-accent-500" aria-hidden />
-                Perfil del estudiante
-              </div>
-
-              <div className="mt-6 flex flex-col items-center text-center">
-                <div className="mb-5 flex size-28 items-center justify-center rounded-full bg-gradient-to-br from-primary-600 to-accent-500 text-3xl font-bold text-surface shadow-lg">
-                  {data.user.name.slice(0, 2).toUpperCase()}
-                </div>
-                <h2 className="text-3xl font-bold tracking-tight text-text">{data.user.name}</h2>
-                <p className="mt-2 text-sm text-muted">Tu resumen personal dentro de STEM Link.</p>
+        <PageHero
+          badge={(
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
+              <Sparkles size={16} className="text-accent-500" aria-hidden />
+              Perfil del estudiante
+            </div>
+          )}
+          title={data.user.name}
+          description="Tu resumen personal dentro de STEM Link."
+          aside={(
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-5 flex size-28 items-center justify-center rounded-full bg-gradient-to-br from-primary-600 to-accent-500 text-3xl font-bold text-surface shadow-lg">
+                {data.user.name.slice(0, 2).toUpperCase()}
               </div>
             </div>
-          </div>
-
-          <div className="grid gap-4 border-t border-border bg-surface-alt/60 p-6 sm:grid-cols-3 sm:p-8">
-            <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Próximas</p>
-              <p className="mt-2 text-2xl font-bold text-text">{nextSessions}</p>
+          )}
+          footer={(
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Próximas</p>
+                <p className="mt-2 text-2xl font-bold text-text">{nextSessions}</p>
+              </div>
+              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Completadas</p>
+                <p className="mt-2 text-2xl font-bold text-text">{completedSessions}</p>
+              </div>
+              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Alertas</p>
+                <p className="mt-2 text-2xl font-bold text-text">{data.unreadCount}</p>
+              </div>
             </div>
-            <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Completadas</p>
-              <p className="mt-2 text-2xl font-bold text-text">{completedSessions}</p>
-            </div>
-            <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Alertas</p>
-              <p className="mt-2 text-2xl font-bold text-text">{data.unreadCount}</p>
-            </div>
-          </div>
-        </div>
+          )}
+        />
 
         <Card className="border-border/70 p-6 shadow-sm sm:p-8">
           <div className="mb-6">
