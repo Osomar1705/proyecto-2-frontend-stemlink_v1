@@ -37,10 +37,10 @@ export default function LoginPage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(120deg,rgba(99,102,241,0.045),transparent_42%,rgba(20,184,166,0.035))]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(120deg,rgba(99,102,241,0.08),transparent_42%,rgba(20,184,166,0.05)),radial-gradient(circle_at_top_left,rgba(99,102,241,0.1),transparent_24rem)]" />
       <div className="mx-auto grid max-w-7xl items-center gap-8 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_1fr] lg:gap-12">
         <div className="max-w-xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/80 px-3 py-1 text-sm font-semibold text-muted shadow-sm backdrop-blur-sm">
+          <div className="eyebrow">
             <Sparkles size={16} className="text-accent-500" aria-hidden />
             Acceso seguro a STEM Link
           </div>
@@ -65,11 +65,12 @@ export default function LoginPage() {
 
         <div className="w-full">
           <Card className="relative overflow-hidden border-border bg-surface p-5 sm:p-10">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(99,102,241,0.08),transparent)]" aria-hidden />
 
             <div className="relative">
               <div className="mb-8 space-y-3 text-left">
                 <div className="flex justify-start">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 shadow-[0_4px_12px_rgba(79,70,229,0.18)]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-600 shadow-[0_8px_20px_rgba(79,70,229,0.18)]">
                     <Zap className="h-7 w-7 text-surface" aria-hidden />
                   </div>
                 </div>
@@ -83,7 +84,7 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="mb-6 rounded-2xl border border-border/70 bg-surface-alt/80 px-4 py-4 shadow-sm">
+              <div className="surface-tint mb-6 rounded-[1.35rem] border border-border/70 px-4 py-4 shadow-sm">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-600">
                     <ShieldCheck size={18} aria-hidden />
@@ -143,7 +144,7 @@ export default function LoginPage() {
                 </p>
               </form>
 
-              <div className="mt-6 rounded-2xl border border-border/70 bg-surface-alt/80 p-4">
+              <div className="surface-subtle mt-6 rounded-[1.35rem] p-4">
                 <p className="mb-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-muted">Cuentas demo</p>
                 <div className="space-y-1 text-center text-xs leading-5 text-muted">
                   <p>Estudiante: lucia.student@stemlink.com / Student@123</p>

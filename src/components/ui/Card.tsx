@@ -21,7 +21,7 @@ export function Card({ children, className = '', onClick }: Props) {
       onKeyDown={handleKeyDown}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
-      className={`fade-in-section rounded-2xl border border-border bg-surface p-5 shadow-[0_1px_2px_rgba(15,23,42,0.03),0_8px_24px_rgba(15,23,42,0.04)] ${onClick ? 'surface-interactive cursor-pointer hover:border-primary-200 hover:shadow-[0_2px_4px_rgba(15,23,42,0.04),0_14px_32px_rgba(15,23,42,0.07)] focus:outline-none focus:ring-2 focus:ring-primary-500/30' : ''} ${className}`}
+      className={`surface-card fade-in-section rounded-[1.5rem] p-5 ${onClick ? 'surface-interactive cursor-pointer hover:border-primary-200 hover:shadow-[0_4px_10px_rgba(15,23,42,0.04),0_22px_44px_rgba(79,70,229,0.08)] focus:outline-none focus:ring-4 focus:ring-primary-500/15' : ''} ${className}`}
     >
       {children}
     </div>

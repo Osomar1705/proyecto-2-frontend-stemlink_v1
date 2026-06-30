@@ -13,7 +13,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(({ label, error, helper
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={inputId} className="text-sm font-semibold text-text">
+        <label htmlFor={inputId} className="text-sm font-semibold tracking-[-0.01em] text-text">
           {label}
         </label>
       )}
@@ -23,7 +23,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(({ label, error, helper
         aria-invalid={!!error}
         aria-describedby={error ? `${inputId}-error` : helperText ? `${inputId}-help` : undefined}
         {...props}
-        className={`rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-text shadow-[0_1px_2px_rgba(15,23,42,0.03)] outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-muted/75 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 disabled:cursor-not-allowed disabled:bg-surface-alt ${error ? 'border-primary-600 ring-4 ring-primary-500/10' : ''} ${className}`}
+        className={`field-shell rounded-2xl px-4 py-3 text-sm text-text outline-none transition-[border-color,box-shadow,background-color] duration-200 placeholder:text-muted/70 focus:border-primary-400 focus:bg-surface focus:ring-4 focus:ring-primary-500/10 disabled:cursor-not-allowed disabled:bg-surface-alt/70 ${error ? 'border-primary-600 ring-4 ring-primary-500/10' : ''} ${className}`}
       />
       {helperText && !error && <span id={`${inputId}-help`} className="text-xs text-muted">{helperText}</span>}
       {error && <span id={`${inputId}-error`} className="text-xs text-primary-700">{error}</span>}

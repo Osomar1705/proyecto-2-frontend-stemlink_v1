@@ -213,11 +213,11 @@ export default function MentorProfilePage() {
               </div>
             )}
           title="Mi perfil"
-          description="Actualiza cómo te ven los estudiantes dentro de STEM Link."
+          description="Actualiza tu presencia pública, deja claros tus diferenciales y mantén una disponibilidad lista para reservar."
           aside={(
             <div className="flex flex-col items-center text-center">
               <div className="relative mb-5">
-                  <div className="flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50">
+                  <div className="flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50 shadow-[0_18px_36px_rgba(79,70,229,0.18)]">
                     STEM
                   </div>
                   <div className="absolute bottom-0 right-0 rounded-full border border-border/70 bg-surface p-2 text-muted shadow-sm">
@@ -253,13 +253,13 @@ export default function MentorProfilePage() {
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="mentor-bio" className="text-sm font-medium text-text">Bio</label>
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="mentor-bio" className="text-sm font-semibold text-text">Bio</label>
                   <textarea
                     id="mentor-bio"
                   rows={6}
                   {...register('bio')}
-                  className="resize-none rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text outline-none placeholder:text-muted focus:ring-2 focus:ring-primary-200"
+                  className="field-shell resize-none rounded-2xl px-4 py-3 text-sm text-text outline-none placeholder:text-muted focus:border-primary-400 focus:ring-4 focus:ring-primary-500/10"
                   placeholder="Cuéntales a los estudiantes sobre tu experiencia y en qué puedes ayudarlos..."
                 />
                 {errors.bio && <span className="text-xs text-primary-700">{errors.bio.message}</span>}
@@ -283,7 +283,7 @@ export default function MentorProfilePage() {
               </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-text">Habilidades</label>
+                  <label className="mb-2 block text-sm font-semibold text-text">Habilidades</label>
                   <div className="flex flex-wrap gap-2">
                   {skills.map((skill) => {
                     const active = selectedSkills.includes(skill.id)
@@ -295,7 +295,7 @@ export default function MentorProfilePage() {
                           ? previous.filter((value) => value !== skill.id)
                           : [...previous, skill.id])}
                         aria-pressed={active}
-                        className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${active ? 'border-primary-600 bg-primary-600 text-surface shadow-sm' : 'border-border bg-surface text-muted hover:border-primary-400 hover:text-text'}`}
+                        className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all ${active ? 'border-primary-600 bg-primary-600 text-surface shadow-sm' : 'border-border bg-surface text-muted hover:border-primary-400 hover:text-text'}`}
                       >
                         {skill.name}
                       </button>
@@ -320,7 +320,7 @@ export default function MentorProfilePage() {
                   Administra los bloques de horario que podrán reservar los estudiantes.
                 </p>
               </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface-alt/80 px-3 py-1 text-xs font-medium text-muted">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface-alt/80 px-3 py-1 text-xs font-semibold text-muted">
                 <Calendar size={14} className="text-primary-600" aria-hidden />
                 {availability.length} bloques
               </div>
@@ -328,7 +328,7 @@ export default function MentorProfilePage() {
 
             <form
               onSubmit={handleAvailabilitySubmit(onAddAvailability)}
-              className="grid grid-cols-1 items-end gap-3 rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60 sm:grid-cols-4"
+              className="surface-tint grid grid-cols-1 items-end gap-3 rounded-[1.5rem] p-4 sm:grid-cols-4"
             >
               <div className="flex flex-col gap-1">
                 <label htmlFor="availability-day" className="text-xs font-medium text-muted">Día</label>
@@ -337,7 +337,7 @@ export default function MentorProfilePage() {
                   {...registerAvailability('dayOfWeek')}
                   aria-invalid={!!availabilityErrors.dayOfWeek}
                   aria-describedby={availabilityErrors.dayOfWeek ? 'availability-day-error' : undefined}
-                  className={`rounded-lg border bg-surface px-3 py-2 text-sm text-text outline-none focus:ring-2 focus:ring-primary-200 ${availabilityErrors.dayOfWeek ? 'border-primary-600' : 'border-border'}`}
+                  className={`field-shell rounded-xl px-3 py-2 text-sm text-text outline-none focus:ring-4 focus:ring-primary-500/10 ${availabilityErrors.dayOfWeek ? 'border-primary-600' : ''}`}
                 >
                   {DAYS.map((day) => <option key={day} value={day}>{DAY_ES[day]}</option>)}
                 </select>

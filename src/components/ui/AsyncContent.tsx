@@ -45,7 +45,7 @@ export function AsyncContent({
 
   if (error) {
     return (
-      <div className="fade-in-section rounded-2xl border border-border bg-surface p-6 shadow-sm">
+      <div className="fade-in-section surface-card rounded-[1.75rem] p-6">
         <EmptyState
           icon={errorIcon}
           title={errorTitle}
@@ -58,7 +58,7 @@ export function AsyncContent({
 
   if (isEmpty) {
     return (
-      <div className="fade-in-section rounded-2xl border border-border bg-surface p-6 shadow-sm">
+      <div className="fade-in-section surface-card rounded-[1.75rem] p-6">
         <EmptyState
           icon={emptyIcon}
           title={emptyTitle}

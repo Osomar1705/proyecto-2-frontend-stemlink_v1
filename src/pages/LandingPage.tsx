@@ -70,7 +70,7 @@ export default function LandingPage() {
         />
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(22rem,0.92fr)] lg:gap-16">
           <div className="max-w-3xl">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50/70 px-3 py-1.5 text-sm font-semibold text-primary-700">
+            <div className="eyebrow mb-6 text-primary-700">
               <Sparkles size={16} aria-hidden="true" />
               Mentoría STEM hecha para avanzar
             </div>
@@ -138,7 +138,7 @@ export default function LandingPage() {
                 ))}
               </div>
 
-              <div className="rounded-xl bg-primary-600 p-4 text-surface sm:p-5">
+              <div className="rounded-[1.35rem] bg-primary-600 p-4 text-surface shadow-[0_18px_36px_rgba(79,70,229,0.18)] sm:p-5">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface/15">
                     <ShieldCheck size={21} aria-hidden="true" />

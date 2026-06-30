@@ -44,10 +44,10 @@ export default function RegisterPage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(120deg,rgba(99,102,241,0.045),transparent_42%,rgba(20,184,166,0.035))]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(120deg,rgba(99,102,241,0.08),transparent_42%,rgba(20,184,166,0.05)),radial-gradient(circle_at_top_left,rgba(99,102,241,0.1),transparent_24rem)]" />
       <div className="mx-auto grid max-w-7xl items-center gap-8 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_1fr] lg:gap-12">
         <div className="max-w-xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/80 px-3 py-1 text-sm font-semibold text-muted shadow-sm backdrop-blur-sm">
+          <div className="eyebrow">
             <Sparkles size={16} className="text-accent-500" aria-hidden />
             Registro seguro para estudiantes y mentores
           </div>
@@ -72,11 +72,12 @@ export default function RegisterPage() {
 
         <div className="w-full">
           <Card className="relative overflow-hidden border-border bg-surface p-5 sm:p-10">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(99,102,241,0.08),transparent)]" aria-hidden />
 
             <div className="relative">
               <div className="mb-8 space-y-3 text-left">
                 <div className="flex justify-start">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-600 shadow-[0_4px_12px_rgba(79,70,229,0.18)]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-600 shadow-[0_8px_20px_rgba(79,70,229,0.18)]">
                     <Zap className="h-7 w-7 text-surface" aria-hidden />
                   </div>
                 </div>
@@ -91,7 +92,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <div className="mb-6 rounded-2xl border border-border/70 bg-surface-alt/80 px-4 py-4 shadow-sm">
+              <div className="surface-tint mb-6 rounded-[1.35rem] border border-border/70 px-4 py-4 shadow-sm">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-600">
                     <ShieldCheck size={18} aria-hidden />
@@ -158,10 +159,10 @@ export default function RegisterPage() {
                       return (
                         <label
                           key={r}
-                          className={`flex cursor-pointer flex-col gap-3 rounded-2xl border p-4 transition-all ${selected ? 'border-primary-500 bg-primary-50 shadow-sm' : 'border-border/70 bg-surface/90 hover:border-primary-200 hover:bg-surface-alt/80'}`}
+                          className={`flex cursor-pointer flex-col gap-3 rounded-[1.35rem] border p-4 transition-all ${selected ? 'border-primary-500 bg-primary-50 shadow-[0_10px_24px_rgba(79,70,229,0.08)]' : 'border-border/70 bg-surface/90 hover:border-primary-200 hover:bg-surface-alt/80'}`}
                         >
                           <input type="radio" value={r} {...register('role')} className="sr-only" />
-                          <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${selected ? 'bg-primary-600 text-surface' : 'bg-surface-alt text-primary-600'}`}>
+                          <span className={`flex h-11 w-11 items-center justify-center rounded-2xl ${selected ? 'bg-primary-600 text-surface' : 'bg-surface-alt text-primary-600'}`}>
                             <Icon size={20} aria-hidden />
                           </span>
                           <span>

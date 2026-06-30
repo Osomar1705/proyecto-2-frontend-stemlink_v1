@@ -75,11 +75,15 @@ export default function ProfilePage() {
             </div>
           )}
           title={profileData.user.name}
-          description="Tu resumen personal dentro de STEM Link."
+          description="Tu resumen personal dentro de STEM Link, con foco en actividad, progreso y visibilidad de tu cuenta."
           aside={(
             <div className="flex flex-col items-center text-center">
-              <div className="mb-5 flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50">
-                {profileData.user.name.slice(0, 2).toUpperCase()}
+              <div className="surface-tint rounded-[1.75rem] px-6 py-5">
+                <div className="mx-auto mb-3 flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50">
+                  {profileData.user.name.slice(0, 2).toUpperCase()}
+                </div>
+                <p className="text-sm font-semibold text-text">Cuenta activa</p>
+                <p className="mt-1 text-xs text-muted">Información sincronizada con tu sesión actual.</p>
               </div>
             </div>
           )}
@@ -110,7 +114,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="space-y-4">
-            <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
+            <div className="surface-subtle rounded-[1.35rem] p-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50/80">
                   <UserRound size={18} className="text-primary-600" aria-hidden />
@@ -122,7 +126,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
+            <div className="surface-subtle rounded-[1.35rem] p-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50/80">
                   <Mail size={18} className="text-primary-600" aria-hidden />
@@ -134,7 +138,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
+            <div className="surface-subtle rounded-[1.35rem] p-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50/80">
                   <Badge label="STUDENT" color="neutral" />
@@ -163,7 +167,7 @@ export default function ProfilePage() {
 
           <div className="space-y-3">
             {profileData.sessions.slice(0, 4).map((session) => (
-              <div key={session.id} className="rounded-2xl bg-surface-alt/70 px-4 py-4 ring-1 ring-border/60">
+              <div key={session.id} className="surface-subtle rounded-[1.35rem] px-4 py-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="font-semibold text-text">{session.topic}</p>
                   <Badge label={session.status} color="neutral" />
@@ -195,7 +199,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-surface-alt/70 p-5 ring-1 ring-border/60">
+          <div className="surface-tint rounded-[1.5rem] p-5">
             <p className="text-sm font-semibold text-text">
               {profileData.unreadCount > 0
                 ? `Tienes ${profileData.unreadCount} notificación${profileData.unreadCount !== 1 ? 'es' : ''} sin revisar.`

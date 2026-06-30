@@ -18,12 +18,12 @@ export function Pagination({ page, totalPages, totalElements, size, onPageChange
       <span className="text-sm text-muted">
         Mostrando {from}–{to} de {totalElements} resultados
       </span>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-border/80 bg-surface-alt/70 p-2">
         {onSizeChange && (
           <select
             value={size}
             onChange={(e) => onSizeChange(Number(e.target.value))}
-            className="rounded-lg border border-border bg-surface px-2.5 py-1.5 text-sm outline-none transition-shadow focus:ring-4 focus:ring-primary-500/10"
+            className="field-shell rounded-xl px-3 py-2 text-sm outline-none transition-shadow focus:ring-4 focus:ring-primary-500/10"
           >
             {[10, 25, 50].map((s) => (
               <option key={s} value={s}>{s} por página</option>
@@ -35,7 +35,7 @@ export function Pagination({ page, totalPages, totalElements, size, onPageChange
           onClick={() => onPageChange(page - 1)}
           disabled={page === 0}
           aria-label="Ir a la página anterior"
-          className="rounded-lg border border-border p-1.5 transition-colors hover:border-primary-200 hover:bg-surface-alt disabled:opacity-40"
+          className="rounded-xl border border-border bg-surface p-2 transition-colors hover:border-primary-200 hover:bg-primary-50 disabled:opacity-40"
         >
           <ChevronLeft size={16} aria-hidden />
         </button>
@@ -48,7 +48,7 @@ export function Pagination({ page, totalPages, totalElements, size, onPageChange
               onClick={() => onPageChange(p)}
               aria-label={`Ir a la página ${p + 1}`}
               aria-current={p === page ? 'page' : undefined}
-              className={`h-8 w-8 rounded-lg text-sm transition-colors ${p === page ? 'bg-primary-600 text-surface shadow-sm' : 'border border-border hover:border-primary-200 hover:bg-surface-alt'}`}
+              className={`h-9 w-9 rounded-xl text-sm font-semibold transition-colors ${p === page ? 'bg-primary-600 text-surface shadow-sm' : 'border border-border bg-surface hover:border-primary-200 hover:bg-primary-50'}`}
             >
               {p + 1}
             </button>
@@ -59,7 +59,7 @@ export function Pagination({ page, totalPages, totalElements, size, onPageChange
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages - 1}
           aria-label="Ir a la página siguiente"
-          className="rounded-lg border border-border p-1.5 transition-colors hover:border-primary-200 hover:bg-surface-alt disabled:opacity-40"
+          className="rounded-xl border border-border bg-surface p-2 transition-colors hover:border-primary-200 hover:bg-primary-50 disabled:opacity-40"
         >
           <ChevronRight size={16} aria-hidden />
         </button>

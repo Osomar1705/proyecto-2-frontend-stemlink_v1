@@ -74,32 +74,32 @@ export function AuthenticatedLayout() {
   }
 
   return (
-    <div className="min-h-screen">
-      <aside className="hidden border-r border-border bg-surface/95 backdrop-blur-lg lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
-        <div className="border-b border-border px-6 py-5">
+    <div className="app-shell min-h-screen">
+      <aside className="hidden border-r border-border/70 bg-surface/82 backdrop-blur-xl lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
+        <div className="border-b border-border/70 px-6 py-6">
           <NavLink to="/dashboard" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-600 text-surface shadow-[0_4px_12px_rgba(79,70,229,0.18)]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-600 text-surface shadow-[0_8px_20px_rgba(79,70,229,0.2)]">
               <Zap size={22} aria-hidden />
             </div>
             <div>
               <p className="text-lg font-bold tracking-tight text-text">
                 STEM <span className="text-primary-600">Link</span>
               </p>
-              <p className="text-xs text-muted">Workspace de mentoría</p>
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Workspace de mentoría</p>
             </div>
           </NavLink>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3 py-5">
+        <nav className="flex-1 space-y-1.5 px-3 py-6">
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl border px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                `flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold transition-all duration-200 ${
                   isActive
-                    ? 'border-primary-100 bg-primary-50 text-primary-700'
-                    : 'border-transparent text-muted hover:bg-surface-alt hover:text-text'
+                    ? 'border-primary-100 bg-primary-50/90 text-primary-700 shadow-[0_8px_22px_rgba(79,70,229,0.08)]'
+                    : 'border-transparent text-muted hover:border-border/80 hover:bg-surface hover:text-text'
                 }`
               }
             >
@@ -110,7 +110,7 @@ export function AuthenticatedLayout() {
         </nav>
 
         <div className="border-t border-border/70 p-4">
-          <div className="mb-2 rounded-xl border border-border bg-surface-alt/70 p-3.5">
+          <div className="surface-tint mb-3 rounded-[1.35rem] border border-border/70 p-4">
             <p className="text-sm font-semibold text-text">{user?.name}</p>
             <p className="mt-1 text-xs text-muted">{user ? roleLabel[user.role] : 'Usuario'}</p>
           </div>
@@ -118,7 +118,7 @@ export function AuthenticatedLayout() {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-muted transition-colors hover:bg-surface-alt hover:text-text"
+            className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-muted transition-colors hover:bg-surface hover:text-text"
           >
             <LogOut size={18} aria-hidden />
             Cerrar sesión
@@ -127,11 +127,11 @@ export function AuthenticatedLayout() {
       </aside>
 
       <div className="lg:pl-72">
-        <header className="sticky top-0 z-30 border-b border-border bg-surface/90 backdrop-blur-lg">
+        <header className="sticky top-0 z-30 border-b border-border/70 bg-surface/74 backdrop-blur-xl">
           <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between gap-4 lg:hidden">
               <NavLink to="/dashboard" className="flex items-center gap-2 text-text">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-600 text-surface shadow-[0_4px_12px_rgba(79,70,229,0.18)]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-600 text-surface shadow-[0_8px_20px_rgba(79,70,229,0.18)]">
                   <GraduationCap size={20} aria-hidden />
                 </div>
                 <div>
@@ -143,7 +143,7 @@ export function AuthenticatedLayout() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="rounded-xl border border-border/70 px-3 py-2 text-sm font-semibold text-text transition-colors hover:bg-surface-alt/80"
+                className="rounded-2xl border border-border/70 bg-surface/90 px-3 py-2 text-sm font-semibold text-text transition-colors hover:bg-primary-50/60"
               >
                 Salir
               </button>
@@ -151,7 +151,7 @@ export function AuthenticatedLayout() {
 
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Área autenticada</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">Área autenticada</p>
                 <h1 className="mt-1 text-2xl font-bold tracking-tight text-text">{currentSection}</h1>
               </div>
 
@@ -163,11 +163,11 @@ export function AuthenticatedLayout() {
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Buscar mentores..."
-                    className="w-full rounded-xl border border-border bg-surface py-2.5 pl-10 pr-4 text-sm text-text shadow-sm outline-none transition-[border-color,box-shadow] placeholder:text-muted/75 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10"
+                    className="field-shell w-full rounded-2xl py-3 pl-10 pr-4 text-sm text-text outline-none transition-[border-color,box-shadow] placeholder:text-muted/75 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10"
                   />
                 </form>
 
-                <div className="hidden items-center gap-2 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm text-muted sm:flex">
+                <div className="hidden items-center gap-2 rounded-2xl border border-border/80 bg-surface/95 px-4 py-3 text-sm text-muted sm:flex">
                   <BookOpen size={16} className="text-primary-600" aria-hidden />
                   <span>{user?.email}</span>
                 </div>
@@ -177,16 +177,16 @@ export function AuthenticatedLayout() {
             <nav className="no-scrollbar flex gap-2 overflow-x-auto overscroll-x-contain pb-1 lg:hidden">
               {navItems.map(({ to, label }) => (
                 <NavLink
-                  key={to}
-                  to={to}
-                  className={({ isActive }) =>
+                key={to}
+                to={to}
+                className={({ isActive }) =>
                     `whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
                       isActive
-                        ? 'border-primary-600 bg-primary-600 text-surface'
-                        : 'border-border bg-surface text-muted hover:border-primary-200 hover:text-text'
+                        ? 'border-primary-600 bg-primary-600 text-surface shadow-sm'
+                        : 'border-border bg-surface/95 text-muted hover:border-primary-200 hover:text-text'
                     }`
-                  }
-                >
+                }
+              >
                   {label}
                 </NavLink>
               ))}

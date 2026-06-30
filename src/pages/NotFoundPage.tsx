@@ -7,9 +7,10 @@ export default function NotFoundPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-surface-alt px-4 py-8">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.1),transparent_24rem),radial-gradient(circle_at_bottom_right,rgba(20,184,166,0.08),transparent_20rem)]" aria-hidden />
 
-      <div className="w-full max-w-xl rounded-2xl border border-border bg-surface p-8 text-center shadow-xl sm:p-10">
-        <div className="mx-auto mb-6 flex size-14 items-center justify-center rounded-xl bg-primary-600 text-surface shadow-sm">
+      <div className="surface-card w-full max-w-xl rounded-[2rem] p-8 text-center sm:p-10">
+        <div className="mx-auto mb-6 flex size-14 items-center justify-center rounded-2xl bg-primary-600 text-surface shadow-[0_14px_30px_rgba(79,70,229,0.22)]">
           <GraduationCap size={30} aria-hidden />
         </div>
 

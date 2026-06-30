@@ -16,9 +16,9 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
   return (
     <Card
       onClick={onOpenProfile}
-      className="group flex h-full flex-col overflow-hidden border-border p-0"
+      className="group flex h-full flex-col overflow-hidden border-border/70 p-0"
     >
-      <div className="border-b border-border bg-surface-alt/45 px-5 pb-5 pt-5">
+      <div className="surface-tint border-b border-border/70 px-5 pb-5 pt-5">
         <div className="flex items-start justify-between gap-3">
           <MentorAvatar name={mentor.name} size="md" />
 
@@ -40,11 +40,11 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
 
       <div className="flex flex-1 flex-col px-5 py-5">
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-xl border border-border bg-surface-alt/55 px-3 py-3">
+          <div className="rounded-2xl border border-border/70 bg-surface/80 px-3 py-3">
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Skills</p>
             <p className="mt-1 text-lg font-bold text-text">{skills.length}</p>
           </div>
-          <div className="rounded-xl border border-border bg-surface-alt/55 px-3 py-3">
+          <div className="rounded-2xl border border-border/70 bg-surface/80 px-3 py-3">
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Perfil</p>
             <p className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-text">
               <Award size={14} className="text-primary-600" aria-hidden />
@@ -61,7 +61,7 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
           {!skills.length && <Badge label="STEM" color="neutral" />}
         </div>
 
-        <div className="mt-auto space-y-3 pt-5">
+        <div className="mt-auto space-y-3 border-t border-border/60 pt-5">
           {mentor.linkedinUrl ? (
             <a
               href={mentor.linkedinUrl}
