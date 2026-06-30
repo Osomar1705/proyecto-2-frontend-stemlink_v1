@@ -4,7 +4,7 @@ export function Skeleton({ className = '' }: { className?: string }) {
 
 export function MentorCardSkeleton() {
   return (
-    <div className="overflow-hidden rounded-xl border border-border/80 bg-surface shadow-sm">
+    <div className="fade-in-section overflow-hidden rounded-xl border border-border/80 bg-surface shadow-sm">
       <div className="border-b border-border bg-surface-alt/70 px-6 pb-5 pt-6">
         <div className="flex items-start justify-between">
           <Skeleton className="size-16 rounded-full" />

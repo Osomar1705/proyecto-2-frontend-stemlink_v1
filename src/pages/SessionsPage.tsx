@@ -80,21 +80,21 @@ function compareSessionsByDate(a: MentorshipSessionResponse, b: MentorshipSessio
 
 function SessionSkeleton() {
   return (
-    <div className="rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-border/60">
-      <div className="animate-pulse space-y-4">
+    <div className="fade-in-section rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-border/60">
+      <div className="space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-3">
-            <div className="h-5 w-40 rounded bg-surface-alt" />
-            <div className="h-4 w-32 rounded bg-surface-alt" />
+            <div className="skeleton-shimmer h-5 w-40 rounded" />
+            <div className="skeleton-shimmer h-4 w-32 rounded" />
           </div>
-          <div className="h-6 w-24 rounded-full bg-surface-alt" />
+          <div className="skeleton-shimmer h-6 w-24 rounded-full" />
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="h-14 rounded-xl bg-surface-alt" />
-          <div className="h-14 rounded-xl bg-surface-alt" />
-          <div className="h-14 rounded-xl bg-surface-alt" />
+          <div className="skeleton-shimmer h-14 rounded-xl" />
+          <div className="skeleton-shimmer h-14 rounded-xl" />
+          <div className="skeleton-shimmer h-14 rounded-xl" />
         </div>
-        <div className="h-10 w-36 rounded-lg bg-surface-alt" />
+        <div className="skeleton-shimmer h-10 w-36 rounded-lg" />
       </div>
     </div>
   )

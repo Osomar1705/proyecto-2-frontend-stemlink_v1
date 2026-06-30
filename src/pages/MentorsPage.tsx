@@ -196,7 +196,7 @@ export default function MentorsPage() {
         error={error}
         isEmpty={(data?.content.length ?? 0) === 0}
         loadingFallback={(
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <div className="stagger-list grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => <MentorCardSkeleton key={i} />)}
           </div>
         )}
@@ -218,7 +218,7 @@ export default function MentorsPage() {
             </div>
           </div>
 
-          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <div className="stagger-list mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
             {data?.content.map(mentor => (
               <MentorCard
                 key={mentor.id}

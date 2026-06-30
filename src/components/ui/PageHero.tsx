@@ -20,7 +20,7 @@ export function PageHero({
   className = '',
 }: PageHeroProps) {
   return (
-    <section className={`relative overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_1px_2px_rgba(15,23,42,0.03),0_12px_36px_rgba(15,23,42,0.05)] ${className}`}>
+    <section className={`fade-in-section relative overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_1px_2px_rgba(15,23,42,0.03),0_12px_36px_rgba(15,23,42,0.05)] ${className}`}>
       <div className="relative p-6 sm:p-8">
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgba(99,102,241,0.045),transparent_42%,rgba(20,184,166,0.035))]" aria-hidden="true" />
 
