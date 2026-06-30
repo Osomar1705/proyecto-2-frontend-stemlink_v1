@@ -2,11 +2,12 @@ import { useEffect, useState, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { mentorsApi } from '../api/mentors.api'
 import type { MentorProfileResponse, TechnicalSkillDTO, Page } from '../types'
+import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
 import { Pagination } from '../components/ui/Pagination'
 import { MentorCardSkeleton } from '../components/ui/Skeleton'
-import { EmptyState } from '../components/ui/EmptyState'
 import { PageHero } from '../components/ui/PageHero'
+import { useAsyncResource } from '../hooks/useAsyncResource'
 import { usePagination } from '../hooks/usePagination'
 import { useDebounce } from '../hooks/useDebounce'
 import { parseApiError } from '../utils/errors'
@@ -22,10 +23,6 @@ export default function MentorsPage() {
   const [search, setSearch] = useState(searchParams.get('search') || '')
   const [skills, setSkills] = useState<TechnicalSkillDTO[]>([])
   const [selectedSkills, setSelectedSkills] = useState<number[]>([])
-  const [data, setData] = useState<Page<MentorProfileResponse> | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [retryKey, setRetryKey] = useState(0)
 
   const debouncedSearch = useDebounce(search, 300)
 
@@ -45,39 +42,27 @@ export default function MentorsPage() {
   }, [])
 
   const fetchMentors = useCallback(async (signal: AbortSignal) => {
-    setLoading(true)
-    setError('')
-    try {
-      const res = await mentorsApi.list({
-        name: debouncedSearch || undefined,
-        skillIds: selectedSkills.length ? selectedSkills : undefined,
-        page,
-        size,
-      }, signal)
-      setData(res.data)
+    const res = await mentorsApi.list({
+      name: debouncedSearch || undefined,
+      skillIds: selectedSkills.length ? selectedSkills : undefined,
+      page,
+      size,
+    }, signal)
 
-      const next = new URLSearchParams(searchParams)
-      if (debouncedSearch) next.set('search', debouncedSearch)
-      else next.delete('search')
-      setSearchParams(next, { replace: true })
-    } catch (e: unknown) {
-      const err = e as { name?: string }
-      if (err.name !== 'CanceledError') {
-        const message = parseApiError(e)
-        setError(message)
-        setData(null)
-        toast.error(message)
-      }
-    } finally {
-      setLoading(false)
-    }
+    const next = new URLSearchParams(searchParams)
+    if (debouncedSearch) next.set('search', debouncedSearch)
+    else next.delete('search')
+    setSearchParams(next, { replace: true })
+
+    return res.data
   }, [debouncedSearch, selectedSkills, page, size, searchParams, setSearchParams])
 
-  useEffect(() => {
-    const controller = new AbortController()
-    fetchMentors(controller.signal)
-    return () => controller.abort()
-  }, [fetchMentors, retryKey])
+  const { data, loading, error, reload } = useAsyncResource<Page<MentorProfileResponse> | null>({
+    initialData: null,
+    load: fetchMentors,
+    deps: [fetchMentors],
+    onError: (message) => toast.error(message),
+  })
 
   const toggleSkill = (id: number) => {
     setSelectedSkills(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id])
@@ -90,7 +75,6 @@ export default function MentorsPage() {
     setPage(0)
   }
 
-  const retryMentors = () => setRetryKey(prev => prev + 1)
   const mentorCount = data?.totalElements ?? 0
   const hasFilters = Boolean(search.trim() || selectedSkills.length)
   const activeSkills = skills.filter(skill => selectedSkills.includes(skill.id))
@@ -170,6 +154,7 @@ export default function MentorsPage() {
                     key={skill.id}
                     type="button"
                     onClick={() => toggleSkill(skill.id)}
+                    aria-pressed={active}
                     className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-all ${active ? 'border-primary-600 bg-primary-600 text-surface shadow-sm' : 'border-border bg-surface text-muted hover:border-primary-400 hover:text-text'}`}
                   >
                     {skill.name}
@@ -198,29 +183,23 @@ export default function MentorsPage() {
         />
       </div>
 
-      {loading ? (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => <MentorCardSkeleton key={i} />)}
-        </div>
-      ) : error ? (
-        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-          <EmptyState
-            icon={<Users size={48} />}
-            title="No pudimos cargar los mentores"
-            description={error}
-            action={{ label: 'Reintentar', onClick: retryMentors }}
-          />
-        </div>
-      ) : data?.content.length === 0 ? (
-        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-          <EmptyState
-            icon={<Users size={48} />}
-            title="No se encontraron mentores"
-            description="Prueba con otros filtros o cambia el término de búsqueda."
-            action={hasFilters ? { label: 'Limpiar filtros', onClick: clearFilters } : undefined}
-          />
-        </div>
-      ) : (
+      <AsyncContent
+        loading={loading}
+        error={error}
+        isEmpty={(data?.content.length ?? 0) === 0}
+        loadingFallback={(
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => <MentorCardSkeleton key={i} />)}
+          </div>
+        )}
+        errorIcon={<Users size={48} />}
+        errorTitle="No pudimos cargar los mentores"
+        onRetry={reload}
+        emptyIcon={<Users size={48} />}
+        emptyTitle="No se encontraron mentores"
+        emptyDescription="Prueba con otros filtros o cambia el término de búsqueda."
+        emptyAction={hasFilters ? { label: 'Limpiar filtros', onClick: clearFilters } : undefined}
+      >
         <>
           <div className="mb-5 flex items-center justify-between gap-4">
             <div>
@@ -254,7 +233,7 @@ export default function MentorsPage() {
             </Card>
           )}
         </>
-      )}
+      </AsyncContent>
     </div>
   )
 }

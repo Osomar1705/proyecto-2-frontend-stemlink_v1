@@ -2,14 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { sessionsApi } from '../api/sessions.api'
 import { bookingsApi } from '../api/bookings.api'
 import type { MentorshipSessionResponse } from '../types'
+import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Modal } from '../components/ui/Modal'
-import { Spinner } from '../components/ui/Spinner'
-import { EmptyState } from '../components/ui/EmptyState'
 import { PageHero } from '../components/ui/PageHero'
 import { StatCard } from '../components/ui/StatCard'
+import { EmptyState } from '../components/ui/EmptyState'
+import { useAsyncResource } from '../hooks/useAsyncResource'
 import { useAuth } from '../contexts/AuthContext'
 import { parseApiError } from '../utils/errors'
 import { Calendar, CheckCircle2, Clock, History, Sparkles, Star, UserRound, XCircle } from 'lucide-react'
@@ -193,10 +194,6 @@ function SessionCard({
 
 export default function SessionsPage() {
   const { user } = useAuth()
-  const [sessions, setSessions] = useState<MentorshipSessionResponse[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [retryKey, setRetryKey] = useState(0)
   const [filter, setFilter] = useState('')
   const [feedbackModal, setFeedbackModal] = useState<{ open: boolean; sessionId: number | null }>({ open: false, sessionId: null })
   const [feedback, setFeedback] = useState<FeedbackForm>(DEFAULT_FEEDBACK)
@@ -204,39 +201,24 @@ export default function SessionsPage() {
   const [submitting, setSubmitting] = useState(false)
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null)
 
-  const load = useCallback(async (signal?: AbortSignal) => {
-    setLoading(true)
-    setError('')
-    try {
-      const res = await sessionsApi.list(filter || undefined, signal)
-      setSessions(res.data)
-    } catch (e: unknown) {
-      const err = e as { name?: string }
-      if (err.name !== 'CanceledError') {
-        const message = parseApiError(e)
-        setError(message)
-        setSessions([])
-        toast.error(message)
-      }
-    } finally {
-      setLoading(false)
-    }
+  const load = useCallback(async (signal: AbortSignal) => {
+    const res = await sessionsApi.list(filter || undefined, signal)
+    return res.data
   }, [filter])
 
-  useEffect(() => {
-    const controller = new AbortController()
-    load(controller.signal)
-    return () => controller.abort()
-  }, [load, retryKey])
-
-  const retrySessions = () => setRetryKey(prev => prev + 1)
+  const { data: sessions, loading, error, reload } = useAsyncResource<MentorshipSessionResponse[]>({
+    initialData: [],
+    load,
+    deps: [load],
+    onError: (message) => toast.error(message),
+  })
 
   const handleConfirm = async (bookingId: number) => {
     setActionLoadingId(bookingId)
     try {
       await bookingsApi.updateStatus(bookingId, 'CONFIRMED')
       toast.success('Reserva confirmada')
-      load()
+      reload()
     } catch (e) {
       toast.error(parseApiError(e))
     } finally {
@@ -249,7 +231,7 @@ export default function SessionsPage() {
     try {
       await bookingsApi.updateStatus(bookingId, 'CANCELLED')
       toast.success('Reserva cancelada')
-      load()
+      reload()
     } catch (e) {
       toast.error(parseApiError(e))
     } finally {
@@ -277,7 +259,7 @@ export default function SessionsPage() {
       setFeedbackModal({ open: false, sessionId: null })
       setFeedback(DEFAULT_FEEDBACK)
       setFeedbackErrors({})
-      load()
+      reload()
     } catch (e) {
       toast.error(parseApiError(e))
     } finally {
@@ -370,6 +352,7 @@ export default function SessionsPage() {
                   key={status}
                   type="button"
                   onClick={() => setFilter(status)}
+                  aria-pressed={filter === status}
                   className={`rounded-lg border px-4 py-2 text-sm font-medium transition-all ${filter === status ? 'border-primary-600 bg-primary-600 text-surface shadow-sm' : 'border-border bg-surface text-muted hover:bg-surface-alt hover:text-text'}`}
                 >
                   {status ? getStatusLabel(status) : 'Todas'}
@@ -380,45 +363,39 @@ export default function SessionsPage() {
         />
       </div>
 
-      {loading ? (
-        <div className="space-y-8">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-                <div className="animate-pulse space-y-3">
-                  <div className="h-4 w-24 rounded bg-surface-alt" />
-                  <div className="h-8 w-16 rounded bg-surface-alt" />
-                  <div className="h-4 w-40 rounded bg-surface-alt" />
+      <AsyncContent
+        loading={loading}
+        error={error}
+        isEmpty={sessions.length === 0}
+        loadingFallback={(
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+                  <div className="animate-pulse space-y-3">
+                    <div className="h-4 w-24 rounded bg-surface-alt" />
+                    <div className="h-8 w-16 rounded bg-surface-alt" />
+                    <div className="h-4 w-40 rounded bg-surface-alt" />
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-            <SessionSkeleton />
-            <SessionSkeleton />
+            <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+              <SessionSkeleton />
+              <SessionSkeleton />
+            </div>
           </div>
-        </div>
-      ) : error ? (
-        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-          <EmptyState
-            icon={<Calendar size={48} />}
-            title="No pudimos cargar tus sesiones"
-            description={error}
-            action={{ label: 'Reintentar', onClick: retrySessions }}
-          />
-        </div>
-      ) : sessions.length === 0 ? (
-        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-          <EmptyState
-            icon={<Calendar size={48} />}
-            title={filter ? `No hay sesiones ${getStatusLabel(filter).toLowerCase()}` : 'No tienes sesiones'}
-            description={filter
-              ? 'Prueba cambiando el filtro para revisar otros estados.'
-              : 'Reserva una sesión con un mentor para comenzar.'}
-          />
-        </div>
-      ) : (
+        )}
+        errorIcon={<Calendar size={48} />}
+        errorTitle="No pudimos cargar tus sesiones"
+        onRetry={reload}
+        emptyIcon={<Calendar size={48} />}
+        emptyTitle={filter ? `No hay sesiones ${getStatusLabel(filter).toLowerCase()}` : 'No tienes sesiones'}
+        emptyDescription={filter
+          ? 'Prueba cambiando el filtro para revisar otros estados.'
+          : 'Reserva una sesión con un mentor para comenzar.'}
+      >
         <>
           <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
             {stats.map(({ title, value, helper, icon, tone }) => (
@@ -548,7 +525,7 @@ export default function SessionsPage() {
             </div>
           </div>
         </>
-      )}
+      </AsyncContent>
 
       <Modal open={feedbackModal.open} onClose={closeFeedbackModal} title="Enviar feedback">
         <div className="space-y-4">
