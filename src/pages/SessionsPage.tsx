@@ -80,7 +80,7 @@ function compareSessionsByDate(a: MentorshipSessionResponse, b: MentorshipSessio
 
 function SessionSkeleton() {
   return (
-    <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+    <div className="rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-border/60">
       <div className="animate-pulse space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-3">
@@ -121,7 +121,7 @@ function SessionCard({
   const canLeaveFeedback = role === 'STUDENT' && session.status === 'COMPLETED'
 
   return (
-    <Card className="border-border bg-surface p-6 shadow-sm transition-all hover:shadow-lg">
+    <Card className="border-border/60 bg-surface/90 p-6 shadow-sm transition-all hover:shadow-lg">
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
@@ -164,21 +164,21 @@ function SessionCard({
         </div>
 
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
+          <div className="rounded-2xl bg-surface-alt/70 px-4 py-3 ring-1 ring-border/60">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Fecha</p>
             <p className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-text">
               <Calendar size={15} className="text-primary-600" aria-hidden />
               {formatSessionDate(session.date)}
             </p>
           </div>
-          <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
+          <div className="rounded-2xl bg-surface-alt/70 px-4 py-3 ring-1 ring-border/60">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Horario</p>
             <p className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-text">
               <Clock size={15} className="text-primary-600" aria-hidden />
               {session.startTime} - {session.endTime}
             </p>
           </div>
-          <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
+          <div className="rounded-2xl bg-surface-alt/70 px-4 py-3 ring-1 ring-border/60">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">{counterpartLabel}</p>
             <p className="mt-2 inline-flex items-center gap-2 text-sm font-medium text-text">
               <UserRound size={15} className="text-primary-600" aria-hidden />
@@ -376,7 +376,7 @@ export default function SessionsPage() {
           <div className="space-y-8">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
               {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+                <div key={index} className="rounded-2xl bg-surface p-6 shadow-sm ring-1 ring-border/60">
                   <div className="animate-pulse space-y-3">
                     <div className="h-4 w-24 rounded bg-surface-alt" />
                     <div className="h-8 w-16 rounded bg-surface-alt" />
