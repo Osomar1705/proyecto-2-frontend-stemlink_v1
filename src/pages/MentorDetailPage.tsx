@@ -8,16 +8,52 @@ import { Button } from '../components/ui/Button'
 import { Badge } from '../components/ui/Badge'
 import { Modal } from '../components/ui/Modal'
 import { Spinner } from '../components/ui/Spinner'
+import { EmptyState } from '../components/ui/EmptyState'
+import { Input } from '../components/ui/Input'
 import { useAuth } from '../contexts/AuthContext'
 import { parseApiError } from '../utils/errors'
-import { ExternalLink, Video, Calendar, ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Award, Calendar, Clock, ExternalLink, GraduationCap, Sparkles, Users, Video } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { MentorAvatar } from '../components/mentors/MentorAvatar'
 
-const DAYS = ['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY']
-const DAY_ES: Record<string, string> = { MONDAY:'Lunes', TUESDAY:'Martes', WEDNESDAY:'Miércoles', THURSDAY:'Jueves', FRIDAY:'Viernes', SATURDAY:'Sábado', SUNDAY:'Domingo' }
+const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
+const DAY_ES: Record<string, string> = {
+  MONDAY: 'Lunes',
+  TUESDAY: 'Martes',
+  WEDNESDAY: 'Miércoles',
+  THURSDAY: 'Jueves',
+  FRIDAY: 'Viernes',
+  SATURDAY: 'Sábado',
+  SUNDAY: 'Domingo',
+}
+const EMPTY_BOOKING_FORM = { date: '', startTime: '', endTime: '', topic: '' }
+const TOMORROW = new Date(Date.now() + 86400000).toISOString().split('T')[0]
+
+type BookingForm = typeof EMPTY_BOOKING_FORM
+type BookingFormErrors = Partial<Record<keyof BookingForm, string>>
+
+function validateBookingForm(form: BookingForm): BookingFormErrors {
+  const errors: BookingFormErrors = {}
+
+  if (!form.topic.trim()) errors.topic = 'Ingresa el tema de la sesión'
+  if (!form.date) errors.date = 'Selecciona una fecha'
+  else if (form.date < TOMORROW) errors.date = 'La fecha debe ser posterior a hoy'
+  if (!form.startTime) errors.startTime = 'Selecciona la hora de inicio'
+  if (!form.endTime) errors.endTime = 'Selecciona la hora de fin'
+  else if (form.startTime && form.endTime <= form.startTime) errors.endTime = 'La hora de fin debe ser posterior al inicio'
+
+  return errors
+}
+
+function parseMentorId(id: string | undefined): number | null {
+  if (!id) return null
+  const parsed = Number(id)
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null
+}
 
 export default function MentorDetailPage() {
   const { id } = useParams<{ id: string }>()
+  const mentorId = parseMentorId(id)
   const navigate = useNavigate()
   const { isAuthenticated, user } = useAuth()
   const [mentor, setMentor] = useState<MentorProfileResponse | null>(null)
@@ -25,15 +61,24 @@ export default function MentorDetailPage() {
   const [loading, setLoading] = useState(true)
   const [bookingOpen, setBookingOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [form, setForm] = useState({ date: '', startTime: '', endTime: '', topic: '' })
+  const [form, setForm] = useState<BookingForm>(EMPTY_BOOKING_FORM)
+  const [formErrors, setFormErrors] = useState<BookingFormErrors>({})
 
   useEffect(() => {
+    if (!mentorId) {
+      setLoading(false)
+      setMentor(null)
+      setAvailability([])
+      return
+    }
+
     const controller = new AbortController()
     const load = async () => {
+      setLoading(true)
       try {
         const [mRes, aRes] = await Promise.all([
-          mentorsApi.getById(Number(id), controller.signal),
-          isAuthenticated ? mentorsApi.getAvailability(Number(id)) : Promise.resolve({ data: [] }),
+          mentorsApi.getById(mentorId, controller.signal),
+          isAuthenticated ? mentorsApi.getAvailability(mentorId) : Promise.resolve({ data: [] }),
         ])
         setMentor(mRes.data)
         setAvailability(aRes.data)
@@ -46,19 +91,23 @@ export default function MentorDetailPage() {
     }
     load()
     return () => controller.abort()
-  }, [id, isAuthenticated])
+  }, [mentorId, isAuthenticated])
 
   const handleBook = async () => {
-    if (!form.date || !form.startTime || !form.endTime || !form.topic) {
-      toast.error('Completa todos los campos')
+    const errors = validateBookingForm(form)
+    setFormErrors(errors)
+    if (Object.keys(errors).length > 0) {
+      toast.error('Revisa los datos de la reserva')
       return
     }
     setSubmitting(true)
     try {
-      await bookingsApi.create({ mentorProfileId: Number(id), ...form })
+      if (!mentorId) throw new Error('Mentor inválido')
+      await bookingsApi.create({ mentorProfileId: mentorId, ...form, topic: form.topic.trim() })
       toast.success('¡Reserva enviada! El mentor la revisará pronto.')
       setBookingOpen(false)
-      setForm({ date: '', startTime: '', endTime: '', topic: '' })
+      setForm(EMPTY_BOOKING_FORM)
+      setFormErrors({})
     } catch (e) {
       toast.error(parseApiError(e))
     } finally {
@@ -66,89 +115,319 @@ export default function MentorDetailPage() {
     }
   }
 
+  const closeBookingModal = () => {
+    setBookingOpen(false)
+    setFormErrors({})
+  }
+
+  const availabilityDays = DAYS.filter(day => availability.some(a => a.dayOfWeek === day))
+
   if (loading) return <div className="flex justify-center py-20"><Spinner size="lg" /></div>
-  if (!mentor) return null
+
+  if (!mentor) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+        <button onClick={() => navigate('/mentors')} className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-primary-600">
+          <ArrowLeft size={16} /> Volver a mentores
+        </button>
+        <div className="mt-8 rounded-[2rem] border border-border/70 bg-surface p-6 shadow-sm">
+          <EmptyState
+            icon={<Users size={48} />}
+            title="Mentor no encontrado"
+            description="Revisa el enlace o vuelve al listado para elegir otro mentor."
+            action={{ label: 'Ver mentores', onClick: () => navigate('/mentors') }}
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-      <button onClick={() => navigate('/mentors')} className="flex items-center gap-2 text-sm text-muted hover:text-primary-600 transition-colors">
-        <ArrowLeft size={16} /> Volver a mentores
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <button
+        onClick={() => navigate('/mentors')}
+        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-primary-600 transition-colors hover:text-primary-700"
+      >
+        <ArrowLeft size={18} /> Volver a mentores
       </button>
 
-      <Card>
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-text">{mentor.name}</h1>
-            <div className="flex gap-3">
-              {mentor.linkedinUrl && (
-                <a href={mentor.linkedinUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-sm text-primary-600 hover:underline">
-                  <ExternalLink size={14} /> LinkedIn
-                </a>
-              )}
-              {mentor.videoCallUrl && (
-                <a href={mentor.videoCallUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-sm text-green-600 hover:underline">
-                  <Video size={14} /> Videollamada
-                </a>
-              )}
+      <div className="mb-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <div className="overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm">
+          <div className="relative p-6 sm:p-8">
+            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-primary-100/70 blur-3xl" />
+            <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-accent-100/60 blur-3xl" />
+
+            <div className="relative">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
+                <Sparkles size={16} className="text-accent-500" aria-hidden />
+                Perfil de mentor STEM
+              </div>
+
+              <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-start">
+                <MentorAvatar name={mentor.name} size="xl" className="mx-auto sm:mx-0" />
+
+                <div className="min-w-0 flex-1 text-center sm:text-left">
+                  <h1 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">
+                    {mentor.name}
+                  </h1>
+                  <p className="mt-2 text-base text-muted sm:text-lg">
+                    Mentor especializado en áreas STEM
+                  </p>
+                  <p className="mt-4 max-w-3xl leading-8 text-text">
+                    {mentor.bio || 'Mentor especializado en áreas STEM listo para acompañarte con sesiones personalizadas.'}
+                  </p>
+
+                  <div className="mt-6 flex flex-wrap justify-center gap-3 sm:justify-start">
+                    {mentor.linkedinUrl && (
+                      <a
+                        href={mentor.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-colors hover:border-primary-400 hover:text-primary-700"
+                      >
+                        <ExternalLink size={14} className="text-primary-600" aria-hidden />
+                        LinkedIn
+                      </a>
+                    )}
+                    {mentor.videoCallUrl && (
+                      <a
+                        href={mentor.videoCallUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-colors hover:border-accent-400 hover:text-accent-700"
+                      >
+                        <Video size={14} className="text-accent-500" aria-hidden />
+                        Videollamada
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          {isAuthenticated && user?.role === 'STUDENT' && (
-            <Button onClick={() => setBookingOpen(true)} className="flex items-center gap-2">
+
+          <div className="grid gap-4 border-t border-border bg-surface-alt/60 p-6 sm:grid-cols-3 sm:p-8">
+            <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+              <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
+                <Award size={16} className="text-accent-500" aria-hidden />
+                {mentor.skills?.length || 0}
+              </div>
+              <p className="text-xs text-muted">Especialidades registradas</p>
+            </div>
+            <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+              <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
+                <Calendar size={16} className="text-primary-600" aria-hidden />
+                {availability.length}
+              </div>
+              <p className="text-xs text-muted">Bloques disponibles</p>
+            </div>
+            <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+              <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
+                <GraduationCap size={16} className="text-primary-600" aria-hidden />
+                STEM
+              </div>
+              <p className="text-xs text-muted">Área principal</p>
+            </div>
+          </div>
+        </div>
+
+        <Card className="flex h-fit flex-col gap-5 border-border/80 p-6 shadow-sm">
+          <div>
+            <p className="text-sm font-semibold text-text">Acción principal</p>
+            <p className="mt-1 text-sm leading-6 text-muted">
+              Revisa el perfil, valida la disponibilidad y agenda una sesión cuando estés listo.
+            </p>
+          </div>
+
+          {isAuthenticated && user?.role === 'STUDENT' ? (
+            <Button onClick={() => setBookingOpen(true)} className="w-full bg-accent-500 hover:bg-accent-600">
               <Calendar size={16} /> Reservar sesión
             </Button>
-          )}
-        </div>
+          ) : !isAuthenticated ? (
+            <Button variant="secondary" onClick={() => navigate('/login')} className="w-full">
+              Inicia sesión para reservar
+            </Button>
+          ) : null}
 
-        <p className="text-text mt-4 leading-relaxed">{mentor.bio || 'Sin descripción'}</p>
-
-        <div className="flex flex-wrap gap-2 mt-4">
-          {mentor.skills?.map(s => <Badge key={s.id} label={s.name} />)}
-        </div>
-      </Card>
-
-      {isAuthenticated && availability.length > 0 && (
-        <Card>
-          <h2 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
-            <Calendar size={18} className="text-primary-600" /> Disponibilidad
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {DAYS.filter(d => availability.some(a => a.dayOfWeek === d)).map(day => (
-              <div key={day}>
-                <p className="text-xs font-semibold text-muted mb-1">{DAY_ES[day]}</p>
-                {availability.filter(a => a.dayOfWeek === day).map(a => (
-                  <div key={a.id} className="text-sm text-text bg-primary-50 px-3 py-1.5 rounded-lg mb-1">
-                    {a.startTime} – {a.endTime}
-                  </div>
-                ))}
+          <div className="rounded-xl border border-border bg-surface-alt p-4">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resumen</p>
+            <div className="mt-4 space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-sm text-muted">Especialidades</span>
+                <span className="text-sm font-semibold text-text">{mentor.skills?.length || 0}</span>
               </div>
-            ))}
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-sm text-muted">Disponibilidad</span>
+                <span className="text-sm font-semibold text-text">{availability.length}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-sm text-muted">Visibilidad</span>
+                <span className="text-sm font-semibold text-text">{isAuthenticated ? 'Autenticada' : 'Pública'}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-border bg-surface-alt p-4">
+            <p className="text-sm font-semibold text-text">Disponibilidad</p>
+            <p className="mt-1 text-sm leading-6 text-muted">
+              {isAuthenticated
+                ? availability.length > 0
+                  ? 'Este mentor ya publicó horarios disponibles para coordinar sesiones.'
+                  : 'Aún no hay horarios publicados por este mentor.'
+                : 'Inicia sesión para consultar los bloques disponibles y reservar.'}
+            </p>
           </div>
         </Card>
-      )}
+      </div>
 
-      <Modal open={bookingOpen} onClose={() => setBookingOpen(false)} title="Reservar sesión con mentor">
-        <div className="space-y-3">
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-text">Tema de la sesión</label>
-            <input value={form.topic} onChange={e => setForm(f => ({ ...f, topic: e.target.value }))} placeholder="ej: Introducción a Java" className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <Card className="border-border/80 p-6 shadow-sm sm:p-8">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-text">Especialidades</h2>
+            <p className="mt-1 text-sm text-muted">
+              Áreas técnicas publicadas por el mentor dentro de la plataforma.
+            </p>
           </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-text">Fecha</label>
-            <input type="date" value={form.date} min={new Date(Date.now() + 86400000).toISOString().split('T')[0]} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+
+          <div className="flex flex-wrap gap-2">
+            {mentor.skills?.map(skill => (
+              <Badge key={skill.id} label={skill.name} />
+            ))}
+            {!mentor.skills?.length && <Badge label="STEM" color="neutral" />}
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-text">Hora inicio</label>
-              <input type="time" value={form.startTime} onChange={e => setForm(f => ({ ...f, startTime: e.target.value }))} className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+        </Card>
+
+        <Card className="border-border/80 p-6 shadow-sm">
+          <div className="mb-5 flex items-start justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-text">Canales del mentor</h2>
+              <p className="mt-1 text-sm text-muted">
+                Enlaces públicos asociados al perfil.
+              </p>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-text">Hora fin</label>
-              <input type="time" value={form.endTime} onChange={e => setForm(f => ({ ...f, endTime: e.target.value }))} className="px-3 py-2 border border-border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50">
+              <Users size={20} className="text-primary-600" aria-hidden />
             </div>
           </div>
+
+          <div className="space-y-3">
+            <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
+              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">LinkedIn</p>
+              <p className="mt-2 text-sm font-medium text-text">
+                {mentor.linkedinUrl || 'No disponible'}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
+              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Videollamada</p>
+              <p className="mt-2 text-sm font-medium text-text break-all">
+                {mentor.videoCallUrl || 'No disponible'}
+              </p>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-8">
+        <Card className="border border-border/80 bg-surface p-6 shadow-sm sm:p-8">
+          <div className="mb-6 flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 text-2xl font-bold text-text">
+              <Calendar size={18} className="text-primary-600" aria-hidden />
+              Disponibilidad
+            </h2>
+            <span className="rounded-full border border-border bg-surface-alt px-3 py-1 text-xs font-medium text-muted">
+              {availability.length} bloques
+            </span>
+          </div>
+
+          {!isAuthenticated ? (
+            <div className="rounded-2xl border border-border bg-surface-alt p-6">
+              <EmptyState
+                icon={<Clock size={40} />}
+                title="Inicia sesión para ver la disponibilidad"
+                description="El listado de horarios se muestra solo a usuarios autenticados."
+                action={{ label: 'Iniciar sesión', onClick: () => navigate('/login') }}
+              />
+            </div>
+          ) : availability.length === 0 ? (
+            <div className="rounded-2xl border border-border bg-surface-alt p-6">
+              <EmptyState
+                icon={<Clock size={40} />}
+                title="Sin disponibilidad publicada"
+                description="Este mentor aún no ha registrado bloques de horario disponibles."
+              />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              {availabilityDays.map(day => (
+                <div key={day} className="rounded-xl border border-border bg-surface-alt p-4 transition-colors hover:border-primary-300">
+                  <p className="mb-3 text-sm font-semibold text-text">{DAY_ES[day]}</p>
+                  <div className="space-y-2">
+                    {availability.filter(slot => slot.dayOfWeek === day).map(slot => (
+                      <div key={slot.id} className="flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-3 text-sm text-muted">
+                        <Clock size={16} className="text-primary-600" aria-hidden />
+                        <span className="font-medium text-text">{slot.startTime} - {slot.endTime}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      </div>
+
+      <Modal open={bookingOpen} onClose={closeBookingModal} title="Reservar sesión con mentor">
+        <div className="space-y-4">
+          <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
+            <p className="text-sm font-semibold text-text">{mentor.name}</p>
+            <p className="mt-1 text-xs leading-5 text-muted">
+              Completa los datos de la sesión. La reserva conservará el mismo flujo actual contra el backend.
+            </p>
+          </div>
+
+          <Input
+            id="booking-topic"
+            label="Tema de la sesión"
+            value={form.topic}
+            onChange={e => setForm(f => ({ ...f, topic: e.target.value }))}
+            placeholder="Ej: Introducción a Java"
+            error={formErrors.topic}
+          />
+          <Input
+            id="booking-date"
+            label="Fecha"
+            type="date"
+            value={form.date}
+            min={TOMORROW}
+            onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
+            error={formErrors.date}
+          />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Input
+              id="booking-start-time"
+              label="Hora inicio"
+              type="time"
+              value={form.startTime}
+              onChange={e => setForm(f => ({ ...f, startTime: e.target.value }))}
+              error={formErrors.startTime}
+            />
+            <Input
+              id="booking-end-time"
+              label="Hora fin"
+              type="time"
+              value={form.endTime}
+              onChange={e => setForm(f => ({ ...f, endTime: e.target.value }))}
+              error={formErrors.endTime}
+            />
+          </div>
+
           <div className="flex gap-2 pt-2">
-            <Button variant="secondary" className="flex-1" onClick={() => setBookingOpen(false)}>Cancelar</Button>
-            <Button className="flex-1" loading={submitting} onClick={handleBook}>Confirmar reserva</Button>
+            <Button variant="secondary" className="flex-1" onClick={closeBookingModal}>
+              Cancelar
+            </Button>
+            <Button className="flex-1" loading={submitting} onClick={handleBook}>
+              Confirmar reserva
+            </Button>
           </div>
         </div>
       </Modal>

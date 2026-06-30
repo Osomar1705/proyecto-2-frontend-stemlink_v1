@@ -1,17 +1,17 @@
 interface Props {
   label: string
-  color?: 'indigo' | 'green' | 'yellow' | 'red' | 'gray'
+  color?: 'primary' | 'success' | 'warning' | 'danger' | 'neutral'
 }
 
 const colors = {
-  indigo: 'bg-primary-50 text-primary-700',
-  green:  'bg-accent-50 text-accent-600',
-  yellow: 'bg-primary-100 text-primary-700',
-  red:    'bg-surface-alt text-muted',
-  gray:   'bg-surface-alt text-muted',
+  primary: 'bg-primary-50 text-primary-700',
+  success: 'bg-accent-50 text-accent-600',
+  warning: 'bg-primary-100 text-primary-700',
+  danger:  'bg-surface-alt text-muted',
+  neutral: 'bg-surface-alt text-muted',
 }
 
-export function Badge({ label, color = 'indigo' }: Props) {
+export function Badge({ label, color = 'primary' }: Props) {
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colors[color]}`}>
       {label}

@@ -23,10 +23,10 @@ export const Input = forwardRef<HTMLInputElement, Props>(({ label, error, helper
         aria-invalid={!!error}
         aria-describedby={error ? `${inputId}-error` : helperText ? `${inputId}-help` : undefined}
         {...props}
-        className={`px-3 py-2 border rounded-lg text-sm outline-none transition-colors focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-surface-alt disabled:cursor-not-allowed ${error ? 'border-red-500' : 'border-border'} ${className}`}
+        className={`px-3 py-2 border rounded-lg text-sm outline-none transition-colors focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-surface-alt disabled:cursor-not-allowed ${error ? 'border-primary-600' : 'border-border'} ${className}`}
       />
       {helperText && !error && <span id={`${inputId}-help`} className="text-xs text-muted">{helperText}</span>}
-      {error && <span id={`${inputId}-error`} className="text-xs text-red-500">{error}</span>}
+      {error && <span id={`${inputId}-error`} className="text-xs text-primary-700">{error}</span>}
     </div>
   )
 })

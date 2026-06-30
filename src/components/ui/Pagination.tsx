@@ -31,18 +31,23 @@ export function Pagination({ page, totalPages, totalElements, size, onPageChange
           </select>
         )}
         <button
+          type="button"
           onClick={() => onPageChange(page - 1)}
           disabled={page === 0}
+          aria-label="Ir a la página anterior"
           className="p-1.5 rounded-lg border border-border disabled:opacity-40 hover:bg-surface-alt transition-colors"
         >
-          <ChevronLeft size={16} />
+          <ChevronLeft size={16} aria-hidden />
         </button>
         {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
           const p = totalPages <= 5 ? i : Math.max(0, Math.min(page - 2, totalPages - 5)) + i
           return (
             <button
+              type="button"
               key={p}
               onClick={() => onPageChange(p)}
+              aria-label={`Ir a la página ${p + 1}`}
+              aria-current={p === page ? 'page' : undefined}
               className={`w-8 h-8 text-sm rounded-lg transition-colors ${p === page ? 'bg-primary-600 text-surface' : 'border border-border hover:bg-surface-alt'}`}
             >
               {p + 1}
@@ -50,11 +55,13 @@ export function Pagination({ page, totalPages, totalElements, size, onPageChange
           )
         })}
         <button
+          type="button"
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages - 1}
+          aria-label="Ir a la página siguiente"
           className="p-1.5 rounded-lg border border-border disabled:opacity-40 hover:bg-surface-alt transition-colors"
         >
-          <ChevronRight size={16} />
+          <ChevronRight size={16} aria-hidden />
         </button>
       </div>
     </div>
