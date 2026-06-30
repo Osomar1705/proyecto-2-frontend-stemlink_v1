@@ -5,6 +5,9 @@ export const mentorsApi = {
   list: (params: { name?: string; skillIds?: number[]; page?: number; size?: number }, signal?: AbortSignal) =>
     client.get<Page<MentorProfileResponse>>('/api/mentors', { params, signal }),
 
+  getMyProfile: (signal?: AbortSignal) =>
+    client.get<MentorProfileResponse>('/api/users/me/profile', { signal }),
+
   getById: (id: number, signal?: AbortSignal) =>
     client.get<MentorProfileResponse>(`/api/mentors/${id}`, { signal }),
 

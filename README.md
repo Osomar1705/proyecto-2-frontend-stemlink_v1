@@ -33,10 +33,10 @@ La app cubre el flujo principal de estudiante y mentor para la rúbrica web del 
 Crea `.env`:
 
 ```env
-VITE_API_BASE_URL=http://localhost:8082
+VITE_API_BASE_URL=https://stem-link-app-1.onrender.com
 ```
 
-Si el backend se unifica a `/api/v1`, el frontend ya soporta query params paginados y `skillIds` serializado como `1,2,3`; solo habría que alinear las rutas del backend expuesto.
+El backend actual expone aliases en `/api` y `/api/v1`, así que este frontend funciona contra la versión ya publicada del backend sin cambios extra de rutas.
 
 ## Scripts
 
@@ -82,8 +82,6 @@ Implementado en este repo:
 
 Pendiente fuera de este repo:
 
-- backend definitivo con CORS de producción y rutas finales `/api/v1`
-- endpoint paginado de bookings si el backend lo exige
 - repo mobile con Expo
 - deployment público integral y pitch/demo final
 

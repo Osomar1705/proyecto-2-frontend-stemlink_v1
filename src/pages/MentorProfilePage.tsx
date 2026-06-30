@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { mentorsApi } from '../api/mentors.api'
-import { authApi } from '../api/auth.api'
 import type { TechnicalSkillDTO, AvailabilityBlockDTO } from '../types'
 import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
@@ -107,14 +106,14 @@ export default function MentorProfilePage() {
   const videoCallUrl = watch('videoCallUrl')
   const linkedinUrl = watch('linkedinUrl')
 
-  const loadMentorProfile = useCallback(async (_signal: AbortSignal) => {
-    const authRes = await authApi.me()
-    const mentorId = authRes.data.id
-    const [tagsRes, profileRes, availabilityRes] = await Promise.all([
-      mentorsApi.getTags(),
-      mentorsApi.getById(mentorId),
-      mentorsApi.getAvailability(mentorId),
+  const loadMentorProfile = useCallback(async (signal: AbortSignal) => {
+    const [tagsRes, profileRes] = await Promise.all([
+      mentorsApi.getTags(signal),
+      mentorsApi.getMyProfile(signal),
     ])
+
+    const mentorId = profileRes.data.id
+    const availabilityRes = await mentorsApi.getAvailability(mentorId, signal)
 
     const resource: MentorProfileResource = {
       skills: tagsRes.data,

@@ -16,7 +16,10 @@ const schema = z.object({
   email: z.string().email('Email inválido'),
   password: z.string()
     .min(8, 'Mínimo 8 caracteres')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])/, 'Debe incluir mayúscula, minúscula, número y carácter especial'),
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      'Debe incluir mayúscula, minúscula, número y un carácter especial permitido (@ $ ! % * ? &)',
+    ),
   role: z.enum(['STUDENT', 'MENTOR']).refine(v => !!v, 'Selecciona un rol'),
 })
 
@@ -135,7 +138,7 @@ export default function RegisterPage() {
                     placeholder="Mínimo 8 caracteres"
                     autoComplete="new-password"
                     error={errors.password?.message}
-                    helperText={!errors.password ? 'Debe incluir mayúscula, minúscula, número y carácter especial.' : undefined}
+                    helperText={!errors.password ? 'Debe incluir mayúscula, minúscula, número y uno de estos caracteres: @ $ ! % * ? &' : undefined}
                     {...register('password')}
                   />
                   <button
