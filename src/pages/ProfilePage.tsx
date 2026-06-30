@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import { authApi } from '../api/auth.api'
 import { notificationsApi } from '../api/notifications.api'
 import { sessionsApi } from '../api/sessions.api'
 import type { UserResponse, MentorshipSessionResponse } from '../types'
+import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
-import { Spinner } from '../components/ui/Spinner'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Badge } from '../components/ui/Badge'
 import { PageHero } from '../components/ui/PageHero'
-import { parseApiError } from '../utils/errors'
+import { useAsyncResource } from '../hooks/useAsyncResource'
 import { Bell, Calendar, Mail, Sparkles, UserRound } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -18,72 +18,51 @@ type ProfileSummary = {
   unreadCount: number
 }
 
+const EMPTY_PROFILE: ProfileSummary = {
+  user: { id: 0, name: '', email: '', role: '' },
+  sessions: [],
+  unreadCount: 0,
+}
+
 export default function ProfilePage() {
-  const [data, setData] = useState<ProfileSummary | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [retryKey, setRetryKey] = useState(0)
+  const loadProfile = useCallback(async (signal: AbortSignal) => {
+    const [userRes, sessionsRes, notificationsRes] = await Promise.all([
+      authApi.me(),
+      sessionsApi.list(undefined, signal),
+      notificationsApi.list({ page: 0, size: 20 }, signal),
+    ])
 
-  useEffect(() => {
-    const controller = new AbortController()
-
-    const load = async () => {
-      setLoading(true)
-      setError('')
-
-      try {
-        const [userRes, sessionsRes, notificationsRes] = await Promise.all([
-          authApi.me(),
-          sessionsApi.list(undefined, controller.signal),
-          notificationsApi.list({ page: 0, size: 20 }, controller.signal),
-        ])
-
-        setData({
-          user: userRes.data,
-          sessions: sessionsRes.data,
-          unreadCount: notificationsRes.data.content.filter((notification) => !notification.read).length,
-        })
-      } catch (e: unknown) {
-        const err = e as { name?: string }
-        if (err.name !== 'CanceledError') {
-          const message = parseApiError(e)
-          setError(message)
-          setData(null)
-          toast.error(message)
-        }
-      } finally {
-        setLoading(false)
-      }
+    return {
+      user: userRes.data,
+      sessions: sessionsRes.data,
+      unreadCount: notificationsRes.data.content.filter((notification) => !notification.read).length,
     }
+  }, [])
 
-    load()
-    return () => controller.abort()
-  }, [retryKey])
+  const { data, loading, error, reload } = useAsyncResource<ProfileSummary | null>({
+    initialData: null,
+    load: loadProfile,
+    deps: [],
+    onError: (message) => toast.error(message),
+  })
 
-  if (loading) {
-    return <div className="flex justify-center py-20"><Spinner size="lg" /></div>
-  }
-
-  if (error || !data) {
-    return (
-      <div className="mx-auto max-w-5xl">
-        <div className="rounded-[2rem] border border-border/70 bg-surface p-6 shadow-sm">
-          <EmptyState
-            icon={<UserRound size={48} />}
-            title="No pudimos cargar tu perfil"
-            description={error || 'No encontramos información del usuario.'}
-            action={{ label: 'Reintentar', onClick: () => setRetryKey((value) => value + 1) }}
-          />
-        </div>
-      </div>
-    )
-  }
-
-  const completedSessions = data.sessions.filter((session) => session.status === 'COMPLETED').length
-  const nextSessions = data.sessions.filter((session) => session.status === 'CONFIRMED' || session.status === 'PENDING').length
+  const profileData = data ?? EMPTY_PROFILE
+  const completedSessions = profileData.sessions.filter((session) => session.status === 'COMPLETED').length
+  const nextSessions = profileData.sessions.filter((session) => session.status === 'CONFIRMED' || session.status === 'PENDING').length
 
   return (
     <div className="mx-auto max-w-6xl">
+      <AsyncContent
+        loading={loading}
+        error={error}
+        isEmpty={!data}
+        errorIcon={<UserRound size={48} />}
+        errorTitle="No pudimos cargar tu perfil"
+        onRetry={reload}
+        emptyIcon={<UserRound size={48} />}
+        emptyTitle="No encontramos tu perfil"
+        emptyDescription="Intenta recargar la vista para volver a consultar tu información."
+      >
       <div className="mb-8 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <PageHero
           badge={(
@@ -92,12 +71,12 @@ export default function ProfilePage() {
               Perfil del estudiante
             </div>
           )}
-          title={data.user.name}
+          title={profileData.user.name}
           description="Tu resumen personal dentro de STEM Link."
           aside={(
             <div className="flex flex-col items-center text-center">
               <div className="mb-5 flex size-28 items-center justify-center rounded-full bg-gradient-to-br from-primary-600 to-accent-500 text-3xl font-bold text-surface shadow-lg">
-                {data.user.name.slice(0, 2).toUpperCase()}
+                {profileData.user.name.slice(0, 2).toUpperCase()}
               </div>
             </div>
           )}
@@ -113,7 +92,7 @@ export default function ProfilePage() {
               </div>
               <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Alertas</p>
-                <p className="mt-2 text-2xl font-bold text-text">{data.unreadCount}</p>
+                <p className="mt-2 text-2xl font-bold text-text">{profileData.unreadCount}</p>
               </div>
             </div>
           )}
@@ -135,7 +114,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-text">Nombre</p>
-                  <p className="mt-1 text-sm text-muted">{data.user.name}</p>
+                  <p className="mt-1 text-sm text-muted">{profileData.user.name}</p>
                 </div>
               </div>
             </div>
@@ -147,7 +126,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-text">Correo</p>
-                  <p className="mt-1 text-sm break-all text-muted">{data.user.email}</p>
+                  <p className="mt-1 text-sm break-all text-muted">{profileData.user.email}</p>
                 </div>
               </div>
             </div>
@@ -180,7 +159,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="space-y-3">
-            {data.sessions.slice(0, 4).map((session) => (
+            {profileData.sessions.slice(0, 4).map((session) => (
               <div key={session.id} className="rounded-xl border border-border bg-surface-alt px-4 py-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="font-semibold text-text">{session.topic}</p>
@@ -192,7 +171,7 @@ export default function ProfilePage() {
               </div>
             ))}
 
-            {data.sessions.length === 0 && (
+            {profileData.sessions.length === 0 && (
               <EmptyState
                 icon={<Calendar size={36} />}
                 title="Sin sesiones registradas"
@@ -215,8 +194,8 @@ export default function ProfilePage() {
 
           <div className="rounded-2xl border border-border bg-surface-alt p-5">
             <p className="text-sm font-semibold text-text">
-              {data.unreadCount > 0
-                ? `Tienes ${data.unreadCount} notificación${data.unreadCount !== 1 ? 'es' : ''} sin revisar.`
+              {profileData.unreadCount > 0
+                ? `Tienes ${profileData.unreadCount} notificación${profileData.unreadCount !== 1 ? 'es' : ''} sin revisar.`
                 : 'No tienes alertas pendientes.'}
             </p>
             <p className="mt-2 text-sm leading-6 text-muted">
@@ -225,6 +204,7 @@ export default function ProfilePage() {
           </div>
         </Card>
       </div>
+      </AsyncContent>
     </div>
   )
 }

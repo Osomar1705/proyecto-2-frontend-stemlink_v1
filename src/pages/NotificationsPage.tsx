@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { notificationsApi } from '../api/notifications.api'
 import type { NotificationResponse, Page } from '../types'
+import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
-import { EmptyState } from '../components/ui/EmptyState'
 import { Pagination } from '../components/ui/Pagination'
 import { PageHero } from '../components/ui/PageHero'
+import { useAsyncResource } from '../hooks/useAsyncResource'
 import { usePagination } from '../hooks/usePagination'
 import { parseApiError } from '../utils/errors'
 import { Bell, Calendar, CheckCheck, CheckCircle, Sparkles } from 'lucide-react'
@@ -48,39 +49,21 @@ function NotificationSkeleton() {
 
 export default function NotificationsPage() {
   const { page, size, setPage, setSize } = usePagination(10)
-  const [data, setData] = useState<Page<NotificationResponse> | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [retryKey, setRetryKey] = useState(0)
   const [filter, setFilter] = useState<'all' | 'unread'>('all')
   const [markingIds, setMarkingIds] = useState<number[]>([])
 
-  const load = useCallback(async (signal?: AbortSignal) => {
-    setLoading(true)
-    setError('')
-    try {
-      const res = await notificationsApi.list({ page, size }, signal)
-      setData(res.data)
-    } catch (e: unknown) {
-      const err = e as { name?: string }
-      if (err.name !== 'CanceledError') {
-        const message = parseApiError(e)
-        setError(message)
-        setData(null)
-        toast.error(message)
-      }
-    } finally {
-      setLoading(false)
-    }
+  const loadNotifications = useCallback(async (signal: AbortSignal) => {
+    const res = await notificationsApi.list({ page, size }, signal)
+    return res.data
   }, [page, size])
 
-  useEffect(() => {
-    const controller = new AbortController()
-    load(controller.signal)
-    return () => controller.abort()
-  }, [load, retryKey])
+  const { data, setData, loading, error, reload } = useAsyncResource<Page<NotificationResponse> | null>({
+    initialData: null,
+    load: loadNotifications,
+    deps: [page, size],
+    onError: (message) => toast.error(message),
+  })
 
-  const retryNotifications = () => setRetryKey(prev => prev + 1)
   const unreadCount = data?.content.filter(notification => !notification.read).length || 0
 
   const visibleNotifications = useMemo(() => (
@@ -150,30 +133,24 @@ export default function NotificationsPage() {
         />
       </div>
 
-      {loading ? (
-        <div className="space-y-4">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <NotificationSkeleton key={index} />
-          ))}
-        </div>
-      ) : error ? (
-        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-          <EmptyState
-            icon={<Bell size={48} />}
-            title="No pudimos cargar tus notificaciones"
-            description={error}
-            action={{ label: 'Reintentar', onClick: retryNotifications }}
-          />
-        </div>
-      ) : data?.content.length === 0 || visibleNotifications?.length === 0 ? (
-        <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-          <EmptyState
-            icon={<Bell size={48} />}
-            title={filter === 'unread' ? 'Sin notificaciones nuevas' : 'Sin notificaciones'}
-            description={filter === 'unread' ? 'No tienes notificaciones pendientes por revisar.' : 'Cuando tengas actividad aparecerá aquí.'}
-          />
-        </div>
-      ) : (
+      <AsyncContent
+        loading={loading}
+        error={error}
+        isEmpty={Boolean(data) && ((data?.content.length ?? 0) === 0 || (visibleNotifications?.length ?? 0) === 0)}
+        loadingFallback={(
+          <div className="space-y-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <NotificationSkeleton key={index} />
+            ))}
+          </div>
+        )}
+        errorIcon={<Bell size={48} />}
+        errorTitle="No pudimos cargar tus notificaciones"
+        onRetry={reload}
+        emptyIcon={<Bell size={48} />}
+        emptyTitle={filter === 'unread' ? 'Sin notificaciones nuevas' : 'Sin notificaciones'}
+        emptyDescription={filter === 'unread' ? 'No tienes notificaciones pendientes por revisar.' : 'Cuando tengas actividad aparecerá aquí.'}
+      >
         <>
           <div className="grid gap-4">
             {visibleNotifications?.map(notification => {
@@ -252,7 +229,7 @@ export default function NotificationsPage() {
             </div>
           )}
         </>
-      )}
+      </AsyncContent>
     </div>
   )
 }

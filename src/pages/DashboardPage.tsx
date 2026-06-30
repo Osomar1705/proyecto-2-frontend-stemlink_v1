@@ -1,19 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { sessionsApi } from '../api/sessions.api'
 import { notificationsApi } from '../api/notifications.api'
+import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
-import { Spinner } from '../components/ui/Spinner'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
-import { EmptyState } from '../components/ui/EmptyState'
 import { PageHero } from '../components/ui/PageHero'
 import { StatCard } from '../components/ui/StatCard'
+import { useAsyncResource } from '../hooks/useAsyncResource'
 import { ArrowRight, Bell, BookOpen, Calendar, CheckCircle2, Clock3, GraduationCap, Sparkles, TrendingUp, UserRound, Users } from 'lucide-react'
 import type { MentorshipSessionResponse } from '../types'
 import toast from 'react-hot-toast'
-import { parseApiError } from '../utils/errors'
 
 function formatSessionDate(value: string) {
   const date = new Date(`${value}T00:00:00`)
@@ -30,42 +29,26 @@ function formatSessionDate(value: string) {
 export default function DashboardPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [sessions, setSessions] = useState<MentorshipSessionResponse[]>([])
-  const [unreadCount, setUnreadCount] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [retryKey, setRetryKey] = useState(0)
+  const loadDashboard = useCallback(async (signal: AbortSignal) => {
+    const [sessRes, notifRes] = await Promise.all([
+      sessionsApi.list(undefined, signal),
+      notificationsApi.list({ page: 0, size: 50 }, signal),
+    ])
 
-  useEffect(() => {
-    const controller = new AbortController()
-    const load = async () => {
-      setLoading(true)
-      setError('')
-      try {
-        const [sessRes, notifRes] = await Promise.all([
-          sessionsApi.list(undefined, controller.signal),
-          notificationsApi.list({ page: 0, size: 50 }, controller.signal),
-        ])
-        setSessions(sessRes.data)
-        setUnreadCount(notifRes.data.content.filter(n => !n.read).length)
-      } catch (e: unknown) {
-        const err = e as { name?: string }
-        if (err.name !== 'CanceledError') {
-          const message = parseApiError(e)
-          setError(message)
-          setSessions([])
-          setUnreadCount(0)
-          toast.error(message)
-        }
-      } finally {
-        setLoading(false)
-      }
+    return {
+      sessions: sessRes.data,
+      unreadCount: notifRes.data.content.filter((notification) => !notification.read).length,
     }
-    load()
-    return () => controller.abort()
-  }, [retryKey])
+  }, [])
 
-  const retryDashboard = () => setRetryKey(prev => prev + 1)
+  const { data, loading, error, reload } = useAsyncResource({
+    initialData: { sessions: [] as MentorshipSessionResponse[], unreadCount: 0 },
+    load: loadDashboard,
+    deps: [],
+    onError: (message) => toast.error(message),
+  })
+
+  const { sessions, unreadCount } = data
 
   const confirmed = sessions.filter(s => s.status === 'CONFIRMED')
   const pending = sessions.filter(s => s.status === 'PENDING')
@@ -138,25 +121,15 @@ export default function DashboardPage() {
     },
   ]
 
-  if (loading) return <div className="flex justify-center py-20"><Spinner size="lg" /></div>
-
-  if (error) {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="rounded-[2rem] border border-border/70 bg-surface p-6 shadow-sm">
-          <EmptyState
-            icon={<BookOpen size={48} />}
-            title="No pudimos cargar tu panel"
-            description={error}
-            action={{ label: 'Reintentar', onClick: retryDashboard }}
-          />
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <AsyncContent
+        loading={loading}
+        error={error}
+        errorIcon={<BookOpen size={48} />}
+        errorTitle="No pudimos cargar tu panel"
+        onRetry={reload}
+      >
       <div className="mb-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <PageHero
           badge={(
@@ -414,6 +387,7 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
+      </AsyncContent>
     </div>
   )
 }
