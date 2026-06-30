@@ -335,25 +335,30 @@ export default function SessionsPage() {
           title="Mis sesiones"
           description="Revisa próximas mentorías, confirma acciones pendientes y conserva un historial claro de tu actividad."
           aside={(
-            <div className="rounded-xl border border-border bg-surface-alt px-4 py-4">
-              <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Vista activa</p>
-              <p className="mt-2 text-sm font-semibold text-text">
-                {filter ? `Filtro por ${getStatusLabel(filter)}` : 'Todas las sesiones'}
-              </p>
-              <p className="mt-1 text-sm text-muted">
-                {sessions.length} resultado{sessions.length !== 1 ? 's' : ''} cargado{sessions.length !== 1 ? 's' : ''} desde el backend.
-              </p>
+            <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[24rem]">
+              <div className="rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Vista activa</p>
+                <p className="mt-1 text-sm font-semibold text-text">
+                  {filter ? `Filtro por ${getStatusLabel(filter)}` : 'Todas las sesiones'}
+                </p>
+              </div>
+              <div className="rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resultados</p>
+                <p className="mt-1 text-sm font-semibold text-text">
+                  {sessions.length} cargadas
+                </p>
+              </div>
             </div>
           )}
           footer={(
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 rounded-3xl bg-surface/70 p-4 ring-1 ring-border/60">
               {SESSION_FILTERS.map(status => (
                 <button
                   key={status}
                   type="button"
                   onClick={() => setFilter(status)}
                   aria-pressed={filter === status}
-                  className={`rounded-lg border px-4 py-2 text-sm font-medium transition-all ${filter === status ? 'border-primary-600 bg-primary-600 text-surface shadow-sm' : 'border-border bg-surface text-muted hover:bg-surface-alt hover:text-text'}`}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold ring-1 transition-all ${filter === status ? 'bg-primary-600 text-surface ring-primary-600' : 'bg-surface text-muted ring-border/60 hover:text-text hover:ring-primary-400'}`}
                 >
                   {status ? getStatusLabel(status) : 'Todas'}
                 </button>
@@ -411,15 +416,15 @@ export default function SessionsPage() {
           </div>
 
           <div className="mb-8 grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-            <Card className="border-border bg-surface p-6 shadow-sm sm:p-8">
-              <div className="mb-6 flex items-center justify-between gap-4">
+            <Card className="border-border/70 bg-surface/90 p-6 shadow-sm sm:p-8">
+              <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-text">Calendario</h2>
+                  <h2 className="text-2xl font-bold tracking-tight text-text">Calendario</h2>
                   <p className="mt-1 text-sm text-muted">
                     Próximas sesiones confirmadas o pendientes de respuesta.
                   </p>
                 </div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-xs font-medium text-muted">
+                <div className="inline-flex items-center gap-2 rounded-full bg-surface-alt/80 px-3 py-1 text-xs font-medium text-muted ring-1 ring-border/60">
                   <Sparkles size={14} className="text-accent-500" aria-hidden />
                   Agenda actual
                 </div>
@@ -434,7 +439,7 @@ export default function SessionsPage() {
               ) : (
                 <div className="space-y-4">
                   {calendarSessions.map(session => (
-                    <div key={session.id} className="rounded-xl border border-border bg-surface-alt p-4">
+                    <div key={session.id} className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
@@ -462,9 +467,9 @@ export default function SessionsPage() {
               )}
             </Card>
 
-            <Card className="border-border bg-surface p-6 shadow-sm sm:p-8">
+            <Card className="border-border/70 bg-surface/90 p-6 shadow-sm sm:p-8">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-text">Historial</h2>
+                <h2 className="text-2xl font-bold tracking-tight text-text">Historial</h2>
                 <p className="mt-1 text-sm text-muted">
                   Sesiones completadas o canceladas dentro del resultado actual.
                 </p>
@@ -479,7 +484,7 @@ export default function SessionsPage() {
               ) : (
                 <div className="space-y-3">
                   {historySessions.map(session => (
-                    <div key={session.id} className="rounded-xl border border-border bg-surface-alt px-4 py-4">
+                    <div key={session.id} className="rounded-2xl bg-surface-alt/70 px-4 py-4 ring-1 ring-border/60">
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
@@ -504,7 +509,7 @@ export default function SessionsPage() {
 
           <div>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-text">Todas las sesiones</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-text">Todas las sesiones</h2>
               <p className="mt-1 text-sm text-muted">
                 Vista completa del resultado cargado, con acciones según rol y estado.
               </p>
@@ -529,7 +534,7 @@ export default function SessionsPage() {
 
       <Modal open={feedbackModal.open} onClose={closeFeedbackModal} title="Enviar feedback">
         <form className="space-y-4" onSubmit={handleSubmit(handleFeedback)} noValidate>
-          <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
+          <div className="rounded-xl bg-surface-alt px-4 py-3 ring-1 ring-border/60">
             <p className="text-sm font-semibold text-text">Feedback de la sesión</p>
             <p className="mt-1 text-xs leading-5 text-muted">
               Este formulario conserva el mismo envío actual al backend y solo cambia la interfaz.
