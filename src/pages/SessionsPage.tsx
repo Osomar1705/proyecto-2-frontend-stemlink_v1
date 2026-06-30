@@ -9,6 +9,7 @@ import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
+import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { Modal } from '../components/ui/Modal'
 import { PageHero } from '../components/ui/PageHero'
 import { StatCard } from '../components/ui/StatCard'
@@ -321,6 +322,8 @@ export default function SessionsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <Breadcrumbs items={[{ label: 'Inicio', to: '/dashboard' }, { label: 'Sesiones' }]} />
+
       <div className="mb-8">
         <PageHero
           badge={(

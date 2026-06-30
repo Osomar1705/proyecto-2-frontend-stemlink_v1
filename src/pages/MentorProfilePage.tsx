@@ -9,6 +9,7 @@ import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
 import { Input } from '../components/ui/Input'
 import { Button } from '../components/ui/Button'
+import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { EmptyState } from '../components/ui/EmptyState'
 import { PageHero } from '../components/ui/PageHero'
 import { useAsyncResource } from '../hooks/useAsyncResource'
@@ -191,6 +192,8 @@ export default function MentorProfilePage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <Breadcrumbs items={[{ label: 'Inicio', to: '/dashboard' }, { label: 'Mi perfil de mentor' }]} />
+
       <AsyncContent
         loading={loading}
         error={error}

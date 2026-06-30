@@ -7,6 +7,7 @@ import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Badge } from '../components/ui/Badge'
+import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { PageHero } from '../components/ui/PageHero'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { Bell, Calendar, Mail, Sparkles, UserRound } from 'lucide-react'
@@ -52,6 +53,8 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-6xl">
+      <Breadcrumbs items={[{ label: 'Inicio', to: '/dashboard' }, { label: 'Mi perfil' }]} />
+
       <AsyncContent
         loading={loading}
         error={error}

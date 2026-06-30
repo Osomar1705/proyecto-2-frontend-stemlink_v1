@@ -4,6 +4,7 @@ import { mentorsApi } from '../api/mentors.api'
 import type { MentorProfileResponse, TechnicalSkillDTO, Page } from '../types'
 import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
+import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { Pagination } from '../components/ui/Pagination'
 import { MentorCardSkeleton } from '../components/ui/Skeleton'
 import { PageHero } from '../components/ui/PageHero'
@@ -81,6 +82,8 @@ export default function MentorsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <Breadcrumbs items={[{ label: 'Inicio', to: '/dashboard' }, { label: 'Mentores' }]} />
+
       <div className="mb-8">
         <PageHero
           badge={(

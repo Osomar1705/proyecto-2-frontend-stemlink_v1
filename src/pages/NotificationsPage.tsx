@@ -4,6 +4,7 @@ import type { NotificationResponse, Page } from '../types'
 import { AsyncContent } from '../components/ui/AsyncContent'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
+import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { Pagination } from '../components/ui/Pagination'
 import { PageHero } from '../components/ui/PageHero'
 import { useAsyncResource } from '../hooks/useAsyncResource'
@@ -89,6 +90,8 @@ export default function NotificationsPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <Breadcrumbs items={[{ label: 'Inicio', to: '/dashboard' }, { label: 'Notificaciones' }]} />
+
       <div className="mb-8">
         <PageHero
           badge={(
