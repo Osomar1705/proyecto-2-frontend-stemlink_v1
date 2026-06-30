@@ -51,7 +51,7 @@ export default function LandingPage() {
         <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-10 lg:grid-cols-[1.02fr_0.98fr]">
           <div className="max-w-2xl">
             <div className="mb-8 flex items-center gap-3">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-primary-600 to-accent-600 shadow-lg">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500 shadow-[0_12px_30px_rgba(79,70,229,0.25)]">
                 <Zap size={30} className="text-surface" aria-hidden />
               </div>
               <div>
@@ -62,7 +62,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-sm font-medium text-primary-600 shadow-sm">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/85 px-3 py-1 text-sm font-semibold text-primary-700 shadow-sm backdrop-blur-sm">
               <ShieldCheck size={16} aria-hidden />
               Mentores verificados para tu crecimiento
             </div>
@@ -174,7 +174,7 @@ export default function LandingPage() {
         <div className="grid gap-6 md:grid-cols-3">
           {features.map(({ icon: Icon, title, description }) => (
             <Card key={title} className="group flex flex-col gap-4 border-border bg-surface p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary-50 transition-colors group-hover:bg-primary-100">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-50 transition-colors group-hover:bg-primary-100">
                 <Icon size={24} className="text-primary-600" aria-hidden />
               </div>
               <h3 className="text-lg font-semibold text-text">{title}</h3>
@@ -187,7 +187,7 @@ export default function LandingPage() {
       <section className="px-4 pb-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-6 rounded-2xl border border-border bg-surface p-6 shadow-sm lg:grid-cols-[1fr_auto] lg:items-center lg:p-8">
           <div>
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-600 to-accent-600">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-500">
               <Zap size={24} className="text-surface" aria-hidden />
             </div>
             <h2 className="text-2xl font-bold tracking-tight text-text sm:text-3xl">¿Listo para empezar?</h2>
