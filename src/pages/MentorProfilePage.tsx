@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import type { ChangeEvent } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -16,7 +17,9 @@ import { PageHero } from '../components/ui/PageHero'
 import { Modal } from '../components/ui/Modal'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { parseApiError } from '../utils/errors'
-import { AlertTriangle, Calendar, Clock, ExternalLink, Plus, Sparkles, Trash2, UserRound, Video } from 'lucide-react'
+import { MentorAvatar } from '../components/mentors/MentorAvatar'
+import { clearMentorPhoto, getMentorProfileEnhancements, saveMentorProfileEnhancements } from '../utils/mentorProfileAssets'
+import { AlertTriangle, AtSign, Calendar, Clock, ExternalLink, ImagePlus, Plus, Sparkles, Trash2, Upload, UserRound, Video } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const profileSchema = z.object({
@@ -57,6 +60,8 @@ const DEFAULT_AVAILABILITY: AvailabilityFormData = {
 }
 
 type MentorProfileResource = {
+  mentorId: number
+  mentorName: string
   skills: TechnicalSkillDTO[]
   selectedSkills: number[]
   availability: AvailabilityBlockDTO[]
@@ -74,6 +79,9 @@ export default function MentorProfilePage() {
   const [selectedSkills, setSelectedSkills] = useState<number[]>([])
   const [availability, setAvailability] = useState<AvailabilityBlockDTO[]>([])
   const [availabilityToDelete, setAvailabilityToDelete] = useState<{ id: number; label: string } | null>(null)
+  const [mentorPhoto, setMentorPhoto] = useState<string | null>(null)
+  const [instagramUrl, setInstagramUrl] = useState('')
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const {
     register,
@@ -113,9 +121,12 @@ export default function MentorProfilePage() {
     ])
 
     const mentorId = profileRes.data.id
+    const enhancements = getMentorProfileEnhancements(mentorId)
     const availabilityRes = await mentorsApi.getAvailability(mentorId, signal)
 
     const resource: MentorProfileResource = {
+      mentorId,
+      mentorName: profileRes.data.name,
       skills: tagsRes.data,
       selectedSkills: profileRes.data.skills?.map((skill) => skill.id) || [],
       availability: availabilityRes.data.sort(compareAvailability),
@@ -129,6 +140,8 @@ export default function MentorProfilePage() {
     setSkills(resource.skills)
     setSelectedSkills(resource.selectedSkills)
     setAvailability(resource.availability)
+    setMentorPhoto(enhancements.photoUrl)
+    setInstagramUrl(enhancements.instagramUrl)
     reset(resource.profile)
 
     return resource
@@ -142,8 +155,20 @@ export default function MentorProfilePage() {
 
   const onSubmit = async (data: ProfileFormData) => {
     try {
+      if (instagramUrl.trim()) {
+        try {
+          new URL(instagramUrl)
+        } catch {
+          toast.error('Ingresa una URL válida para Instagram.')
+          return
+        }
+      }
+
       await mentorsApi.updateProfile(data)
       await mentorsApi.updateTags(selectedSkills)
+      if (resourceKey) {
+        saveMentorProfileEnhancements(resourceKey, { instagramUrl: instagramUrl.trim() })
+      }
       toast.success('Perfil actualizado')
       reload()
     } catch (error) {
@@ -191,6 +216,46 @@ export default function MentorProfilePage() {
     () => DAYS.filter((day) => availability.some((item) => item.dayOfWeek === day)),
     [availability],
   )
+  const resourceKey = data?.mentorId ?? null
+
+  const handlePhotoSelection = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+
+    if (!file || !resourceKey) return
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Selecciona una imagen válida.')
+      return
+    }
+
+    if (file.size > 3 * 1024 * 1024) {
+      toast.error('La imagen debe pesar menos de 3 MB.')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : null
+      if (!result) {
+        toast.error('No pudimos procesar la imagen seleccionada.')
+        return
+      }
+
+      saveMentorProfileEnhancements(resourceKey, { photoUrl: result })
+      setMentorPhoto(result)
+      toast.success('Foto de perfil actualizada.')
+    }
+    reader.onerror = () => toast.error('No pudimos leer la imagen seleccionada.')
+    reader.readAsDataURL(file)
+    event.target.value = ''
+  }
+
+  const handleRemovePhoto = () => {
+    if (!resourceKey) return
+    clearMentorPhoto(resourceKey)
+    setMentorPhoto(null)
+    toast.success('Foto de perfil restaurada.')
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -219,10 +284,33 @@ export default function MentorProfilePage() {
           description="Actualiza tu presencia pública, deja claros tus diferenciales y mantén una disponibilidad lista para reservar."
           aside={(
             <div className="flex flex-col items-center text-center">
-              <div className="mb-5 flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50 shadow-[0_18px_36px_rgba(79,70,229,0.18)]">
-                STEM
+              <MentorAvatar
+                name={data?.mentorName || 'Mentor STEM'}
+                src={mentorPhoto}
+                size="xl"
+                className="mb-5"
+              />
+              <div className="space-y-2">
+                <Button type="button" variant="secondary" onClick={() => fileInputRef.current?.click()}>
+                  <Upload size={14} />
+                  Cambiar foto
+                </Button>
+                <Button type="button" variant="ghost" onClick={handleRemovePhoto} disabled={!mentorPhoto}>
+                  <Trash2 size={14} />
+                  Usar retrato sugerido
+                </Button>
               </div>
-              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="hidden"
+                onChange={handlePhotoSelection}
+              />
+              <p className="mt-3 max-w-[18rem] text-xs leading-5 text-muted">
+                Puedes subir una foto cuadrada para tu perfil público. Se guarda localmente en esta demo web.
+              </p>
+            </div>
             )}
             footer={(
               <div className="grid gap-4 sm:grid-cols-3">
@@ -260,7 +348,7 @@ export default function MentorProfilePage() {
                   error={errors.bio?.message}
                 />
 
-                <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <Input
                   label="URL de videollamada"
                   placeholder="https://meet.google.com/..."
@@ -276,6 +364,14 @@ export default function MentorProfilePage() {
                   {...register('linkedinUrl')}
                 />
               </div>
+
+              <Input
+                label="Instagram"
+                value={instagramUrl}
+                onChange={(event) => setInstagramUrl(event.target.value)}
+                placeholder="https://instagram.com/tuusuario"
+                helperText="Campo visual para tu demo web. Se guarda localmente sin tocar el backend."
+              />
 
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-text">Habilidades</label>
@@ -435,6 +531,34 @@ export default function MentorProfilePage() {
                     <p className="text-sm font-semibold text-text">LinkedIn</p>
                     <p className="mt-1 break-all text-sm text-muted">
                       {linkedinUrl || 'Sin enlace registrado'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50/80">
+                    <AtSign size={18} className="text-fuchsia-500" aria-hidden />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text">Instagram</p>
+                    <p className="mt-1 break-all text-sm text-muted">
+                      {instagramUrl || 'Sin enlace registrado'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-surface-alt/70 p-4 ring-1 ring-border/60">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50/80">
+                    <ImagePlus size={18} className="text-primary-600" aria-hidden />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-text">Foto de perfil</p>
+                    <p className="mt-1 text-sm text-muted">
+                      {mentorPhoto ? 'Lista para mostrarse en cards y detalle del mentor.' : 'Se usará el retrato sugerido por la plataforma.'}
                     </p>
                   </div>
                 </div>

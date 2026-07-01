@@ -13,6 +13,8 @@ import {
   Zap,
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
+import { MentorAvatar } from '../mentors/MentorAvatar'
+import { getUserPhoto, PROFILE_ASSETS_EVENT } from '../../utils/mentorProfileAssets'
 
 type NavItem = {
   to: string
@@ -32,12 +34,20 @@ export function AuthenticatedLayout() {
   const matches = useMatches()
   const [searchParams] = useSearchParams()
   const [search, setSearch] = useState('')
+  const [photoVersion, setPhotoVersion] = useState(0)
+  const userPhoto = user ? getUserPhoto(user.id) : null
 
   useEffect(() => {
     if (location.pathname === '/mentors') {
       setSearch(searchParams.get('search') || '')
     }
   }, [location.pathname, searchParams])
+
+  useEffect(() => {
+    const syncPhoto = () => setPhotoVersion((current) => current + 1)
+    window.addEventListener(PROFILE_ASSETS_EVENT, syncPhoto)
+    return () => window.removeEventListener(PROFILE_ASSETS_EVENT, syncPhoto)
+  }, [])
 
   const navItems = useMemo<NavItem[]>(() => {
     const profilePath = user?.role === 'MENTOR' ? '/mentor/profile' : '/profile'
@@ -110,9 +120,17 @@ export function AuthenticatedLayout() {
         </nav>
 
         <div className="border-t border-border/70 p-4">
-          <div className="surface-tint mb-3 rounded-[1.5rem] border border-border/70 p-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
-            <p className="text-sm font-semibold text-text">{user?.name}</p>
-            <p className="mt-1 text-xs text-muted">{user ? roleLabel[user.role] : 'Usuario'}</p>
+          <div className="surface-tint mb-3 flex items-center gap-3 rounded-[1.5rem] border border-border/70 p-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+            <MentorAvatar
+              key={`${user?.id ?? 'guest'}:${photoVersion}`}
+              name={user?.name || 'Usuario STEM'}
+              src={userPhoto}
+              size="sm"
+            />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-text">{user?.name}</p>
+              <p className="mt-1 text-xs text-muted">{user ? roleLabel[user.role] : 'Usuario'}</p>
+            </div>
           </div>
 
           <button

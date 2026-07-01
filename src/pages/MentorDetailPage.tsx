@@ -21,6 +21,7 @@ import { parseApiError } from '../utils/errors'
 import { ArrowLeft, AtSign, Award, Calendar, Clock, ExternalLink, GraduationCap, Sparkles, Users, Video } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { MentorAvatar } from '../components/mentors/MentorAvatar'
+import { getMentorInstagram, getMentorPhoto } from '../utils/mentorProfileAssets'
 
 const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
 const DAY_ES: Record<string, string> = {
@@ -92,6 +93,8 @@ export default function MentorDetailPage() {
 
   const mentor = data.mentor
   const availability = data.availability
+  const mentorPhoto = mentor ? getMentorPhoto(mentor.id) : null
+  const instagramUrl = mentor ? getMentorInstagram(mentor.id) : ''
   const selectedAvailabilityId = watch('availabilityBlockId')
   const selectedAvailability = useMemo(
     () => availability.find((slot) => String(slot.id) === selectedAvailabilityId) ?? null,
@@ -201,7 +204,7 @@ export default function MentorDetailPage() {
                 </div>
 
                 <div className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-start">
-                  <MentorAvatar name={mentor!.name} size="xl" className="mx-auto sm:mx-0" />
+                  <MentorAvatar name={mentor!.name} src={mentorPhoto} size="xl" className="mx-auto sm:mx-0" />
 
                   <div className="min-w-0 flex-1 text-center sm:text-left">
                     <h1 className="text-3xl font-bold tracking-tight text-text sm:text-4xl">
@@ -220,10 +223,21 @@ export default function MentorDetailPage() {
                           href={mentor!.linkedinUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-primary-400 hover:text-primary-700 hover:shadow-[0_10px_24px_rgba(79,70,229,0.08)]"
+                          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-primary-400 hover:text-primary-700 hover:shadow-[0_10px_24px_rgba(79,70,229,0.08)]"
                         >
                           <ExternalLink size={14} className="text-primary-600" aria-hidden />
                           LinkedIn
+                        </a>
+                      )}
+                      {instagramUrl && (
+                        <a
+                          href={instagramUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-fuchsia-300 hover:text-fuchsia-700 hover:shadow-[0_10px_24px_rgba(217,70,239,0.10)]"
+                        >
+                          <AtSign size={14} className="text-fuchsia-500" aria-hidden />
+                          Instagram
                         </a>
                       )}
                       {mentor!.videoCallUrl && (
@@ -231,7 +245,7 @@ export default function MentorDetailPage() {
                           href={mentor!.videoCallUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-accent-400 hover:text-accent-700 hover:shadow-[0_10px_24px_rgba(13,148,136,0.08)]"
+                          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-accent-400 hover:text-accent-700 hover:shadow-[0_10px_24px_rgba(13,148,136,0.08)]"
                         >
                           <Video size={14} className="text-accent-500" aria-hidden />
                           Videollamada
@@ -364,10 +378,7 @@ export default function MentorDetailPage() {
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Instagram</p>
                 </div>
                 <p className="mt-2 text-sm font-medium text-text">
-                  No disponible en el perfil actual
-                </p>
-                <p className="mt-1 text-xs leading-5 text-muted">
-                  La versión actual del backend no expone una URL de Instagram para mentores.
+                  {instagramUrl || 'No disponible'}
                 </p>
               </div>
               <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">

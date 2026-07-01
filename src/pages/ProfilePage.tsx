@@ -1,4 +1,5 @@
-import { useCallback } from 'react'
+import { useCallback, useRef, useState } from 'react'
+import type { ChangeEvent } from 'react'
 import { authApi } from '../api/auth.api'
 import { bookingsApi } from '../api/bookings.api'
 import { notificationsApi } from '../api/notifications.api'
@@ -9,23 +10,34 @@ import { EmptyState } from '../components/ui/EmptyState'
 import { Badge } from '../components/ui/Badge'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { PageHero } from '../components/ui/PageHero'
+import { Button } from '../components/ui/Button'
+import { MentorAvatar } from '../components/mentors/MentorAvatar'
 import { useAsyncResource } from '../hooks/useAsyncResource'
-import { Bell, Calendar, Mail, Sparkles, UserRound } from 'lucide-react'
+import { clearUserPhoto, getUserProfileEnhancements, saveUserProfileEnhancements } from '../utils/mentorProfileAssets'
+import { AtSign, Bell, Calendar, ImagePlus, Mail, Sparkles, Upload, UserRound } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 type ProfileSummary = {
   user: UserResponse
   bookings: BookingResponse[]
   unreadCount: number
+  instagramUrl: string
+  photoUrl: string | null
 }
 
 const EMPTY_PROFILE: ProfileSummary = {
   user: { id: 0, name: '', email: '', role: '' },
   bookings: [],
   unreadCount: 0,
+  instagramUrl: '',
+  photoUrl: null,
 }
 
 export default function ProfilePage() {
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
+  const [instagramUrl, setInstagramUrl] = useState('')
+
   const loadProfile = useCallback(async (signal: AbortSignal) => {
     const [userRes, bookingsRes, notificationsRes] = await Promise.all([
       authApi.me(signal),
@@ -33,10 +45,16 @@ export default function ProfilePage() {
       notificationsApi.list({ page: 0, size: 20 }, signal),
     ])
 
+    const enhancements = getUserProfileEnhancements(userRes.data.id)
+    setPhotoUrl(enhancements.photoUrl)
+    setInstagramUrl(enhancements.instagramUrl)
+
     return {
       user: userRes.data,
       bookings: bookingsRes.data.content,
       unreadCount: notificationsRes.data.content.filter((notification) => !notification.read).length,
+      instagramUrl: enhancements.instagramUrl,
+      photoUrl: enhancements.photoUrl,
     }
   }, [])
 
@@ -54,6 +72,65 @@ export default function ProfilePage() {
   const roleDescription = profileData.user.role === 'MENTOR'
     ? 'Cuenta activa como mentor.'
     : 'Cuenta activa como estudiante.'
+  const resolvedPhoto = photoUrl ?? profileData.photoUrl
+  const resolvedInstagram = instagramUrl || profileData.instagramUrl
+
+  const handlePhotoSelection = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    const userId = profileData.user.id
+
+    if (!file || !userId) return
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Selecciona una imagen válida.')
+      return
+    }
+
+    if (file.size > 3 * 1024 * 1024) {
+      toast.error('La imagen debe pesar menos de 3 MB.')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : null
+      if (!result) {
+        toast.error('No pudimos procesar la imagen seleccionada.')
+        return
+      }
+
+      saveUserProfileEnhancements(userId, { photoUrl: result })
+      setPhotoUrl(result)
+      toast.success('Foto de perfil actualizada.')
+    }
+    reader.onerror = () => toast.error('No pudimos leer la imagen seleccionada.')
+    reader.readAsDataURL(file)
+    event.target.value = ''
+  }
+
+  const handleResetPhoto = () => {
+    if (!profileData.user.id) return
+    clearUserPhoto(profileData.user.id)
+    setPhotoUrl(null)
+    toast.success('Retrato restaurado.')
+  }
+
+  const handleInstagramSave = () => {
+    if (!profileData.user.id) return
+
+    if (resolvedInstagram.trim()) {
+      try {
+        new URL(resolvedInstagram)
+      } catch {
+        toast.error('Ingresa una URL válida para Instagram.')
+        return
+      }
+    }
+
+    saveUserProfileEnhancements(profileData.user.id, { instagramUrl: resolvedInstagram.trim() })
+    setInstagramUrl(resolvedInstagram.trim())
+    toast.success('Enlace de Instagram actualizado.')
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
@@ -84,9 +161,29 @@ export default function ProfilePage() {
           aside={(
             <div className="flex flex-col items-center text-center">
               <div className="surface-tint rounded-[1.75rem] px-6 py-5 shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
-                <div className="mx-auto mb-3 flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50">
-                  {profileData.user.name.slice(0, 2).toUpperCase()}
+                <MentorAvatar
+                  name={profileData.user.name || 'Usuario STEM'}
+                  src={resolvedPhoto}
+                  size="xl"
+                  className="mx-auto mb-4"
+                />
+                <div className="space-y-2">
+                  <Button type="button" variant="secondary" onClick={() => fileInputRef.current?.click()}>
+                    <Upload size={14} />
+                    Cambiar foto
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={handleResetPhoto} disabled={!resolvedPhoto}>
+                    <ImagePlus size={14} />
+                    Usar retrato sugerido
+                  </Button>
                 </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={handlePhotoSelection}
+                />
                 <p className="text-sm font-semibold text-text">Cuenta activa</p>
                 <p className="mt-1 text-xs text-muted">Información sincronizada con tu sesión actual.</p>
               </div>
@@ -151,6 +248,29 @@ export default function ProfilePage() {
                 <div>
                   <p className="text-sm font-semibold text-text">Rol</p>
                   <p className="mt-1 text-sm text-muted">{roleDescription}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="surface-subtle rounded-[1.35rem] p-4">
+              <div className="flex items-start gap-3">
+                <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50/80">
+                  <AtSign size={18} className="text-primary-600" aria-hidden />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-text">Instagram</p>
+                  <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+                    <input
+                      type="url"
+                      value={resolvedInstagram}
+                      onChange={(event) => setInstagramUrl(event.target.value)}
+                      placeholder="https://instagram.com/tuusuario"
+                      className="field-shell w-full rounded-2xl px-4 py-3 text-sm text-text outline-none transition-all duration-300 ease-in-out placeholder:text-muted/70 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10"
+                    />
+                    <Button type="button" variant="secondary" onClick={handleInstagramSave}>
+                      Guardar enlace
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
