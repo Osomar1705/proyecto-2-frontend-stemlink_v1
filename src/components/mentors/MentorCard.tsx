@@ -46,11 +46,11 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Skills</p>
             <p className="mt-1 text-lg font-bold text-text">{skills.length}</p>
           </div>
-          <div className="panel-shell rounded-2xl px-3 py-3">
+          <div className="panel-shell min-w-0 overflow-hidden rounded-2xl px-3 py-3">
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Perfil</p>
-            <p className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-text">
-              <Award size={14} className="text-primary-600" aria-hidden />
-              Verificado
+            <p className="mt-1 flex min-w-0 items-center gap-1 text-[11px] font-semibold leading-4 text-text sm:text-xs">
+              <Award size={13} className="shrink-0 text-primary-600" aria-hidden />
+              <span className="min-w-0 truncate">Verificado</span>
             </p>
           </div>
         </div>
