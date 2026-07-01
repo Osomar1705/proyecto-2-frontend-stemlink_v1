@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { bookingsApi } from '../api/bookings.api'
 import type { BookingResponse, Page } from '../types'
 import { AsyncContent } from '../components/ui/AsyncContent'
@@ -10,6 +10,7 @@ import { Pagination } from '../components/ui/Pagination'
 import { PageHero } from '../components/ui/PageHero'
 import { StatCard } from '../components/ui/StatCard'
 import { EmptyState } from '../components/ui/EmptyState'
+import { Modal } from '../components/ui/Modal'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { usePagination } from '../hooks/usePagination'
 import { useAuth } from '../contexts/AuthContext'
@@ -62,6 +63,11 @@ function compareBookingsByDate(a: BookingResponse, b: BookingResponse) {
   const bDate = parseDate(b.date)?.getTime() ?? 0
   if (aDate !== bDate) return aDate - bDate
   return a.startTime.localeCompare(b.startTime)
+}
+
+interface PendingAction {
+  bookingId: number
+  type: 'cancel' | 'reject'
 }
 
 function SessionSkeleton() {
@@ -129,7 +135,7 @@ function SessionCard({
                   </Button>
                   <Button
                     variant="danger"
-                    loading={actionLoadingId === booking.id}
+                    loading={false}
                     disabled={actionLoadingId !== null}
                     onClick={() => onCancel(booking.id)}
                   >
@@ -141,7 +147,7 @@ function SessionCard({
               {canStudentCancel && !isPendingMentorAction && (
                 <Button
                   variant="danger"
-                  loading={actionLoadingId === booking.id}
+                  loading={false}
                   disabled={actionLoadingId !== null}
                   onClick={() => onCancel(booking.id)}
                 >
@@ -185,6 +191,7 @@ export default function SessionsPage() {
   const { page, size, setPage, setSize } = usePagination(10)
   const [filter, setFilter] = useState('')
   const [actionLoadingId, setActionLoadingId] = useState<number | null>(null)
+  const [pendingAction, setPendingAction] = useState<PendingAction | null>(null)
 
   const load = useCallback(async (signal: AbortSignal) => {
     const res = await bookingsApi.list({
@@ -229,16 +236,25 @@ export default function SessionsPage() {
     }
   }
 
-  const sortedBookings = useMemo(
-    () => [...bookings].sort(compareBookingsByDate),
-    [bookings],
-  )
+  const sortedBookings = [...bookings].sort(compareBookingsByDate)
 
   const confirmedBookings = sortedBookings.filter((booking) => booking.status === 'CONFIRMED')
   const pendingBookings = sortedBookings.filter((booking) => booking.status === 'PENDING')
   const cancelledBookings = sortedBookings.filter((booking) => booking.status === 'CANCELLED')
   const historyBookings = sortedBookings.filter((booking) => booking.status === 'CANCELLED')
   const calendarBookings = sortedBookings.filter((booking) => booking.status === 'CONFIRMED' || booking.status === 'PENDING')
+  const pendingBooking = pendingAction ? bookings.find((booking) => booking.id === pendingAction.bookingId) ?? null : null
+  const pendingActionTitle = pendingAction?.type === 'reject' ? 'Rechazar solicitud' : 'Cancelar reserva'
+  const pendingActionDescription = pendingAction?.type === 'reject'
+    ? 'Esta acción marcará la reserva como cancelada y el estudiante verá el cambio de estado.'
+    : 'Esta acción cancelará tu reserva actual y actualizará su estado para ambas partes.'
+
+  const confirmPendingAction = async () => {
+    if (!pendingAction) return
+
+    setPendingAction(null)
+    await handleCancel(pendingAction.bookingId)
+  }
 
   const stats = [
     {
@@ -470,7 +486,12 @@ export default function SessionsPage() {
                   role={user?.role}
                   actionLoadingId={actionLoadingId}
                   onConfirm={handleConfirm}
-                  onCancel={handleCancel}
+                  onCancel={(bookingId) => {
+                    setPendingAction({
+                      bookingId,
+                      type: user?.role === 'MENTOR' ? 'reject' : 'cancel',
+                    })
+                  }}
                 />
               ))}
             </div>
@@ -492,6 +513,41 @@ export default function SessionsPage() {
           )}
         </>
       </AsyncContent>
+
+      <Modal
+        open={pendingAction !== null}
+        onClose={() => setPendingAction(null)}
+        title={pendingActionTitle}
+      >
+        <div className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-sm leading-7 text-muted">
+              {pendingActionDescription}
+            </p>
+            {pendingBooking && (
+              <div className="rounded-2xl border border-border bg-surface-alt/70 px-4 py-3">
+                <p className="font-semibold text-text">{pendingBooking.topic}</p>
+                <p className="mt-1 text-sm text-muted">
+                  {formatSessionDate(pendingBooking.date)} · {pendingBooking.startTime} - {pendingBooking.endTime}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <Button variant="secondary" onClick={() => setPendingAction(null)}>
+              Volver
+            </Button>
+            <Button
+              variant="danger"
+              loading={pendingBooking ? actionLoadingId === pendingBooking.id : false}
+              onClick={confirmPendingAction}
+            >
+              Confirmar acción
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

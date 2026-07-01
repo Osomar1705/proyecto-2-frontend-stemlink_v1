@@ -8,6 +8,6 @@ export const authApi = {
   login: (data: LoginRequest) =>
     client.post<AuthResponse>('/api/auth/login', data),
 
-  me: () =>
-    client.get<UserResponse>('/api/users/me'),
+  me: (signal?: AbortSignal) =>
+    client.get<UserResponse>('/api/users/me', { signal }),
 }

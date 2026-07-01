@@ -28,7 +28,7 @@ const EMPTY_PROFILE: ProfileSummary = {
 export default function ProfilePage() {
   const loadProfile = useCallback(async (signal: AbortSignal) => {
     const [userRes, bookingsRes, notificationsRes] = await Promise.all([
-      authApi.me(),
+      authApi.me(signal),
       bookingsApi.list({ page: 0, size: 20 }, signal),
       notificationsApi.list({ page: 0, size: 20 }, signal),
     ])
@@ -48,9 +48,9 @@ export default function ProfilePage() {
 
   const profileData = data ?? EMPTY_PROFILE
   const confirmedBookings = profileData.bookings.filter((booking) => booking.status === 'CONFIRMED').length
-  const pendingBookings = profileData.bookings.filter((booking) => booking.status === 'PENDING').length
   const upcomingBookings = profileData.bookings.filter((booking) => booking.status === 'CONFIRMED' || booking.status === 'PENDING').length
   const roleLabel = profileData.user.role === 'MENTOR' ? 'MENTOR' : 'STUDENT'
+  const roleTitle = profileData.user.role === 'MENTOR' ? 'Perfil del mentor' : 'Perfil del estudiante'
   const roleDescription = profileData.user.role === 'MENTOR'
     ? 'Cuenta activa como mentor.'
     : 'Cuenta activa como estudiante.'
@@ -76,7 +76,7 @@ export default function ProfilePage() {
           badge={(
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
               <Sparkles size={16} className="text-accent-500" aria-hidden />
-              Perfil del estudiante
+              {roleTitle}
             </div>
           )}
           title={profileData.user.name}
