@@ -189,6 +189,28 @@ a {
   backdrop-filter: blur(10px);
 }
 
+/* Tweak PageHero overlays for better legibility */
+.surface-card .pointer-events-none.absolute.inset-0 {
+  background: linear-gradient(120deg, rgba(99,102,241,0.06), transparent 40%), radial-gradient(circle at top right, rgba(99,102,241,0.05), transparent 20rem);
+}
+.surface-card .pointer-events-none.absolute.-right-8.top-0.h-36.w-36 {
+  background: var(--color-primary-100);
+  opacity: 0.5;
+}
+
+/* Ensure hero titles are fully legible in dark mode */
+html.dark .surface-card h1,
+html.dark .surface-card h2 {
+  color: var(--color-text);
+  opacity: 1;
+}
+
+/* Reduce gradient intensity in light hero overlays */
+.surface-card::before,
+.surface-card::after {
+  opacity: 0.65;
+}
+
 .surface-tint {
   background:
     linear-gradient(135deg, rgba(99, 102, 241, 0.06), transparent 45%),
