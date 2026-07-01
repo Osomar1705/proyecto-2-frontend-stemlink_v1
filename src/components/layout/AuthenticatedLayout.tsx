@@ -90,16 +90,16 @@ export function AuthenticatedLayout() {
           </NavLink>
         </div>
 
-        <nav className="flex-1 space-y-1.5 px-3 py-6">
+        <nav className="flex-1 space-y-2 px-3 py-6">
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold transition-all duration-200 ${
+                `flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold transition-all duration-300 ease-in-out ${
                   isActive
-                    ? 'border-primary-100 bg-primary-50/90 text-primary-700 shadow-[0_8px_22px_rgba(79,70,229,0.08)]'
-                    : 'border-transparent text-muted hover:border-border/80 hover:bg-surface hover:text-text'
+                    ? 'border-primary-100 bg-primary-50/90 text-primary-700 shadow-[0_10px_24px_rgba(79,70,229,0.08)]'
+                    : 'border-transparent text-muted hover:border-border/80 hover:bg-surface hover:text-text hover:shadow-[0_10px_24px_rgba(15,23,42,0.04)]'
                 }`
               }
             >
@@ -110,7 +110,7 @@ export function AuthenticatedLayout() {
         </nav>
 
         <div className="border-t border-border/70 p-4">
-          <div className="surface-tint mb-3 rounded-[1.35rem] border border-border/70 p-4">
+          <div className="surface-tint mb-3 rounded-[1.5rem] border border-border/70 p-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
             <p className="text-sm font-semibold text-text">{user?.name}</p>
             <p className="mt-1 text-xs text-muted">{user ? roleLabel[user.role] : 'Usuario'}</p>
           </div>
@@ -118,7 +118,7 @@ export function AuthenticatedLayout() {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-muted transition-colors hover:bg-surface hover:text-text"
+            className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-muted transition-all duration-300 ease-in-out hover:bg-surface hover:text-text"
           >
             <LogOut size={18} aria-hidden />
             Cerrar sesión
@@ -143,7 +143,7 @@ export function AuthenticatedLayout() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="rounded-2xl border border-border/70 bg-surface/90 px-3 py-2 text-sm font-semibold text-text transition-colors hover:bg-primary-50/60"
+                className="rounded-2xl border border-border/70 bg-surface/90 px-3 py-2 text-sm font-semibold text-text transition-all duration-300 ease-in-out hover:bg-primary-50/60 hover:shadow-[0_10px_24px_rgba(79,70,229,0.08)]"
               >
                 Salir
               </button>
@@ -163,11 +163,11 @@ export function AuthenticatedLayout() {
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     placeholder="Buscar mentores..."
-                    className="field-shell w-full rounded-2xl py-3 pl-10 pr-4 text-sm text-text outline-none transition-[border-color,box-shadow] placeholder:text-muted/75 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10"
+                    className="field-shell w-full rounded-2xl py-3.5 pl-10 pr-4 text-sm text-text outline-none transition-all duration-300 ease-in-out placeholder:text-muted/75 hover:border-primary-200 hover:bg-surface focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10"
                   />
                 </form>
 
-                <div className="hidden items-center gap-2 rounded-2xl border border-border/80 bg-surface/95 px-4 py-3 text-sm text-muted sm:flex">
+                <div className="panel-shell hidden items-center gap-2 rounded-2xl px-4 py-3 text-sm text-muted sm:flex">
                   <BookOpen size={16} className="text-primary-600" aria-hidden />
                   <span>{user?.email}</span>
                 </div>
@@ -180,10 +180,10 @@ export function AuthenticatedLayout() {
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                    `whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+                    `whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-300 ease-in-out ${
                       isActive
                         ? 'border-primary-600 bg-primary-600 text-surface shadow-sm'
-                        : 'border-border bg-surface/95 text-muted hover:border-primary-200 hover:text-text'
+                        : 'border-border bg-surface/95 text-muted hover:border-primary-200 hover:text-text hover:shadow-[0_8px_20px_rgba(79,70,229,0.08)]'
                     }`
                 }
               >

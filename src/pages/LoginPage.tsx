@@ -38,25 +38,25 @@ export default function LoginPage() {
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(120deg,rgba(99,102,241,0.08),transparent_42%,rgba(20,184,166,0.05)),radial-gradient(circle_at_top_left,rgba(99,102,241,0.1),transparent_24rem)]" />
-      <div className="mx-auto grid max-w-7xl items-center gap-8 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_1fr] lg:gap-12">
+      <div className="mx-auto grid max-w-7xl items-center gap-10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_1fr] lg:gap-16">
         <div className="max-w-xl">
-          <div className="eyebrow">
+          <div className="eyebrow shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
             <Sparkles size={16} className="text-accent-500" aria-hidden />
             Acceso seguro a STEM Link
           </div>
-          <h1 className="mt-5 text-3xl font-bold tracking-tight text-text sm:text-5xl">
+          <h1 className="mt-5 text-balance text-3xl font-bold tracking-tight text-text sm:text-5xl">
             Entra al espacio donde la mentoría STEM se siente clara y profesional
           </h1>
           <p className="mt-5 max-w-lg text-base leading-8 text-muted sm:text-lg">
             Continúa tu recorrido con una interfaz más limpia, sesiones mejor organizadas y acceso directo a mentores y reservas.
           </p>
 
-          <div className="mt-8 hidden gap-3 sm:grid sm:grid-cols-2">
-            <Card className="border-border/70 p-4">
+          <div className="mt-8 hidden gap-4 sm:grid sm:grid-cols-2">
+            <Card className="border-border/70 p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Sesiones</p>
               <p className="mt-2 text-lg font-bold text-text">Reserva y seguimiento</p>
             </Card>
-            <Card className="border-border/70 p-4">
+            <Card className="border-border/70 p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Mentores</p>
               <p className="mt-2 text-lg font-bold text-text">Descubrimiento guiado</p>
             </Card>
@@ -64,7 +64,7 @@ export default function LoginPage() {
         </div>
 
         <div className="w-full">
-          <Card className="relative overflow-hidden border-border bg-surface p-5 sm:p-10">
+          <Card className="relative overflow-hidden border-border bg-surface p-5 sm:p-8 lg:p-10">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(99,102,241,0.08),transparent)]" aria-hidden />
 
             <div className="relative">
@@ -130,7 +130,7 @@ export default function LoginPage() {
                 </p>
               </form>
 
-              <div className="surface-subtle mt-6 rounded-[1.35rem] p-4">
+              <div className="surface-subtle mt-6 rounded-[1.5rem] p-4 sm:p-5">
                 <p className="mb-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-muted">Cuentas demo</p>
                 <div className="space-y-1 text-center text-xs leading-5 text-muted">
                   <p>Estudiante: lucia.student@stemlink.com / Student@123</p>
@@ -144,7 +144,7 @@ export default function LoginPage() {
             <p className="text-xs text-muted">
               Al iniciar sesión, aceptas nuestros términos y política de privacidad.
             </p>
-            <Link to="/mentors" className="text-sm font-semibold text-primary-600 transition-colors hover:text-primary-700">
+            <Link to="/mentors" className="text-sm font-semibold text-primary-600 transition-all duration-300 ease-in-out hover:text-primary-700 hover:translate-x-0.5">
               Ver mentores disponibles →
             </Link>
           </div>

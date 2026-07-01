@@ -70,7 +70,7 @@ export default function LandingPage() {
         />
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(22rem,0.92fr)] lg:gap-16">
           <div className="max-w-3xl">
-            <div className="eyebrow mb-6 text-primary-700">
+            <div className="eyebrow mb-6 text-primary-700 shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
               <Sparkles size={16} aria-hidden="true" />
               Mentoría STEM hecha para avanzar
             </div>
@@ -117,7 +117,7 @@ export default function LandingPage() {
           </div>
 
           <div className="relative mx-auto w-full max-w-xl lg:mx-0">
-            <Card className="border-border bg-surface p-5 sm:p-6">
+            <Card className="border-border bg-surface p-5 sm:p-6 lg:p-7">
               <div className="flex items-start justify-between gap-5 border-b border-border/80 pb-5">
                 <div>
                   <p className="text-sm font-semibold text-primary-600">Tu aprendizaje, bien acompañado</p>
@@ -130,7 +130,7 @@ export default function LandingPage() {
 
               <div className="grid grid-cols-3 gap-2.5 py-5 sm:gap-3">
                 {stats.map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="min-w-0 rounded-xl border border-border bg-surface-alt/70 p-3 sm:p-4">
+                  <div key={label} className="panel-shell min-w-0 rounded-xl p-3 sm:p-4">
                     <Icon size={18} className="mb-3 text-primary-600" aria-hidden="true" />
                     <p className="text-xl font-bold tracking-tight text-text sm:text-2xl">{value}</p>
                     <p className="mt-1 text-[0.7rem] leading-4 text-muted sm:text-xs">{label}</p>
@@ -138,7 +138,7 @@ export default function LandingPage() {
                 ))}
               </div>
 
-              <div className="rounded-[1.35rem] bg-primary-600 p-4 text-surface shadow-[0_18px_36px_rgba(79,70,229,0.18)] sm:p-5">
+              <div className="rounded-[1.5rem] bg-primary-600 p-4 text-surface shadow-[0_18px_36px_rgba(79,70,229,0.18)] sm:p-5">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface/15">
                     <ShieldCheck size={21} aria-hidden="true" />
@@ -197,7 +197,7 @@ export default function LandingPage() {
 
             <ol className="grid gap-3">
               {steps.map((step) => (
-                <li key={step.number} className="grid gap-3 rounded-2xl border border-border bg-surface p-5 shadow-[0_1px_2px_rgba(15,23,42,0.02)] transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-primary-200 sm:grid-cols-[3.25rem_1fr] sm:items-start sm:p-6">
+                <li key={step.number} className="grid gap-3 rounded-[1.6rem] border border-border bg-surface p-5 shadow-[0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)] sm:grid-cols-[3.25rem_1fr] sm:items-start sm:p-6">
                   <span className="text-sm font-bold tracking-[0.12em] text-primary-600">{step.number}</span>
                   <div>
                     <h3 className="text-lg font-semibold text-text">{step.title}</h3>
@@ -238,9 +238,9 @@ export default function LandingPage() {
             <p className="mt-2">Mentoría personalizada para la próxima generación STEM.</p>
           </div>
           <nav aria-label="Navegación del pie de página" className="flex flex-wrap gap-x-5 gap-y-2">
-            <Link to="/mentors" className="transition-colors hover:text-text">Mentores</Link>
-            <Link to="/login" className="transition-colors hover:text-text">Iniciar sesión</Link>
-            <Link to="/register" className="transition-colors hover:text-text">Crear cuenta</Link>
+            <Link to="/mentors" className="transition-all duration-300 ease-in-out hover:text-text">Mentores</Link>
+            <Link to="/login" className="transition-all duration-300 ease-in-out hover:text-text">Iniciar sesión</Link>
+            <Link to="/register" className="transition-all duration-300 ease-in-out hover:text-text">Crear cuenta</Link>
           </nav>
         </div>
       </footer>

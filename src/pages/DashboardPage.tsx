@@ -132,7 +132,7 @@ export default function DashboardPage() {
         errorTitle="No pudimos cargar tu panel"
         onRetry={reload}
       >
-      <div className="mb-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+      <div className="mb-8 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <PageHero
           badge={(
             <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
@@ -154,17 +154,17 @@ export default function DashboardPage() {
           )}
           footer={(
             <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-2xl bg-surface/80 p-4 ring-1 ring-border/60">
+              <div className="panel-shell rounded-2xl p-4">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Actividad total</p>
                 <p className="mt-2 text-2xl font-bold text-text">{totalSessions}</p>
                 <p className="mt-1 text-sm text-muted">sesiones registradas en tu cuenta</p>
               </div>
-              <div className="rounded-2xl bg-surface/80 p-4 ring-1 ring-border/60">
+              <div className="panel-shell rounded-2xl p-4">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Progreso</p>
                 <p className="mt-2 text-2xl font-bold text-text">{activeRate}%</p>
                 <p className="mt-1 text-sm text-muted">de reservas actualmente confirmadas</p>
               </div>
-              <div className="rounded-2xl bg-surface/80 p-4 ring-1 ring-border/60">
+              <div className="panel-shell rounded-2xl p-4">
                 <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted">Estado actual</p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   <Badge label={`${confirmed.length} confirmadas`} color="success" />
@@ -245,7 +245,7 @@ export default function DashboardPage() {
             className="group border-border bg-surface p-6 hover:border-primary-200"
             onClick={onClick}
           >
-              <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${tone}`}>
+              <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] ${tone}`}>
                 <Icon size={24} aria-hidden />
               </div>
               <h3 className="mb-1 font-bold text-text">{title}</h3>

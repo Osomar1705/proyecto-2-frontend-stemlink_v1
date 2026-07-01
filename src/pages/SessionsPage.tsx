@@ -296,13 +296,13 @@ export default function SessionsPage() {
           description="Revisa reservas reales del backend, responde pendientes y mantén una vista clara de tu agenda."
           aside={(
             <div className="grid gap-3 sm:grid-cols-2 lg:min-w-[24rem]">
-              <div className="rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
+              <div className="panel-shell rounded-2xl px-4 py-3">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Vista activa</p>
                 <p className="mt-1 text-sm font-semibold text-text">
                   {filter ? `Filtro por ${getStatusLabel(filter)}` : 'Todas las reservas'}
                 </p>
               </div>
-              <div className="rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
+              <div className="panel-shell rounded-2xl px-4 py-3">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resultados</p>
                 <p className="mt-1 text-sm font-semibold text-text">
                   {data?.totalElements ?? 0} totales
@@ -311,7 +311,7 @@ export default function SessionsPage() {
             </div>
           )}
           footer={(
-            <div className="flex flex-wrap gap-2 rounded-xl border border-border bg-surface p-4">
+            <div className="flex flex-wrap gap-2 rounded-[1.4rem] border border-border bg-surface p-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
               {SESSION_FILTERS.map((status) => (
                 <button
                   key={status}
@@ -321,7 +321,7 @@ export default function SessionsPage() {
                     setPage(0)
                   }}
                   aria-pressed={filter === status}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold ring-1 transition-all ${filter === status ? 'bg-primary-600 text-surface ring-primary-600' : 'bg-surface text-muted ring-border/60 hover:text-text hover:ring-primary-400'}`}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold ring-1 transition-all duration-300 ease-in-out ${filter === status ? 'bg-primary-600 text-surface ring-primary-600 shadow-[0_10px_22px_rgba(79,70,229,0.12)]' : 'bg-surface text-muted ring-border/60 hover:-translate-y-0.5 hover:text-text hover:ring-primary-400 hover:shadow-[0_8px_18px_rgba(15,23,42,0.05)]'}`}
                 >
                   {status ? getStatusLabel(status) : 'Todas'}
                 </button>

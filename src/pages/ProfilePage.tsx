@@ -83,7 +83,7 @@ export default function ProfilePage() {
           description="Tu resumen personal dentro de STEM Link, con foco en actividad, progreso y visibilidad de tu cuenta."
           aside={(
             <div className="flex flex-col items-center text-center">
-              <div className="surface-tint rounded-[1.75rem] px-6 py-5">
+              <div className="surface-tint rounded-[1.75rem] px-6 py-5 shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
                 <div className="mx-auto mb-3 flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50">
                   {profileData.user.name.slice(0, 2).toUpperCase()}
                 </div>
@@ -94,15 +94,15 @@ export default function ProfilePage() {
           )}
           footer={(
             <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
+              <div className="panel-shell rounded-2xl px-4 py-4 text-center">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Próximas</p>
                 <p className="mt-2 text-2xl font-bold text-text">{upcomingBookings}</p>
               </div>
-              <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
+              <div className="panel-shell rounded-2xl px-4 py-4 text-center">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Confirmadas</p>
                 <p className="mt-2 text-2xl font-bold text-text">{confirmedBookings}</p>
               </div>
-              <div className="rounded-2xl bg-surface/80 px-4 py-4 text-center ring-1 ring-border/60">
+              <div className="panel-shell rounded-2xl px-4 py-4 text-center">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Alertas</p>
                 <p className="mt-2 text-2xl font-bold text-text">{profileData.unreadCount}</p>
               </div>

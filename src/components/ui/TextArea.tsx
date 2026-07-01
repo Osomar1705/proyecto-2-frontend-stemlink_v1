@@ -25,7 +25,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, Props>(
           aria-invalid={!!error}
           aria-describedby={error ? `${textAreaId}-error` : helperText ? `${textAreaId}-help` : undefined}
           {...props}
-          className={`field-shell resize-none rounded-2xl px-4 py-3 text-sm text-text outline-none transition-[border-color,box-shadow,background-color] duration-200 placeholder:text-muted/70 focus:border-primary-400 focus:bg-surface focus:ring-4 focus:ring-primary-500/10 disabled:cursor-not-allowed disabled:bg-surface-alt/70 ${error ? 'border-primary-600 ring-4 ring-primary-500/10' : ''} ${className}`}
+          className={`field-shell resize-none rounded-2xl px-4 py-3.5 text-sm text-text outline-none transition-all duration-300 ease-in-out placeholder:text-muted/70 hover:border-primary-200 hover:bg-surface focus:border-primary-400 focus:bg-surface focus:ring-4 focus:ring-primary-500/10 disabled:cursor-not-allowed disabled:bg-surface-alt/70 ${error ? 'border-primary-600 ring-4 ring-primary-500/10' : ''} ${className}`}
         />
         {helperText && !error && <span id={`${textAreaId}-help`} className="text-xs text-muted">{helperText}</span>}
         {error && <span id={`${textAreaId}-error`} className="text-xs text-primary-700">{error}</span>}

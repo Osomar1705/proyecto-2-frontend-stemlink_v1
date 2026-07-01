@@ -103,22 +103,22 @@ export default function MentorsPage() {
           description="Explora perfiles reales, filtra por habilidades y encuentra a la persona adecuada para tu siguiente reto técnico."
           aside={(
             <div className="flex flex-wrap gap-3 lg:min-w-[25rem]">
-              <div className="min-w-[7rem] flex-1 rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
+              <div className="panel-shell min-w-[7rem] flex-1 rounded-2xl px-4 py-3">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resultados</p>
                 <p className="mt-1 text-lg font-bold text-text">{mentorCount}</p>
               </div>
-              <div className="min-w-[7rem] flex-1 rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
+              <div className="panel-shell min-w-[7rem] flex-1 rounded-2xl px-4 py-3">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Filtros</p>
                 <p className="mt-1 text-lg font-bold text-text">{selectedSkills.length}</p>
               </div>
-              <div className="min-w-[7rem] flex-1 rounded-2xl bg-surface/80 px-4 py-3 shadow-sm ring-1 ring-border/60">
+              <div className="panel-shell min-w-[7rem] flex-1 rounded-2xl px-4 py-3">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Página</p>
                 <p className="mt-1 text-lg font-bold text-text">{page + 1}</p>
               </div>
             </div>
           )}
           footer={(
-            <div className="space-y-4 rounded-xl border border-border bg-surface p-4 sm:p-5">
+            <div className="space-y-4 rounded-[1.4rem] border border-border bg-surface p-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)] sm:p-5">
               <div className="relative">
                 <Search size={20} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
                 <input
@@ -126,7 +126,7 @@ export default function MentorsPage() {
                   onChange={e => { setSearch(e.target.value); setPage(0) }}
                   placeholder="Buscar mentores por nombre..."
                   aria-label="Buscar mentores por nombre"
-                  className="w-full rounded-xl border border-border bg-surface py-3 pl-10 pr-4 text-sm text-text shadow-sm outline-none transition-[border-color,box-shadow] placeholder:text-muted/75 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10"
+                  className="field-shell w-full rounded-xl py-3.5 pl-10 pr-4 text-sm text-text outline-none transition-all duration-300 ease-in-out placeholder:text-muted/75 hover:border-primary-200 hover:bg-surface focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10"
                 />
               </div>
 
@@ -140,7 +140,7 @@ export default function MentorsPage() {
                   <button
                     type="button"
                     onClick={clearFilters}
-                    className="inline-flex items-center gap-1 rounded-full bg-surface px-3 py-1 text-xs font-semibold text-text ring-1 ring-border/60 transition-colors hover:text-primary-700"
+                    className="inline-flex items-center gap-1 rounded-full bg-surface px-3 py-1 text-xs font-semibold text-text ring-1 ring-border/60 transition-all duration-300 ease-in-out hover:text-primary-700 hover:shadow-[0_8px_18px_rgba(79,70,229,0.08)]"
                   >
                     <X size={12} aria-hidden />
                     Limpiar
@@ -163,7 +163,7 @@ export default function MentorsPage() {
                         type="button"
                         onClick={() => toggleSkill(skill.id)}
                         aria-pressed={active}
-                        className={`rounded-full px-3 py-1.5 text-sm font-medium ring-1 transition-all ${active ? 'bg-primary-600 text-surface ring-primary-600' : 'bg-surface text-muted ring-border/60 hover:text-text hover:ring-primary-400'}`}
+                        className={`rounded-full px-3 py-1.5 text-sm font-medium ring-1 transition-all duration-300 ease-in-out ${active ? 'bg-primary-600 text-surface ring-primary-600 shadow-[0_10px_22px_rgba(79,70,229,0.12)]' : 'bg-surface text-muted ring-border/60 hover:-translate-y-0.5 hover:text-text hover:ring-primary-400 hover:shadow-[0_8px_18px_rgba(15,23,42,0.05)]'}`}
                       >
                         {skill.name}
                       </button>

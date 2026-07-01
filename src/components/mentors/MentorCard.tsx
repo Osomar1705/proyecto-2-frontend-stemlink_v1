@@ -22,7 +22,7 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
         <div className="flex items-start justify-between gap-3">
           <MentorAvatar name={mentor.name} size="md" />
 
-          <div className="inline-flex items-center gap-1 rounded-full bg-surface/90 px-2.5 py-1 text-[11px] font-semibold text-muted ring-1 ring-border/60">
+          <div className="inline-flex items-center gap-1 rounded-full bg-surface/90 px-2.5 py-1 text-[11px] font-semibold text-muted ring-1 ring-border/60 shadow-[0_8px_18px_rgba(15,23,42,0.04)]">
             <Sparkles size={12} className="text-accent-500" aria-hidden />
             STEM
           </div>
@@ -40,11 +40,11 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
 
       <div className="flex flex-1 flex-col px-5 py-5">
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-2xl border border-border/70 bg-surface/80 px-3 py-3">
+          <div className="panel-shell rounded-2xl px-3 py-3">
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Skills</p>
             <p className="mt-1 text-lg font-bold text-text">{skills.length}</p>
           </div>
-          <div className="rounded-2xl border border-border/70 bg-surface/80 px-3 py-3">
+          <div className="panel-shell rounded-2xl px-3 py-3">
             <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">Perfil</p>
             <p className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-text">
               <Award size={14} className="text-primary-600" aria-hidden />
@@ -68,7 +68,7 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
-              className="inline-flex items-center gap-1 text-xs font-medium text-primary-600 transition-colors hover:text-primary-700 hover:underline"
+              className="inline-flex items-center gap-1 text-xs font-medium text-primary-600 transition-all duration-300 ease-in-out hover:text-primary-700 hover:underline"
             >
               <ExternalLink size={12} aria-hidden />
               Ver LinkedIn

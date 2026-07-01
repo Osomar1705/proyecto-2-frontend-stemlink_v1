@@ -48,25 +48,25 @@ export default function RegisterPage() {
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(120deg,rgba(99,102,241,0.08),transparent_42%,rgba(20,184,166,0.05)),radial-gradient(circle_at_top_left,rgba(99,102,241,0.1),transparent_24rem)]" />
-      <div className="mx-auto grid max-w-7xl items-center gap-8 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_1fr] lg:gap-12">
+      <div className="mx-auto grid max-w-7xl items-center gap-10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_1fr] lg:gap-16">
         <div className="max-w-xl">
-          <div className="eyebrow">
+          <div className="eyebrow shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
             <Sparkles size={16} className="text-accent-500" aria-hidden />
             Registro seguro para estudiantes y mentores
           </div>
-          <h1 className="mt-5 text-3xl font-bold tracking-tight text-text sm:text-5xl">
+          <h1 className="mt-5 text-balance text-3xl font-bold tracking-tight text-text sm:text-5xl">
             Crea tu cuenta y entra a una plataforma pensada para crecer
           </h1>
           <p className="mt-5 max-w-lg text-base leading-8 text-muted sm:text-lg">
             Un registro más claro, una experiencia más confiable y acceso inmediato al ecosistema STEM Link.
           </p>
 
-          <div className="mt-8 hidden gap-3 sm:grid sm:grid-cols-2">
-            <Card className="border-border/70 p-4">
+          <div className="mt-8 hidden gap-4 sm:grid sm:grid-cols-2">
+            <Card className="border-border/70 p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Estudiantes</p>
               <p className="mt-2 text-lg font-bold text-text">Encuentra acompañamiento</p>
             </Card>
-            <Card className="border-border/70 p-4">
+            <Card className="border-border/70 p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">Mentores</p>
               <p className="mt-2 text-lg font-bold text-text">Comparte experiencia</p>
             </Card>
@@ -74,7 +74,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="w-full">
-          <Card className="relative overflow-hidden border-border bg-surface p-5 sm:p-10">
+          <Card className="relative overflow-hidden border-border bg-surface p-5 sm:p-8 lg:p-10">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(99,102,241,0.08),transparent)]" aria-hidden />
 
             <div className="relative">
@@ -95,7 +95,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <div className="surface-tint mb-6 rounded-[1.35rem] border border-border/70 px-4 py-4 shadow-sm">
+              <div className="surface-tint mb-6 rounded-[1.5rem] border border-border/70 px-4 py-4 shadow-sm">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-600">
                     <ShieldCheck size={18} aria-hidden />
@@ -144,7 +144,7 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(prev => !prev)}
-                    className="inline-flex items-center gap-2 text-xs font-semibold text-primary-600 transition-colors hover:text-primary-700"
+                    className="inline-flex items-center gap-2 text-xs font-semibold text-primary-600 transition-all duration-300 ease-in-out hover:text-primary-700"
                     aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                   >
                     {showPassword ? <EyeOff size={14} aria-hidden /> : <Eye size={14} aria-hidden />}
@@ -162,7 +162,7 @@ export default function RegisterPage() {
                       return (
                         <label
                           key={r}
-                          className={`flex cursor-pointer flex-col gap-3 rounded-[1.35rem] border p-4 transition-all ${selected ? 'border-primary-500 bg-primary-50 shadow-[0_10px_24px_rgba(79,70,229,0.08)]' : 'border-border/70 bg-surface/90 hover:border-primary-200 hover:bg-surface-alt/80'}`}
+                          className={`flex cursor-pointer flex-col gap-3 rounded-[1.5rem] border p-4 transition-all duration-300 ease-in-out ${selected ? 'border-primary-500 bg-primary-50 shadow-[0_10px_24px_rgba(79,70,229,0.08)]' : 'border-border/70 bg-surface/90 hover:-translate-y-0.5 hover:border-primary-200 hover:bg-surface-alt/80 hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]'}`}
                         >
                           <input type="radio" value={r} {...register('role')} className="sr-only" />
                           <span className={`flex h-11 w-11 items-center justify-center rounded-2xl ${selected ? 'bg-primary-600 text-surface' : 'bg-surface-alt text-primary-600'}`}>
@@ -196,7 +196,7 @@ export default function RegisterPage() {
 
                 <p className="pt-1 text-center text-sm text-muted">
                   ¿Ya tienes cuenta?{' '}
-                  <Link to="/login" className="font-semibold text-primary-600 transition-colors hover:text-primary-700">
+                  <Link to="/login" className="font-semibold text-primary-600 transition-all duration-300 ease-in-out hover:text-primary-700">
                     Inicia sesión
                   </Link>
                 </p>

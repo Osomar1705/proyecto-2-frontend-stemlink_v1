@@ -102,7 +102,7 @@ export default function NotificationsPage() {
           title="Notificaciones"
           description="Revisa recordatorios, confirmaciones y actividad reciente generada por tus sesiones y reservas."
           aside={(
-            <div className="rounded-2xl bg-surface/80 px-4 py-4 ring-1 ring-border/60">
+            <div className="panel-shell rounded-2xl px-4 py-4">
               <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resumen</p>
               <p className="mt-2 text-sm font-semibold text-text">
                 {unreadCount > 0
@@ -115,18 +115,18 @@ export default function NotificationsPage() {
             </div>
           )}
           footer={(
-            <div className="flex flex-wrap gap-2 rounded-xl border border-border bg-surface p-3">
+            <div className="flex flex-wrap gap-2 rounded-[1.35rem] border border-border bg-surface p-3 shadow-[0_10px_24px_rgba(15,23,42,0.04)]">
               <button
                 type="button"
                 onClick={() => setFilter('all')}
-                className={`rounded-full px-4 py-2 text-sm font-medium ring-1 transition-colors ${filter === 'all' ? 'bg-primary-600 text-surface ring-primary-600' : 'bg-surface text-muted ring-border/60 hover:text-text hover:ring-primary-400'}`}
+                className={`rounded-full px-4 py-2 text-sm font-medium ring-1 transition-all duration-300 ease-in-out ${filter === 'all' ? 'bg-primary-600 text-surface ring-primary-600 shadow-[0_10px_22px_rgba(79,70,229,0.12)]' : 'bg-surface text-muted ring-border/60 hover:-translate-y-0.5 hover:text-text hover:ring-primary-400 hover:shadow-[0_8px_18px_rgba(15,23,42,0.05)]'}`}
               >
                 Todas
               </button>
               <button
                 type="button"
                 onClick={() => setFilter('unread')}
-                className={`rounded-full px-4 py-2 text-sm font-medium ring-1 transition-colors ${filter === 'unread' ? 'bg-primary-600 text-surface ring-primary-600' : 'bg-surface text-muted ring-border/60 hover:text-text hover:ring-primary-400'}`}
+                className={`rounded-full px-4 py-2 text-sm font-medium ring-1 transition-all duration-300 ease-in-out ${filter === 'unread' ? 'bg-primary-600 text-surface ring-primary-600 shadow-[0_10px_22px_rgba(79,70,229,0.12)]' : 'bg-surface text-muted ring-border/60 hover:-translate-y-0.5 hover:text-text hover:ring-primary-400 hover:shadow-[0_8px_18px_rgba(15,23,42,0.05)]'}`}
               >
                 No leídas ({unreadCount})
               </button>
@@ -169,7 +169,7 @@ export default function NotificationsPage() {
                   className={`transition-all hover:shadow-md ${!notification.read ? 'border-primary-300 bg-primary-50/70' : 'border-border/60 bg-surface/90'}`}
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                    <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-surface/80 ring-1 ring-border/60">
+                    <div className="panel-shell mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl">
                       {icon}
                     </div>
 

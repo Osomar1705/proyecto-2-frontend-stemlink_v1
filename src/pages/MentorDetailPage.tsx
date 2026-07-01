@@ -152,7 +152,7 @@ export default function MentorDetailPage() {
   if (!mentorId) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-        <button onClick={() => navigate('/mentors')} className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-primary-600">
+        <button onClick={() => navigate('/mentors')} className="flex items-center gap-2 text-sm text-muted transition-all duration-300 ease-in-out hover:text-primary-600">
           <ArrowLeft size={16} /> Volver a mentores
         </button>
         <div className="mt-8 rounded-2xl border border-border bg-surface p-6 shadow-sm">
@@ -173,7 +173,7 @@ export default function MentorDetailPage() {
 
       <button
         onClick={() => navigate('/mentors')}
-        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-primary-600 transition-colors hover:text-primary-700"
+        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-primary-600 transition-all duration-300 ease-in-out hover:text-primary-700"
       >
         <ArrowLeft size={18} /> Volver a mentores
       </button>
@@ -192,7 +192,7 @@ export default function MentorDetailPage() {
       >
         {mentor ? <>
           <div className="mb-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-          <div className="overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm">
+          <div className="surface-card overflow-hidden rounded-[2rem] border border-border/70 shadow-sm">
             <div className="relative p-6 sm:p-8">
               <div className="relative">
                 <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-alt px-3 py-1 text-sm font-medium text-muted">
@@ -220,7 +220,7 @@ export default function MentorDetailPage() {
                           href={mentor!.linkedinUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-colors hover:border-primary-400 hover:text-primary-700"
+                        className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-primary-400 hover:text-primary-700 hover:shadow-[0_10px_24px_rgba(79,70,229,0.08)]"
                         >
                           <ExternalLink size={14} className="text-primary-600" aria-hidden />
                           LinkedIn
@@ -231,7 +231,7 @@ export default function MentorDetailPage() {
                           href={mentor!.videoCallUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-colors hover:border-accent-400 hover:text-accent-700"
+                        className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-accent-400 hover:text-accent-700 hover:shadow-[0_10px_24px_rgba(13,148,136,0.08)]"
                         >
                           <Video size={14} className="text-accent-500" aria-hidden />
                           Videollamada
@@ -244,21 +244,21 @@ export default function MentorDetailPage() {
             </div>
 
             <div className="grid gap-4 border-t border-border bg-surface-alt/60 p-6 sm:grid-cols-3 sm:p-8">
-              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+              <div className="panel-shell rounded-xl px-4 py-4 text-center">
                 <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
                   <Award size={16} className="text-accent-500" aria-hidden />
                   {mentor!.skills?.length || 0}
                 </div>
                 <p className="text-xs text-muted">Especialidades registradas</p>
               </div>
-              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+              <div className="panel-shell rounded-xl px-4 py-4 text-center">
                 <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
                   <Calendar size={16} className="text-primary-600" aria-hidden />
                   {availability.length}
                 </div>
                 <p className="text-xs text-muted">Bloques disponibles</p>
               </div>
-              <div className="rounded-xl border border-border bg-surface px-4 py-4 text-center">
+              <div className="panel-shell rounded-xl px-4 py-4 text-center">
                 <div className="mb-2 inline-flex items-center gap-1 font-bold text-text">
                   <GraduationCap size={16} className="text-primary-600" aria-hidden />
                   STEM
@@ -290,7 +290,7 @@ export default function MentorDetailPage() {
               </Button>
             ) : null}
 
-            <div className="rounded-xl border border-border bg-surface-alt p-4">
+            <div className="rounded-[1.35rem] border border-border bg-surface-alt p-4">
               <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Resumen</p>
               <div className="mt-4 space-y-3">
                 <div className="flex items-center justify-between gap-3">
@@ -308,7 +308,7 @@ export default function MentorDetailPage() {
               </div>
             </div>
 
-            <div className="rounded-xl border border-border bg-surface-alt p-4">
+            <div className="rounded-[1.35rem] border border-border bg-surface-alt p-4">
               <p className="text-sm font-semibold text-text">Disponibilidad</p>
               <p className="mt-1 text-sm leading-6 text-muted">
                 {isAuthenticated
@@ -400,7 +400,7 @@ export default function MentorDetailPage() {
             ) : (
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 {availabilityDays.map(day => (
-                  <div key={day} className="rounded-xl border border-border bg-surface-alt p-4 transition-colors hover:border-primary-300">
+                  <div key={day} className="rounded-[1.35rem] border border-border bg-surface-alt p-4 transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-primary-300 hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
                     <p className="mb-3 text-sm font-semibold text-text">{DAY_ES[day]}</p>
                     <div className="space-y-2">
                       {availability.filter(slot => slot.dayOfWeek === day).map(slot => (
