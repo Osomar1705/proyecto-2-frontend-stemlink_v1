@@ -16,8 +16,8 @@ import { Card } from '../components/ui/Card'
 import { MentorAvatar } from '../components/mentors/MentorAvatar'
 
 const mentorPreview = [
-  { name: 'Valeria Torres', skill: 'Data Science · Python', image: '/mentor-avatars/portrait-a.svg' },
-  { name: 'Diego Ramos', skill: 'Cloud · Backend', image: '/mentor-avatars/portrait-b.svg' },
+  { name: 'Valeria Torres', skill: 'Data Science · Python', image: '/mentor-avatars/portrait-a.png' },
+  { name: 'Diego Ramos', skill: 'Cloud · Backend', image: '/mentor-avatars/portrait-b.png' },
 ]
 
 const features = [
@@ -115,12 +115,7 @@ export default function LandingPage() {
           </div>
 
           <div className="relative mx-auto w-full max-w-xl lg:mx-0">
-            <div className="absolute -left-5 top-10 hidden rounded-2xl border border-accent-200 bg-surface/95 px-4 py-3 shadow-[0_18px_45px_rgba(15,23,42,0.12)] backdrop-blur-xl sm:block lg:-left-8">
-              <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-accent-700">Sesión confirmada</p>
-              <p className="mt-1 text-sm font-semibold text-text">Hoy · 18:30</p>
-            </div>
-
-            <Card className="hero-glow overflow-visible border-border bg-surface p-4 sm:p-5 lg:p-6">
+            <Card className="hero-glow border-border bg-surface p-4 sm:p-5 lg:p-6">
               <div className="relative z-10 flex items-start justify-between gap-5 border-b border-border/80 pb-4">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary-600">Explorar mentores</p>
