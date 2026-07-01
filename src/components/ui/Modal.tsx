@@ -66,29 +66,31 @@ export function Modal({ open, onClose, title, children }: Props) {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:items-center">
-      <div className="absolute inset-0 bg-slate-950/35 backdrop-blur-[2px]" onClick={onClose} aria-hidden="true" />
-      <div
-        ref={dialogRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={title ? titleId : undefined}
-        tabIndex={-1}
-        className="relative z-10 my-6 w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-[0_24px_64px_rgba(15,23,42,0.18)] sm:my-0 sm:max-h-[calc(100vh-3rem)]"
-      >
-        <div className="mb-4 flex items-center justify-between">
-          {title && <h3 id={titleId} className="text-lg font-semibold text-text">{title}</h3>}
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Cerrar modal"
-            className="ml-auto rounded-xl p-2 transition-colors hover:bg-surface-alt focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            <X size={20} className="text-muted" aria-hidden />
-          </button>
-        </div>
-        <div className="max-h-[calc(100vh-9rem)] overflow-y-auto pr-1 sm:max-h-[calc(100vh-10rem)]">
-          {children}
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="fixed inset-0 bg-slate-950/35 backdrop-blur-[2px]" onClick={onClose} aria-hidden="true" />
+      <div className="flex min-h-full items-start justify-center p-4 sm:items-center">
+        <div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={title ? titleId : undefined}
+          tabIndex={-1}
+          className="relative z-10 flex w-full max-w-md flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_24px_64px_rgba(15,23,42,0.18)] max-h-[calc(100dvh-2rem)]"
+        >
+          <div className="flex items-center justify-between border-b border-border/70 px-6 py-4">
+            {title && <h3 id={titleId} className="text-lg font-semibold text-text">{title}</h3>}
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Cerrar modal"
+              className="ml-auto rounded-xl p-2 transition-colors hover:bg-surface-alt focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <X size={20} className="text-muted" aria-hidden />
+            </button>
+          </div>
+          <div className="overflow-y-auto overscroll-contain px-6 py-5 touch-pan-y">
+            {children}
+          </div>
         </div>
       </div>
     </div>

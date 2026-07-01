@@ -16,7 +16,7 @@ import { PageHero } from '../components/ui/PageHero'
 import { Modal } from '../components/ui/Modal'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { parseApiError } from '../utils/errors'
-import { AlertTriangle, Calendar, Camera, Clock, ExternalLink, Plus, Sparkles, Trash2, UserRound, Video } from 'lucide-react'
+import { AlertTriangle, Calendar, Clock, ExternalLink, Plus, Sparkles, Trash2, UserRound, Video } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const profileSchema = z.object({
@@ -219,14 +219,9 @@ export default function MentorProfilePage() {
           description="Actualiza tu presencia pública, deja claros tus diferenciales y mantén una disponibilidad lista para reservar."
           aside={(
             <div className="flex flex-col items-center text-center">
-              <div className="relative mb-5">
-                  <div className="flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50 shadow-[0_18px_36px_rgba(79,70,229,0.18)]">
-                    STEM
-                  </div>
-                  <div className="absolute bottom-0 right-0 rounded-full border border-border/70 bg-surface p-2 text-muted shadow-sm">
-                    <Camera size={16} aria-hidden />
-                  </div>
-                </div>
+              <div className="mb-5 flex size-24 items-center justify-center rounded-full bg-primary-600 text-2xl font-bold text-surface ring-4 ring-primary-50 shadow-[0_18px_36px_rgba(79,70,229,0.18)]">
+                STEM
+              </div>
               </div>
             )}
             footer={(
