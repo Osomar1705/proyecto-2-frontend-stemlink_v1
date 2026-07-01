@@ -115,3 +115,10 @@ Pendiente fuera de este repositorio:
 El frontend está preparado para Vercel con rewrite a SPA en `vercel.json`.
 
 Si cambias el repo conectado en Vercel, un push a `main` debe disparar el redeploy automático.
+
+## Entrega
+
+- Repositorio classroom: https://github.com/CS2031-DBP/proyecto-2-frontend-stemlink
+- Deploy web: https://proyecto-2-frontend-stemlink-v1.vercel.app
+
+Si están trabajando en un repo externo, enlacen ese trabajo al repo de GitHub Classroom para que quede alineado con la evaluación.

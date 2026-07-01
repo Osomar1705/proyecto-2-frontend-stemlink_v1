@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { AuthResponse, LoginRequest, RegisterRequest } from '../types'
 import { authApi } from '../api/auth.api'
+import { clearAuth, getStoredAuth, storeAuth } from '../utils/authStorage'
 
 interface AuthState {
   token: string | null
@@ -14,35 +15,6 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | null>(null)
 
-function isAuthResponse(value: unknown): value is AuthResponse {
-  if (!value || typeof value !== 'object') return false
-
-  const candidate = value as Partial<AuthResponse>
-  return (
-    typeof candidate.token === 'string' &&
-    typeof candidate.id === 'number' &&
-    typeof candidate.name === 'string' &&
-    typeof candidate.email === 'string' &&
-    (candidate.role === 'STUDENT' || candidate.role === 'MENTOR')
-  )
-}
-
-function getStoredAuth(): AuthResponse | null {
-  const stored = sessionStorage.getItem('user')
-  if (!stored) return null
-
-  try {
-    const parsed = JSON.parse(stored)
-    if (isAuthResponse(parsed)) return parsed
-  } catch {
-    // Invalid persisted auth should not break the app on first render.
-  }
-
-  sessionStorage.removeItem('token')
-  sessionStorage.removeItem('user')
-  return null
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthResponse | null>(() => getStoredAuth())
   const [token, setToken] = useState<string | null>(() => user?.token ?? null)
@@ -50,8 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (data: LoginRequest) => {
     const res = await authApi.login(data)
     const auth = res.data
-    sessionStorage.setItem('token', auth.token)
-    sessionStorage.setItem('user', JSON.stringify(auth))
+    storeAuth(auth)
     setToken(auth.token)
     setUser(auth)
   }
@@ -62,8 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = () => {
-    sessionStorage.removeItem('token')
-    sessionStorage.removeItem('user')
+    clearAuth()
     setToken(null)
     setUser(null)
   }
