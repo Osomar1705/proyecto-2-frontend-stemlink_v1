@@ -1,4 +1,5 @@
 export interface MentorProfileEnhancements {
+  linkedinUrl: string
   instagramUrl: string
   photoUrl: string | null
 }
@@ -6,6 +7,7 @@ export interface MentorProfileEnhancements {
 const STORAGE_PREFIX = 'stemlink:mentor-profile-assets:v1:'
 
 const EMPTY_ENHANCEMENTS: MentorProfileEnhancements = {
+  linkedinUrl: '',
   instagramUrl: '',
   photoUrl: null,
 }
@@ -25,6 +27,7 @@ export function getMentorProfileEnhancements(mentorKey: number | string): Mentor
 
     const parsed = JSON.parse(storedValue) as Partial<MentorProfileEnhancements>
     return {
+      linkedinUrl: typeof parsed.linkedinUrl === 'string' ? parsed.linkedinUrl : '',
       instagramUrl: typeof parsed.instagramUrl === 'string' ? parsed.instagramUrl : '',
       photoUrl: typeof parsed.photoUrl === 'string' ? parsed.photoUrl : null,
     }

@@ -14,13 +14,14 @@ import { Button } from '../components/ui/Button'
 import { MentorAvatar } from '../components/mentors/MentorAvatar'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { clearUserPhoto, getUserProfileEnhancements, saveUserProfileEnhancements } from '../utils/mentorProfileAssets'
-import { AtSign, Bell, Calendar, ImagePlus, Mail, Sparkles, Upload, UserRound } from 'lucide-react'
+import { AtSign, Bell, Calendar, ExternalLink, ImagePlus, Mail, Sparkles, Upload, UserRound } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 type ProfileSummary = {
   user: UserResponse
   bookings: BookingResponse[]
   unreadCount: number
+  linkedinUrl: string
   instagramUrl: string
   photoUrl: string | null
 }
@@ -29,6 +30,7 @@ const EMPTY_PROFILE: ProfileSummary = {
   user: { id: 0, name: '', email: '', role: '' },
   bookings: [],
   unreadCount: 0,
+  linkedinUrl: '',
   instagramUrl: '',
   photoUrl: null,
 }
@@ -36,6 +38,7 @@ const EMPTY_PROFILE: ProfileSummary = {
 export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [photoUrl, setPhotoUrl] = useState<string | null>(null)
+  const [linkedinUrl, setLinkedinUrl] = useState('')
   const [instagramUrl, setInstagramUrl] = useState('')
 
   const loadProfile = useCallback(async (signal: AbortSignal) => {
@@ -47,12 +50,14 @@ export default function ProfilePage() {
 
     const enhancements = getUserProfileEnhancements(userRes.data.id)
     setPhotoUrl(enhancements.photoUrl)
+    setLinkedinUrl(enhancements.linkedinUrl)
     setInstagramUrl(enhancements.instagramUrl)
 
     return {
       user: userRes.data,
       bookings: bookingsRes.data.content,
       unreadCount: notificationsRes.data.content.filter((notification) => !notification.read).length,
+      linkedinUrl: enhancements.linkedinUrl,
       instagramUrl: enhancements.instagramUrl,
       photoUrl: enhancements.photoUrl,
     }
@@ -73,6 +78,7 @@ export default function ProfilePage() {
     ? 'Cuenta activa como mentor.'
     : 'Cuenta activa como estudiante.'
   const resolvedPhoto = photoUrl ?? profileData.photoUrl
+  const resolvedLinkedin = linkedinUrl || profileData.linkedinUrl
   const resolvedInstagram = instagramUrl || profileData.instagramUrl
 
   const handlePhotoSelection = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -130,6 +136,23 @@ export default function ProfilePage() {
     saveUserProfileEnhancements(profileData.user.id, { instagramUrl: resolvedInstagram.trim() })
     setInstagramUrl(resolvedInstagram.trim())
     toast.success('Enlace de Instagram actualizado.')
+  }
+
+  const handleLinkedinSave = () => {
+    if (!profileData.user.id) return
+
+    if (resolvedLinkedin.trim()) {
+      try {
+        new URL(resolvedLinkedin)
+      } catch {
+        toast.error('Ingresa una URL válida para LinkedIn.')
+        return
+      }
+    }
+
+    saveUserProfileEnhancements(profileData.user.id, { linkedinUrl: resolvedLinkedin.trim() })
+    setLinkedinUrl(resolvedLinkedin.trim())
+    toast.success('Enlace de LinkedIn actualizado.')
   }
 
   return (
@@ -248,6 +271,29 @@ export default function ProfilePage() {
                 <div>
                   <p className="text-sm font-semibold text-text">Rol</p>
                   <p className="mt-1 text-sm text-muted">{roleDescription}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="surface-subtle rounded-[1.35rem] p-4">
+              <div className="flex items-start gap-3">
+                <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-50/80">
+                  <ExternalLink size={18} className="text-primary-600" aria-hidden />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-text">LinkedIn</p>
+                  <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+                    <input
+                      type="url"
+                      value={resolvedLinkedin}
+                      onChange={(event) => setLinkedinUrl(event.target.value)}
+                      placeholder="https://linkedin.com/in/tuusuario"
+                      className="field-shell w-full rounded-2xl px-4 py-3 text-sm text-text outline-none transition-all duration-300 ease-in-out placeholder:text-muted/70 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10"
+                    />
+                    <Button type="button" variant="secondary" onClick={handleLinkedinSave}>
+                      Guardar enlace
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
