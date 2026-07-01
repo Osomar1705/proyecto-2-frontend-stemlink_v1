@@ -2,43 +2,43 @@
 
 # STEM Link Web
 
-Frontend web de STEM Link construido con `Vite + React + TypeScript + Tailwind CSS`.
+Frontend web de STEM Link desarrollado con `Vite`, `React`, `TypeScript` y `Tailwind CSS`.
 
-La app cubre el flujo principal de estudiante y mentor para la rubrica web del Proyecto 2 DBP:
+STEM Link Web cubre el flujo principal de mentoría para la entrega de Frontend del curso DBP: autenticación, descubrimiento de mentores, detalle de perfil, reservas, notificaciones y perfil de usuario/mentor con una interfaz pensada para demo y exposición.
 
-- autenticacion con `sessionStorage`
-- routing lazy con `React Router`
-- guards publicos/privados por rol
-- componentes UI reutilizables
-- busqueda con debounce
-- paginacion en mentores y notificaciones
-- formularios con `react-hook-form + zod`
-- estados vacios, skeletons, modales y error boundaries
+## Visión General
+
+- experiencia visual limpia, moderna y responsive
+- arquitectura modular con componentes reutilizables
+- consumo directo del backend como fuente de verdad
+- rutas públicas y privadas separadas por rol
+- validaciones, estados de carga, empty states y toasts
+- paginación y filtros en los listados clave
 
 ## Stack
 
-- `react`
-- `react-router-dom`
-- `axios`
-- `react-hook-form`
-- `zod`
-- `react-hot-toast`
-- `tailwindcss`
+- `React`
+- `React Router`
+- `Axios`
+- `React Hook Form`
+- `Zod`
+- `React Hot Toast`
+- `Tailwind CSS`
 
 ## Requisitos
 
 - `Node.js 20+`
-- backend STEM Link levantado y accesible
+- backend STEM Link desplegado y accesible
 
 ## Variables de entorno
 
-Crea `.env`:
+Crear un archivo `.env` en la raíz del proyecto:
 
 ```env
 VITE_API_BASE_URL=https://stem-link-app-1.onrender.com
 ```
 
-El backend actual expone aliases en `/api` y `/api/v1`, asi que este frontend funciona contra la version ya publicada del backend sin cambios extra de rutas.
+La app consume el backend desde una base URL centralizada en `src/api/client.ts`.
 
 ## Scripts
 
@@ -49,9 +49,9 @@ npm run build
 npm run lint
 ```
 
-## Rutas principales
+## Rutas
 
-Publicas:
+### Públicas
 
 - `/`
 - `/mentors`
@@ -59,7 +59,7 @@ Publicas:
 - `/login`
 - `/register`
 
-Privadas:
+### Privadas
 
 - `/dashboard`
 - `/sessions`
@@ -67,28 +67,51 @@ Privadas:
 - `/profile`
 - `/mentor/profile`
 
-Fallback:
+### Fallback
 
 - `*` -> pagina 404
 
-## Estado actual frente a la rubrica web
+## Funcionalidades Destacadas
 
-Implementado en este repo:
+- login y registro con validación client-side
+- dashboard con resumen de actividad
+- exploración de mentores con búsqueda, filtros y paginación
+- detalle de mentor con disponibilidad y reserva
+- perfil de usuario con edición visual de foto y enlaces
+- perfil de mentor con edición de bio, LinkedIn, Instagram, habilidades y horarios
+- modales accesibles con scroll correcto en pantallas pequeñas
+- manejo de errores, loading states y reintentos simples para requests transitorios
 
-- cliente HTTP centralizado con auth header, cancelacion y retry simple de red
-- mas de 10 componentes base reutilizables
-- lazy routes + suspense + error boundary
-- paginacion reusable en mentores y notificaciones
-- dashboard y flujos de estudiante/mentor
-- filtros, empty states, skeletons, toasts y validaciones
+## Rúbrica Web
 
-Pendiente fuera de este repo:
+Este repositorio cubre los criterios web principales:
+
+- integración con backend y consumo de API
+- arquitectura React modular
+- routing y navegación
+- manejo de errores y estados de carga
+- UI/UX consistente y responsive
+- vistas diferenciadas con contenido real
+- paginación funcional
+
+## Estado del Proyecto
+
+Pendiente fuera de este repositorio:
 
 - repo mobile con Expo
-- deployment publico integral y pitch/demo final
+- sensores en mobile
+- despliegue integral del stack completo
+- presentación final y demo en vivo
 
-## Notas de integracion
+## Notas Técnicas
 
-- El token se persiste en `sessionStorage`.
-- Las requests `GET` hacen un reintento automatico corto en fallos de red/5xx transitorios.
-- Los arrays en query params se serializan como CSV para filtros tipo `skillIds=1,2`.
+- el token se persiste en `sessionStorage`
+- las requests `GET` incluyen retry simple ante fallos transitorios
+- los arrays en query params se serializan como CSV
+- Vercel debe usar `VITE_API_BASE_URL=https://stem-link-app-1.onrender.com`
+
+## Deploy
+
+El frontend está preparado para Vercel con rewrite a SPA en `vercel.json`.
+
+Si cambias el repo conectado en Vercel, un push a `main` debe disparar el redeploy automático.
