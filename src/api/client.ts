@@ -2,6 +2,8 @@ import axios from 'axios'
 
 const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504])
 const RETRY_BACKOFF_MS = 400
+const MAX_RETRIES = 2
+const REQUEST_TIMEOUT_MS = 25000
 
 type RetryConfig = {
   _retryCount?: number
@@ -15,7 +17,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://stem-link-app
 
 const client = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: REQUEST_TIMEOUT_MS,
   paramsSerializer: {
     serialize(params) {
       const search = new URLSearchParams()
@@ -57,7 +59,7 @@ client.interceptors.response.use(
     const method = config?.method?.toLowerCase()
     const isNetworkError = !error.response && !config?.signal?.aborted
     const isRetryableMethod = method === 'get'
-    const hasRetriesLeft = (config?._retryCount ?? 0) < 1
+    const hasRetriesLeft = (config?._retryCount ?? 0) < MAX_RETRIES
 
     if (config && isNetworkError && isRetryableMethod && hasRetriesLeft) {
       config._retryCount = (config._retryCount ?? 0) + 1
