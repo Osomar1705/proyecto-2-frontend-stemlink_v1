@@ -2,6 +2,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { Button } from '../ui/Button'
 import { GraduationCap, Bell, LogOut, User } from 'lucide-react'
+import { Moon, Sun } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 export function Navbar() {
   const { user, logout, isAuthenticated } = useAuth()
@@ -10,6 +12,29 @@ export function Navbar() {
   const handleLogout = () => {
     logout()
     navigate('/login')
+  }
+
+  const [isDark, setIsDark] = useState<boolean>(() => typeof window !== 'undefined' && document.documentElement.classList.contains('dark'))
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const stored = window.localStorage.getItem('theme')
+    if (stored) {
+      document.documentElement.classList.toggle('dark', stored === 'dark')
+      setIsDark(stored === 'dark')
+    } else {
+      // match system preference
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      document.documentElement.classList.toggle('dark', prefersDark)
+      setIsDark(prefersDark)
+    }
+  }, [])
+
+  function toggleTheme() {
+    const next = !isDark
+    document.documentElement.classList.toggle('dark', next)
+    try { window.localStorage.setItem('theme', next ? 'dark' : 'light') } catch {}
+    setIsDark(next)
   }
 
   return (
@@ -25,6 +50,9 @@ export function Navbar() {
         </Link>
 
         <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+          <Button variant="ghost" onClick={toggleTheme} aria-label="Toggle theme" className="!px-2">
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          </Button>
           <Link to="/mentors" className="hidden min-[420px]:inline-flex items-center rounded-full px-3 py-2 text-sm font-semibold text-muted transition-all duration-300 ease-in-out hover:-translate-y-px hover:bg-surface hover:text-primary-700">
             Mentores
           </Link>

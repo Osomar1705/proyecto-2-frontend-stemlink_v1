@@ -16,10 +16,11 @@ function wait(ms: number) {
   return new Promise((resolve) => window.setTimeout(resolve, ms))
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
+const DEFAULT_API_BASE_URL = 'https://stem-link-app-1.onrender.com'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim() || DEFAULT_API_BASE_URL
 
 const authRefreshClient = axios.create({
-  baseURL: API_BASE_URL || undefined,
+  baseURL: API_BASE_URL,
   timeout: REQUEST_TIMEOUT_MS,
   headers: {
     'Content-Type': 'application/json',

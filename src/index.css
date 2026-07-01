@@ -239,6 +239,33 @@ a {
   border-color: rgba(226, 232, 240, 0.7);
 }
 
+/* Dark theme variable overrides (applies when `html` has class `dark`) */
+html.dark {
+  color-scheme: dark;
+  --color-primary-50:  #0f1724;
+  --color-primary-100: #0b1220;
+  --color-primary-200: #0a1224;
+  --color-primary-300: #0b1530;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+
+  --color-accent-50:  #052f2a;
+  --color-accent-100: #063733;
+  --color-accent-200: #06443f;
+  --color-accent-400: #0b826f;
+  --color-accent-500: #14b8a6;
+  --color-accent-600: #0d9488;
+
+  --color-surface:     #061021;
+  --color-surface-alt: #081826;
+  --color-border:      #172033;
+  --color-text:        #e6eef8;
+  --color-muted:       #9aa6b2;
+
+  background: radial-gradient(circle at 12% 0%, rgba(99, 102, 241, 0.06), transparent 28rem), radial-gradient(circle at 88% 8%, rgba(20, 184, 166, 0.04), transparent 24rem), #071026;
+}
+
 .text-balance {
   text-wrap: balance;
 }
