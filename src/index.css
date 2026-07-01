@@ -52,6 +52,7 @@ body {
   color: var(--color-text);
   min-height: 100vh;
   line-height: 1.6;
+  position: relative;
 }
 
 html,
@@ -162,6 +163,21 @@ a {
     radial-gradient(circle at 15% 0%, rgba(99, 102, 241, 0.09), transparent 22rem),
     radial-gradient(circle at 85% 5%, rgba(20, 184, 166, 0.08), transparent 20rem);
   opacity: 0.9;
+  animation: ambient-drift 22s ease-in-out infinite alternate;
+}
+
+.app-shell::after {
+  position: fixed;
+  inset: -12% -8%;
+  pointer-events: none;
+  content: '';
+  background:
+    radial-gradient(circle at 20% 25%, rgba(99, 102, 241, 0.08), transparent 18rem),
+    radial-gradient(circle at 78% 18%, rgba(20, 184, 166, 0.06), transparent 16rem),
+    radial-gradient(circle at 55% 82%, rgba(79, 70, 229, 0.05), transparent 20rem);
+  filter: blur(18px);
+  opacity: 0.9;
+  animation: ambient-float 28s ease-in-out infinite;
 }
 
 .surface-card {
@@ -225,6 +241,74 @@ a {
 
 .text-balance {
   text-wrap: balance;
+}
+
+.animated-stage {
+  position: relative;
+  isolation: isolate;
+}
+
+.animated-stage::before {
+  position: absolute;
+  inset: -10% -8%;
+  z-index: -2;
+  pointer-events: none;
+  content: '';
+  background:
+    radial-gradient(circle at 12% 18%, rgba(99, 102, 241, 0.16), transparent 20rem),
+    radial-gradient(circle at 82% 22%, rgba(20, 184, 166, 0.14), transparent 18rem),
+    radial-gradient(circle at 52% 78%, rgba(67, 56, 202, 0.08), transparent 22rem);
+  filter: blur(28px);
+  opacity: 0.95;
+  animation: ambient-float 26s ease-in-out infinite;
+}
+
+.animated-stage::after {
+  position: absolute;
+  inset: -2rem;
+  z-index: -1;
+  pointer-events: none;
+  content: '';
+  background:
+    linear-gradient(rgba(79, 70, 229, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79, 70, 229, 0.035) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.8), transparent 78%);
+  opacity: 0.55;
+  animation: grid-shift 24s linear infinite;
+}
+
+.hero-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-glow::before {
+  position: absolute;
+  inset: auto -10% -30% auto;
+  z-index: 0;
+  height: 16rem;
+  width: 16rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  content: '';
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.18), transparent 68%);
+  filter: blur(18px);
+  animation: ambient-drift 18s ease-in-out infinite alternate;
+}
+
+.hero-glow::after {
+  position: absolute;
+  inset: -18% auto auto -12%;
+  z-index: 0;
+  height: 14rem;
+  width: 14rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  content: '';
+  background: radial-gradient(circle, rgba(20, 184, 166, 0.14), transparent 70%);
+  filter: blur(18px);
+  animation: ambient-float 24s ease-in-out infinite;
 }
 
 .skeleton-shimmer {
@@ -302,6 +386,47 @@ select {
 
 @keyframes skeleton-sweep {
   to { transform: translateX(100%); }
+}
+
+@keyframes ambient-float {
+  0% {
+    transform: translate3d(-1.5%, -1%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2%, 1.5%, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(-0.5%, 2%, 0) scale(0.98);
+  }
+}
+
+@keyframes ambient-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(2%, -2%, 0) scale(1.04);
+  }
+}
+
+@keyframes grid-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(34px, 34px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell::before,
+  .app-shell::after,
+  .animated-stage::before,
+  .animated-stage::after,
+  .hero-glow::before,
+  .hero-glow::after {
+    animation: none;
+  }
 }
 
 @keyframes skeleton-breathe {

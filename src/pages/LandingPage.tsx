@@ -62,7 +62,7 @@ export default function LandingPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="overflow-x-clip text-text">
+    <div className="animated-stage overflow-x-clip text-text">
       <section className="relative isolate px-4 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-18 lg:px-8 lg:pb-24 lg:pt-20">
         <div
           className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(99,102,241,0.07),transparent_30%),radial-gradient(circle_at_85%_30%,rgba(20,184,166,0.06),transparent_28%)]"
@@ -117,7 +117,7 @@ export default function LandingPage() {
           </div>
 
           <div className="relative mx-auto w-full max-w-xl lg:mx-0">
-            <Card className="border-border bg-surface p-5 sm:p-6 lg:p-7">
+            <Card className="hero-glow border-border bg-surface p-5 sm:p-6 lg:p-7">
               <div className="flex items-start justify-between gap-5 border-b border-border/80 pb-5">
                 <div>
                   <p className="text-sm font-semibold text-primary-600">Tu aprendizaje, bien acompañado</p>

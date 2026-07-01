@@ -18,7 +18,7 @@ import { Select } from '../components/ui/Select'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { useAuth } from '../contexts/AuthContext'
 import { parseApiError } from '../utils/errors'
-import { ArrowLeft, Award, Calendar, Clock, ExternalLink, GraduationCap, Sparkles, Users, Video } from 'lucide-react'
+import { ArrowLeft, AtSign, Award, Calendar, Clock, ExternalLink, GraduationCap, Sparkles, Users, Video } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { MentorAvatar } from '../components/mentors/MentorAvatar'
 
@@ -343,7 +343,7 @@ export default function MentorDetailPage() {
               <div>
                 <h2 className="text-xl font-bold text-text">Canales del mentor</h2>
                 <p className="mt-1 text-sm text-muted">
-                  Enlaces públicos asociados al perfil.
+                  Espacios para conectar mejor antes de la sesión y validar su presencia profesional.
                 </p>
               </div>
               <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50">
@@ -356,6 +356,18 @@ export default function MentorDetailPage() {
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">LinkedIn</p>
                 <p className="mt-2 text-sm font-medium text-text">
                   {mentor!.linkedinUrl || 'No disponible'}
+                </p>
+              </div>
+              <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <AtSign size={15} className="text-accent-500" aria-hidden />
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">Instagram</p>
+                </div>
+                <p className="mt-2 text-sm font-medium text-text">
+                  No disponible en el perfil actual
+                </p>
+                <p className="mt-1 text-xs leading-5 text-muted">
+                  La versión actual del backend no expone una URL de Instagram para mentores.
                 </p>
               </div>
               <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
@@ -424,7 +436,7 @@ export default function MentorDetailPage() {
           <div className="rounded-xl border border-border bg-surface-alt px-4 py-3">
             <p className="text-sm font-semibold text-text">{mentor?.name ?? 'Mentor STEM'}</p>
             <p className="mt-1 text-xs leading-5 text-muted">
-              Elige una fecha compatible con el bloque del mentor. La reserva se enviará usando los horarios reales publicados.
+              Elige una fecha compatible con el bloque del mentor. Reserva con claridad, sin cruces y usando los horarios reales publicados.
             </p>
           </div>
 
@@ -457,7 +469,7 @@ export default function MentorDetailPage() {
           />
 
           <div className="flex gap-2 pt-2">
-            <Button variant="secondary" className="flex-1" onClick={closeBookingModal}>
+            <Button type="button" variant="secondary" className="flex-1" onClick={closeBookingModal}>
               Cancelar
             </Button>
             <Button type="submit" className="flex-1" loading={isSubmitting}>

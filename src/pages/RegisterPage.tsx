@@ -46,7 +46,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+    <main className="animated-stage relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(120deg,rgba(99,102,241,0.08),transparent_42%,rgba(20,184,166,0.05)),radial-gradient(circle_at_top_left,rgba(99,102,241,0.1),transparent_24rem)]" />
       <div className="mx-auto grid max-w-7xl items-center gap-10 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_1fr] lg:gap-16">
         <div className="max-w-xl">
@@ -74,7 +74,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="w-full">
-          <Card className="relative overflow-hidden border-border bg-surface p-5 sm:p-8 lg:p-10">
+          <Card className="hero-glow relative overflow-hidden border-border bg-surface p-5 sm:p-8 lg:p-10">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(99,102,241,0.08),transparent)]" aria-hidden />
 
             <div className="relative">
