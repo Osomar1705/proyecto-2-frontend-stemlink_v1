@@ -63,7 +63,7 @@ export default function LandingPage() {
     <div className="animated-stage overflow-x-clip text-text">
       <section className="relative isolate px-4 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-18 lg:px-8 lg:pb-24 lg:pt-20">
         <div
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(99,102,241,0.07),transparent_30%),radial-gradient(circle_at_85%_30%,rgba(20,184,166,0.06),transparent_28%)]"
+          className="hero-backdrop pointer-events-none absolute inset-0 -z-10"
           aria-hidden="true"
         />
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(22rem,0.92fr)] lg:gap-16">
