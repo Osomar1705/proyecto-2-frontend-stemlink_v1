@@ -66,7 +66,7 @@ export function Modal({ open, onClose, title, children }: Props) {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:items-center">
       <div className="absolute inset-0 bg-slate-950/35 backdrop-blur-[2px]" onClick={onClose} aria-hidden="true" />
       <div
         ref={dialogRef}
@@ -74,7 +74,7 @@ export function Modal({ open, onClose, title, children }: Props) {
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
         tabIndex={-1}
-        className="relative z-10 w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-[0_24px_64px_rgba(15,23,42,0.18)]"
+        className="relative z-10 my-6 w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-[0_24px_64px_rgba(15,23,42,0.18)] sm:my-0 sm:max-h-[calc(100vh-3rem)]"
       >
         <div className="mb-4 flex items-center justify-between">
           {title && <h3 id={titleId} className="text-lg font-semibold text-text">{title}</h3>}
@@ -87,7 +87,9 @@ export function Modal({ open, onClose, title, children }: Props) {
             <X size={20} className="text-muted" aria-hidden />
           </button>
         </div>
-        {children}
+        <div className="max-h-[calc(100vh-9rem)] overflow-y-auto pr-1 sm:max-h-[calc(100vh-10rem)]">
+          {children}
+        </div>
       </div>
     </div>
   )
