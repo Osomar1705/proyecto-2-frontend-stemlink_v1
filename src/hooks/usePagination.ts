@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router-dom'
 
-const PAGE_SIZES = [10, 25, 50] as const
+const PAGE_SIZES = [10, 25, 50, 100] as const
 
 function parsePage(value: string | null): number {
   const parsed = Number(value)

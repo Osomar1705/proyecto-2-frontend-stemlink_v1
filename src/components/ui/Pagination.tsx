@@ -25,7 +25,7 @@ export function Pagination({ page, totalPages, totalElements, size, onPageChange
             value={size}
             onChange={(e) => onSizeChange(Number(e.target.value))}
             aria-label="Seleccionar cantidad por página"
-            options={[10, 25, 50].map((s) => ({ value: s, label: `${s} por página` }))}
+            options={[10, 25, 50, 100].map((s) => ({ value: s, label: `${s} por página` }))}
             className="min-w-[9.5rem] rounded-xl px-3 py-2"
           />
         )}
