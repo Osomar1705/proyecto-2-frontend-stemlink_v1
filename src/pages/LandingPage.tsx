@@ -5,21 +5,19 @@ import {
   Calendar,
   Check,
   CheckCircle,
-  Clock3,
   Compass,
-  GraduationCap,
-  ShieldCheck,
+  Search,
   Sparkles,
   TrendingUp,
-  Users,
+  Video,
 } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
+import { MentorAvatar } from '../components/mentors/MentorAvatar'
 
-const stats = [
-  { icon: Users, label: 'Mentores activos', value: '100+' },
-  { icon: Clock3, label: 'Disponibilidad', value: '24/7' },
-  { icon: BookOpen, label: 'Áreas STEM', value: '6+' },
+const mentorPreview = [
+  { name: 'Valeria Torres', skill: 'Data Science · Python', image: '/mentor-avatars/portrait-a.svg' },
+  { name: 'Diego Ramos', skill: 'Cloud · Backend', image: '/mentor-avatars/portrait-b.svg' },
 ]
 
 const features = [
@@ -117,36 +115,66 @@ export default function LandingPage() {
           </div>
 
           <div className="relative mx-auto w-full max-w-xl lg:mx-0">
-            <Card className="hero-glow border-border bg-surface p-5 sm:p-6 lg:p-7">
-              <div className="flex items-start justify-between gap-5 border-b border-border/80 pb-5">
+            <div className="absolute -left-5 top-10 hidden rounded-2xl border border-accent-200 bg-surface/95 px-4 py-3 shadow-[0_18px_45px_rgba(15,23,42,0.12)] backdrop-blur-xl sm:block lg:-left-8">
+              <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-accent-700">Sesión confirmada</p>
+              <p className="mt-1 text-sm font-semibold text-text">Hoy · 18:30</p>
+            </div>
+
+            <Card className="hero-glow overflow-visible border-border bg-surface p-4 sm:p-5 lg:p-6">
+              <div className="relative z-10 flex items-start justify-between gap-5 border-b border-border/80 pb-4">
                 <div>
-                  <p className="text-sm font-semibold text-primary-600">Tu aprendizaje, bien acompañado</p>
-                  <h2 className="mt-1.5 text-xl font-bold tracking-tight text-text sm:text-2xl">Todo listo para tu próxima meta</h2>
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-primary-600">Explorar mentores</p>
+                  <h2 className="mt-1 text-xl font-bold tracking-tight text-text sm:text-2xl">Encuentra el match correcto</h2>
                 </div>
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
-                  <GraduationCap size={23} aria-hidden="true" />
+                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-accent-50 px-3 py-1.5 text-xs font-semibold text-accent-700 ring-1 ring-accent-200">
+                  <span className="h-2 w-2 rounded-full bg-accent-500" aria-hidden />
+                  En línea
                 </span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2.5 py-5 sm:gap-3">
-                {stats.map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="panel-shell min-w-0 rounded-xl p-3 sm:p-4">
-                    <Icon size={18} className="mb-3 text-primary-600" aria-hidden="true" />
-                    <p className="text-xl font-bold tracking-tight text-text sm:text-2xl">{value}</p>
-                    <p className="mt-1 text-[0.7rem] leading-4 text-muted sm:text-xs">{label}</p>
-                  </div>
-                ))}
+              <div className="relative z-10 py-4">
+                <div className="field-shell flex items-center gap-3 rounded-2xl px-4 py-3 text-sm text-muted">
+                  <Search size={18} className="text-primary-600" aria-hidden />
+                  <span className="truncate">¿En qué quieres mejorar?</span>
+                  <span className="ml-auto hidden rounded-lg bg-primary-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-700 sm:inline">Buscar</span>
+                </div>
+
+                <div className="mt-4 space-y-3">
+                  {mentorPreview.map((mentor, index) => (
+                    <div
+                      key={mentor.name}
+                      className={`group flex items-center gap-3 rounded-2xl border p-3 transition-all duration-300 ${index === 0 ? 'border-primary-200 bg-primary-50/55 shadow-[0_12px_28px_rgba(79,70,229,0.08)]' : 'border-border/80 bg-surface/80'}`}
+                    >
+                      <MentorAvatar name={mentor.name} src={mentor.image} size="sm" />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="truncate text-sm font-bold text-text">{mentor.name}</p>
+                          {index === 0 && <Sparkles size={13} className="shrink-0 text-accent-500" aria-hidden />}
+                        </div>
+                        <p className="mt-0.5 truncate text-xs text-muted">{mentor.skill}</p>
+                      </div>
+                      <span className="rounded-xl bg-surface px-2.5 py-1.5 text-[11px] font-semibold text-primary-700 ring-1 ring-border/70">
+                        Ver perfil
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="rounded-[1.5rem] bg-primary-600 p-4 text-surface shadow-[0_18px_36px_rgba(79,70,229,0.18)] sm:p-5">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface/15">
-                    <ShieldCheck size={21} aria-hidden="true" />
-                  </span>
-                  <div className="min-w-0">
-                    <p className="font-semibold">Conexiones de calidad</p>
-                    <p className="mt-0.5 text-sm leading-5 text-primary-100">Perfiles claros para que elijas al mentor adecuado.</p>
+              <div className="relative z-10 grid grid-cols-2 gap-3">
+                <div className="rounded-2xl bg-primary-600 p-3.5 text-surface shadow-[0_18px_36px_rgba(79,70,229,0.18)]">
+                  <div className="flex items-center gap-2">
+                    <Calendar size={17} aria-hidden />
+                    <p className="text-xs font-semibold text-primary-100">Reserva flexible</p>
                   </div>
+                  <p className="mt-2 text-sm font-bold">Elige tu horario</p>
+                </div>
+                <div className="panel-shell rounded-2xl p-3.5">
+                  <div className="flex items-center gap-2 text-accent-700">
+                    <Video size={17} aria-hidden />
+                    <p className="text-xs font-semibold">Todo conectado</p>
+                  </div>
+                  <p className="mt-2 text-sm font-bold text-text">Sesiones y feedback</p>
                 </div>
               </div>
             </Card>

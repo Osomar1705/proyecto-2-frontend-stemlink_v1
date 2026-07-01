@@ -8,10 +8,11 @@ import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { Pagination } from '../components/ui/Pagination'
 import { MentorCardSkeleton } from '../components/ui/Skeleton'
 import { PageHero } from '../components/ui/PageHero'
+import { Select } from '../components/ui/Select'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { usePagination } from '../hooks/usePagination'
 import { useDebounce } from '../hooks/useDebounce'
-import { Search, Users, Sparkles, SlidersHorizontal, X } from 'lucide-react'
+import { ArrowUpDown, Search, Users, Sparkles, SlidersHorizontal, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { MentorCard } from '../components/mentors/MentorCard'
 
@@ -23,6 +24,7 @@ export default function MentorsPage() {
   const [search, setSearch] = useState(searchParams.get('search') || '')
   const [skills, setSkills] = useState<TechnicalSkillDTO[]>([])
   const [selectedSkills, setSelectedSkills] = useState<number[]>([])
+  const sort = searchParams.get('sort') === 'id,asc' ? 'id,asc' : 'id,desc'
 
   const debouncedSearch = useDebounce(search, 300)
 
@@ -60,10 +62,11 @@ export default function MentorsPage() {
       skillIds: selectedSkills.length ? selectedSkills : undefined,
       page,
       size,
+      sort,
     }, signal)
 
     return res.data
-  }, [debouncedSearch, selectedSkills, page, size])
+  }, [debouncedSearch, selectedSkills, page, size, sort])
 
   const { data, loading, error, reload } = useAsyncResource<Page<MentorProfileResponse> | null>({
     initialData: null,
@@ -83,13 +86,20 @@ export default function MentorsPage() {
     setPage(0)
   }
 
+  const changeSort = (value: string) => {
+    const next = new URLSearchParams(searchParams)
+    next.set('sort', value)
+    next.set('page', '0')
+    setSearchParams(next)
+  }
+
   const mentorCount = data?.totalElements ?? 0
   const hasFilters = Boolean(search.trim() || selectedSkills.length)
   const activeSkills = skills.filter(skill => selectedSkills.includes(skill.id))
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <Breadcrumbs items={[{ label: 'Inicio', to: '/dashboard' }, { label: 'Mentores' }]} />
+      <Breadcrumbs items={[{ label: 'Inicio', to: '/' }, { label: 'Mentores' }]} />
 
       <div className="mb-8">
         <PageHero
@@ -209,12 +219,25 @@ export default function MentorsPage() {
         emptyAction={hasFilters ? { label: 'Limpiar filtros', onClick: clearFilters } : undefined}
       >
         <>
-          <div className="mb-5 flex items-end justify-between gap-4">
+          <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-text">Mentores disponibles</h2>
               <p className="mt-1 text-sm text-muted">
                 Selecciona un perfil para revisar disponibilidad, habilidades y opciones de reserva.
               </p>
+            </div>
+            <div className="flex min-w-0 items-center gap-2 sm:min-w-[13rem]">
+              <ArrowUpDown size={16} className="shrink-0 text-primary-600" aria-hidden />
+              <Select
+                aria-label="Ordenar mentores"
+                value={sort}
+                onChange={(event) => changeSort(event.target.value)}
+                options={[
+                  { value: 'id,desc', label: 'Más recientes' },
+                  { value: 'id,asc', label: 'Más antiguos' },
+                ]}
+                className="w-full rounded-xl px-3 py-2.5"
+              />
             </div>
           </div>
 

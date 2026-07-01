@@ -13,14 +13,14 @@ const portraitSizes = {
 }
 
 const portraits = [
-  '/mentor-avatars/portrait-a.png',
-  '/mentor-avatars/portrait-b.png',
-  '/mentor-avatars/portrait-c.png',
-  '/mentor-avatars/portrait-d.png',
+  '/mentor-avatars/portrait-a.svg',
+  '/mentor-avatars/portrait-b.svg',
+  '/mentor-avatars/portrait-c.svg',
+  '/mentor-avatars/portrait-d.svg',
 ]
 
 const portraitOverrides: Record<string, string> = {
-  hades: '/mentor-avatars/portrait-c.png',
+  hades: '/mentor-avatars/portrait-c.svg',
 }
 
 function getPortrait(name: string) {

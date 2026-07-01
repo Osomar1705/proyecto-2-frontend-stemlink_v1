@@ -2,7 +2,7 @@ import client from './client'
 import type { MentorProfileResponse, MentorProfileRequest, Page, TechnicalSkillDTO, AvailabilityBlockDTO } from '../types'
 
 export const mentorsApi = {
-  list: (params: { name?: string; skillIds?: number[]; page?: number; size?: number }, signal?: AbortSignal) =>
+  list: (params: { name?: string; skillIds?: number[]; page?: number; size?: number; sort?: string }, signal?: AbortSignal) =>
     client.get<Page<MentorProfileResponse>>('/api/mentors', { params, signal }),
 
   getMyProfile: (signal?: AbortSignal) =>

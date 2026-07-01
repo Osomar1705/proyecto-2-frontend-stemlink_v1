@@ -137,7 +137,7 @@ Antes de entregar, `npm run build` y `npm run lint` deben terminar sin errores.
 | Arquitectura React | componentes reutilizables, `AuthContext` y hooks en `src/hooks/` |
 | Routing | router central, rutas dinámicas, query params, guards, lazy loading y 404 |
 | Errores y validación | `ErrorBoundary`, `AsyncContent`, `utils/errors.ts`, React Hook Form y Zod |
-| UI/UX | Tailwind responsive, skeletons, toasts, breadcrumbs, filtros y empty states |
+| UI/UX | Tailwind responsive, skeletons, toasts, breadcrumbs, filtros, ordenamiento y empty states |
 | Vistas | landing, login, registro, dashboard, listados, detalle y perfiles editables |
 | Paginación | mentores, reservas y notificaciones con tamaño configurable y estado en URL |
 | Deployment | SPA en Vercel mediante `vercel.json` y API configurada por entorno |
@@ -152,7 +152,3 @@ Comprobación rápida:
 2. abrir https://proyecto-2-frontend-stemlink-v1.vercel.app/mentors?page=0&search=osman
 3. iniciar sesión y verificar dashboard, reservas, sesiones, notificaciones y perfiles
 4. confirmar que no existan errores de CORS ni requests fallidos en DevTools
-
-## Preparación de la exposición
-
-El guion y checklist de demo están en [`docs/DEMO.md`](docs/DEMO.md). Conviene precargar usuarios, mentores, reservas y notificaciones antes de exponer para evitar esperas durante la demo.

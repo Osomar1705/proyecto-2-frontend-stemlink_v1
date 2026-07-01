@@ -15,7 +15,7 @@ export function Navbar() {
   return (
     <nav className="nav-shell sticky top-0 z-40 border-b border-border/70 bg-surface/78 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="group flex shrink-0 items-center gap-2 text-base font-bold tracking-tight text-primary-700 transition-all duration-300 ease-in-out hover:text-primary-600 sm:gap-3 sm:text-xl">
+        <Link to={isAuthenticated ? '/dashboard' : '/'} className="group flex shrink-0 items-center gap-2 text-base font-bold tracking-tight text-primary-700 transition-all duration-300 ease-in-out hover:text-primary-600 sm:gap-3 sm:text-xl">
           <span className="surface-interactive flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-600 text-surface shadow-[0_8px_20px_rgba(79,70,229,0.2)] sm:h-11 sm:w-11">
             <GraduationCap size={20} aria-hidden />
           </span>

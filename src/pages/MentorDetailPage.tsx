@@ -172,7 +172,7 @@ export default function MentorDetailPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <Breadcrumbs items={[{ label: 'Inicio', to: '/dashboard' }, { label: 'Mentores', to: '/mentors' }, { label: mentor?.name ?? 'Detalle' }]} />
+      <Breadcrumbs items={[{ label: 'Inicio', to: '/' }, { label: 'Mentores', to: '/mentors' }, { label: mentor?.name ?? 'Detalle' }]} />
 
       <button
         onClick={() => navigate('/mentors')}
