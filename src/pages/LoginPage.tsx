@@ -8,7 +8,7 @@ import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { Input } from '../components/ui/Input'
 import { parseApiError } from '../utils/errors'
-import { ArrowRight, Eye, EyeOff, ShieldCheck, Sparkles, Zap } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff, Sparkles, Zap } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const schema = z.object({
@@ -81,20 +81,6 @@ export default function LoginPage() {
                   <p className="mt-2 text-sm text-muted">
                     Tu plataforma de mentoría en ciencia, tecnología, ingeniería y matemáticas
                   </p>
-                </div>
-              </div>
-
-              <div className="surface-tint mb-6 rounded-[1.35rem] border border-border/70 px-4 py-4 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-600">
-                    <ShieldCheck size={18} aria-hidden />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-text">Sesión protegida</p>
-                    <p className="mt-1 text-xs leading-5 text-muted">
-                      Usa tus credenciales de prueba para entrar al dashboard o al perfil de mentor.
-                    </p>
-                  </div>
                 </div>
               </div>
 
