@@ -14,6 +14,7 @@ import { Button } from '../components/ui/Button'
 import { MentorAvatar } from '../components/mentors/MentorAvatar'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { clearUserPhoto, getUserProfileEnhancements, saveUserProfileEnhancements } from '../utils/mentorProfileAssets'
+import { prepareProfilePhoto } from '../utils/profilePhoto'
 import { AtSign, Bell, Calendar, ExternalLink, ImagePlus, Mail, Sparkles, Upload, UserRound } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -40,6 +41,7 @@ export default function ProfilePage() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null)
   const [linkedinUrl, setLinkedinUrl] = useState('')
   const [instagramUrl, setInstagramUrl] = useState('')
+  const [photoSaving, setPhotoSaving] = useState(false)
 
   const loadProfile = useCallback(async (signal: AbortSignal) => {
     const [userRes, bookingsRes, notificationsRes] = await Promise.all([
@@ -49,7 +51,7 @@ export default function ProfilePage() {
     ])
 
     const enhancements = getUserProfileEnhancements(userRes.data.id)
-    setPhotoUrl(enhancements.photoUrl)
+    setPhotoUrl(userRes.data.photoUrl || enhancements.photoUrl)
     setLinkedinUrl(enhancements.linkedinUrl)
     setInstagramUrl(enhancements.instagramUrl)
 
@@ -59,7 +61,7 @@ export default function ProfilePage() {
       unreadCount: notificationsRes.data.content.filter((notification) => !notification.read).length,
       linkedinUrl: enhancements.linkedinUrl,
       instagramUrl: enhancements.instagramUrl,
-      photoUrl: enhancements.photoUrl,
+      photoUrl: userRes.data.photoUrl || enhancements.photoUrl,
     }
   }, [])
 
@@ -87,38 +89,34 @@ export default function ProfilePage() {
 
     if (!file || !userId) return
 
-    if (!file.type.startsWith('image/')) {
-      toast.error('Selecciona una imagen válida.')
-      return
-    }
-
-    if (file.size > 3 * 1024 * 1024) {
-      toast.error('La imagen debe pesar menos de 3 MB.')
-      return
-    }
-
-    const reader = new FileReader()
-    reader.onload = () => {
-      const result = typeof reader.result === 'string' ? reader.result : null
-      if (!result) {
-        toast.error('No pudimos procesar la imagen seleccionada.')
-        return
-      }
-
+    setPhotoSaving(true)
+    try {
+      const result = await prepareProfilePhoto(file)
+      await authApi.updatePhoto(result)
       saveUserProfileEnhancements(userId, { photoUrl: result })
       setPhotoUrl(result)
       toast.success('Foto de perfil actualizada.')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'No pudimos guardar la foto de perfil.')
+    } finally {
+      setPhotoSaving(false)
+      event.target.value = ''
     }
-    reader.onerror = () => toast.error('No pudimos leer la imagen seleccionada.')
-    reader.readAsDataURL(file)
-    event.target.value = ''
   }
 
-  const handleResetPhoto = () => {
+  const handleResetPhoto = async () => {
     if (!profileData.user.id) return
-    clearUserPhoto(profileData.user.id)
-    setPhotoUrl(null)
-    toast.success('Retrato restaurado.')
+    setPhotoSaving(true)
+    try {
+      await authApi.updatePhoto(null)
+      clearUserPhoto(profileData.user.id)
+      setPhotoUrl(null)
+      toast.success('Retrato restaurado.')
+    } catch {
+      toast.error('No pudimos restaurar el retrato.')
+    } finally {
+      setPhotoSaving(false)
+    }
   }
 
   const handleInstagramSave = () => {
@@ -191,11 +189,11 @@ export default function ProfilePage() {
                   className="mx-auto mb-4"
                 />
                 <div className="space-y-2">
-                  <Button type="button" variant="secondary" onClick={() => fileInputRef.current?.click()}>
+                  <Button type="button" variant="secondary" loading={photoSaving} onClick={() => fileInputRef.current?.click()}>
                     <Upload size={14} />
                     Cambiar foto
                   </Button>
-                  <Button type="button" variant="ghost" onClick={handleResetPhoto} disabled={!resolvedPhoto}>
+                  <Button type="button" variant="ghost" onClick={handleResetPhoto} disabled={!resolvedPhoto || photoSaving}>
                     <ImagePlus size={14} />
                     Usar retrato sugerido
                   </Button>

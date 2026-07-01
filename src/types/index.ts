@@ -11,6 +11,7 @@ export interface UserResponse {
   name: string
   email: string
   role: string
+  photoUrl?: string | null
 }
 
 export interface RegisterRequest {
@@ -37,6 +38,7 @@ export interface MentorProfileResponse {
   bio: string
   videoCallUrl: string
   linkedinUrl: string
+  photoUrl?: string | null
   skills: TechnicalSkillDTO[]
 }
 

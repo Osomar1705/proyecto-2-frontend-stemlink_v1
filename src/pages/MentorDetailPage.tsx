@@ -93,7 +93,7 @@ export default function MentorDetailPage() {
 
   const mentor = data.mentor
   const availability = data.availability
-  const mentorPhoto = mentor ? getMentorPhoto(mentor.id) : null
+  const mentorPhoto = mentor ? (mentor.photoUrl || getMentorPhoto(mentor.id)) : null
   const instagramUrl = mentor ? getMentorInstagram(mentor.id) : ''
   const selectedAvailabilityId = watch('availabilityBlockId')
   const selectedAvailability = useMemo(

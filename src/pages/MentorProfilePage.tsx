@@ -19,6 +19,8 @@ import { useAsyncResource } from '../hooks/useAsyncResource'
 import { parseApiError } from '../utils/errors'
 import { MentorAvatar } from '../components/mentors/MentorAvatar'
 import { clearMentorPhoto, getMentorProfileEnhancements, saveMentorProfileEnhancements } from '../utils/mentorProfileAssets'
+import { prepareProfilePhoto } from '../utils/profilePhoto'
+import { authApi } from '../api/auth.api'
 import { AlertTriangle, AtSign, Calendar, Clock, ExternalLink, ImagePlus, Plus, Sparkles, Trash2, Upload, UserRound, Video } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -81,6 +83,7 @@ export default function MentorProfilePage() {
   const [availabilityToDelete, setAvailabilityToDelete] = useState<{ id: number; label: string } | null>(null)
   const [mentorPhoto, setMentorPhoto] = useState<string | null>(null)
   const [instagramUrl, setInstagramUrl] = useState('')
+  const [photoSaving, setPhotoSaving] = useState(false)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const {
@@ -140,7 +143,7 @@ export default function MentorProfilePage() {
     setSkills(resource.skills)
     setSelectedSkills(resource.selectedSkills)
     setAvailability(resource.availability)
-    setMentorPhoto(enhancements.photoUrl)
+    setMentorPhoto(profileRes.data.photoUrl || enhancements.photoUrl)
     setInstagramUrl(enhancements.instagramUrl)
     reset(resource.profile)
 
@@ -223,38 +226,34 @@ export default function MentorProfilePage() {
 
     if (!file || !resourceKey) return
 
-    if (!file.type.startsWith('image/')) {
-      toast.error('Selecciona una imagen válida.')
-      return
-    }
-
-    if (file.size > 3 * 1024 * 1024) {
-      toast.error('La imagen debe pesar menos de 3 MB.')
-      return
-    }
-
-    const reader = new FileReader()
-    reader.onload = () => {
-      const result = typeof reader.result === 'string' ? reader.result : null
-      if (!result) {
-        toast.error('No pudimos procesar la imagen seleccionada.')
-        return
-      }
-
+    setPhotoSaving(true)
+    try {
+      const result = await prepareProfilePhoto(file)
+      await authApi.updatePhoto(result)
       saveMentorProfileEnhancements(resourceKey, { photoUrl: result })
       setMentorPhoto(result)
       toast.success('Foto de perfil actualizada.')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'No pudimos guardar la foto de perfil.')
+    } finally {
+      setPhotoSaving(false)
+      event.target.value = ''
     }
-    reader.onerror = () => toast.error('No pudimos leer la imagen seleccionada.')
-    reader.readAsDataURL(file)
-    event.target.value = ''
   }
 
-  const handleRemovePhoto = () => {
+  const handleRemovePhoto = async () => {
     if (!resourceKey) return
-    clearMentorPhoto(resourceKey)
-    setMentorPhoto(null)
-    toast.success('Foto de perfil restaurada.')
+    setPhotoSaving(true)
+    try {
+      await authApi.updatePhoto(null)
+      clearMentorPhoto(resourceKey)
+      setMentorPhoto(null)
+      toast.success('Foto de perfil restaurada.')
+    } catch {
+      toast.error('No pudimos restaurar el retrato.')
+    } finally {
+      setPhotoSaving(false)
+    }
   }
 
   return (
@@ -291,11 +290,11 @@ export default function MentorProfilePage() {
                 className="mb-5"
               />
               <div className="space-y-2">
-                <Button type="button" variant="secondary" onClick={() => fileInputRef.current?.click()}>
+                <Button type="button" variant="secondary" loading={photoSaving} onClick={() => fileInputRef.current?.click()}>
                   <Upload size={14} />
                   Cambiar foto
                 </Button>
-                <Button type="button" variant="ghost" onClick={handleRemovePhoto} disabled={!mentorPhoto}>
+                <Button type="button" variant="ghost" onClick={handleRemovePhoto} disabled={!mentorPhoto || photoSaving}>
                   <Trash2 size={14} />
                   Usar retrato sugerido
                 </Button>
@@ -308,7 +307,7 @@ export default function MentorProfilePage() {
                 onChange={handlePhotoSelection}
               />
               <p className="mt-3 max-w-[18rem] text-xs leading-5 text-muted">
-                Puedes subir una foto cuadrada para tu perfil público. Se guarda localmente en esta demo web.
+                Puedes subir una foto cuadrada para tu perfil público. Se sincroniza con tu cuenta.
               </p>
             </div>
             )}

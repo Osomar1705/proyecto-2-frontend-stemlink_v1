@@ -13,7 +13,7 @@ interface Props {
 
 export function MentorCard({ mentor, onOpenProfile }: Props) {
   const skills = mentor.skills ?? []
-  const mentorPhoto = getMentorPhoto(mentor.id)
+  const mentorPhoto = mentor.photoUrl || getMentorPhoto(mentor.id)
 
   return (
     <Card

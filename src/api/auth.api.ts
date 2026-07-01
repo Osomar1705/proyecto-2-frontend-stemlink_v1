@@ -10,4 +10,7 @@ export const authApi = {
 
   me: (signal?: AbortSignal) =>
     client.get<UserResponse>('/api/users/me', { signal }),
+
+  updatePhoto: (photoUrl: string | null) =>
+    client.patch<UserResponse>('/api/users/me/photo', { photoUrl }),
 }
