@@ -92,10 +92,14 @@ export default function ProfilePage() {
     setPhotoSaving(true)
     try {
       const result = await prepareProfilePhoto(file)
-      await authApi.updatePhoto(result)
       saveUserProfileEnhancements(userId, { photoUrl: result })
       setPhotoUrl(result)
-      toast.success('Foto de perfil actualizada.')
+      try {
+        await authApi.updatePhoto(result)
+        toast.success('Foto de perfil actualizada y sincronizada.')
+      } catch {
+        toast.success('Foto guardada en este dispositivo.')
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'No pudimos guardar la foto de perfil.')
     } finally {
@@ -108,12 +112,14 @@ export default function ProfilePage() {
     if (!profileData.user.id) return
     setPhotoSaving(true)
     try {
-      await authApi.updatePhoto(null)
       clearUserPhoto(profileData.user.id)
       setPhotoUrl(null)
-      toast.success('Retrato restaurado.')
-    } catch {
-      toast.error('No pudimos restaurar el retrato.')
+      try {
+        await authApi.updatePhoto(null)
+        toast.success('Retrato restaurado y sincronizado.')
+      } catch {
+        toast.success('Retrato restaurado en este dispositivo.')
+      }
     } finally {
       setPhotoSaving(false)
     }

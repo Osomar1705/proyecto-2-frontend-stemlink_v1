@@ -229,10 +229,14 @@ export default function MentorProfilePage() {
     setPhotoSaving(true)
     try {
       const result = await prepareProfilePhoto(file)
-      await authApi.updatePhoto(result)
       saveMentorProfileEnhancements(resourceKey, { photoUrl: result })
       setMentorPhoto(result)
-      toast.success('Foto de perfil actualizada.')
+      try {
+        await authApi.updatePhoto(result)
+        toast.success('Foto de perfil actualizada y sincronizada.')
+      } catch {
+        toast.success('Foto guardada en este dispositivo.')
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'No pudimos guardar la foto de perfil.')
     } finally {
@@ -245,12 +249,14 @@ export default function MentorProfilePage() {
     if (!resourceKey) return
     setPhotoSaving(true)
     try {
-      await authApi.updatePhoto(null)
       clearMentorPhoto(resourceKey)
       setMentorPhoto(null)
-      toast.success('Foto de perfil restaurada.')
-    } catch {
-      toast.error('No pudimos restaurar el retrato.')
+      try {
+        await authApi.updatePhoto(null)
+        toast.success('Foto de perfil restaurada y sincronizada.')
+      } catch {
+        toast.success('Foto restaurada en este dispositivo.')
+      }
     } finally {
       setPhotoSaving(false)
     }
