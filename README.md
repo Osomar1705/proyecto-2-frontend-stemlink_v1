@@ -1,17 +1,19 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/jafzw1cC)
+
 # STEM Link Web
 
 Frontend web de STEM Link construido con `Vite + React + TypeScript + Tailwind CSS`.
 
-La app cubre el flujo principal de estudiante y mentor para la rúbrica web del Proyecto 2 DBP:
+La app cubre el flujo principal de estudiante y mentor para la rubrica web del Proyecto 2 DBP:
 
-- autenticación con `sessionStorage`
+- autenticacion con `sessionStorage`
 - routing lazy con `React Router`
-- guards públicos/privados por rol
+- guards publicos/privados por rol
 - componentes UI reutilizables
-- búsqueda con debounce
-- paginación en mentores y notificaciones
+- busqueda con debounce
+- paginacion en mentores y notificaciones
 - formularios con `react-hook-form + zod`
-- estados vacíos, skeletons, modales y error boundaries
+- estados vacios, skeletons, modales y error boundaries
 
 ## Stack
 
@@ -36,7 +38,7 @@ Crea `.env`:
 VITE_API_BASE_URL=https://stem-link-app-1.onrender.com
 ```
 
-El backend actual expone aliases en `/api` y `/api/v1`, así que este frontend funciona contra la versión ya publicada del backend sin cambios extra de rutas.
+El backend actual expone aliases en `/api` y `/api/v1`, asi que este frontend funciona contra la version ya publicada del backend sin cambios extra de rutas.
 
 ## Scripts
 
@@ -49,7 +51,7 @@ npm run lint
 
 ## Rutas principales
 
-Públicas:
+Publicas:
 
 - `/`
 - `/mentors`
@@ -67,26 +69,26 @@ Privadas:
 
 Fallback:
 
-- `*` → página 404
+- `*` -> pagina 404
 
-## Estado actual frente a la rúbrica web
+## Estado actual frente a la rubrica web
 
 Implementado en este repo:
 
-- cliente HTTP centralizado con auth header, cancelación y retry simple de red
-- más de 10 componentes base reutilizables
+- cliente HTTP centralizado con auth header, cancelacion y retry simple de red
+- mas de 10 componentes base reutilizables
 - lazy routes + suspense + error boundary
-- paginación reusable en mentores y notificaciones
+- paginacion reusable en mentores y notificaciones
 - dashboard y flujos de estudiante/mentor
 - filtros, empty states, skeletons, toasts y validaciones
 
 Pendiente fuera de este repo:
 
 - repo mobile con Expo
-- deployment público integral y pitch/demo final
+- deployment publico integral y pitch/demo final
 
-## Notas de integración
+## Notas de integracion
 
 - El token se persiste en `sessionStorage`.
-- Las requests `GET` hacen un reintento automático corto en fallos de red/5xx transitorios.
+- Las requests `GET` hacen un reintento automatico corto en fallos de red/5xx transitorios.
 - Los arrays en query params se serializan como CSV para filtros tipo `skillIds=1,2`.
