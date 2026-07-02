@@ -19,7 +19,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { parseApiError } from '../utils/errors'
 import { MentorAvatar } from '../components/mentors/MentorAvatar'
-import { clearMentorPhoto, getMentorProfileEnhancements, saveMentorProfileEnhancements } from '../utils/mentorProfileAssets'
+import { clearMentorPhoto, getMentorProfileEnhancements, saveMentorProfileEnhancements, saveUserProfileEnhancements } from '../utils/mentorProfileAssets'
 import { prepareProfilePhoto } from '../utils/profilePhoto'
 import { authApi } from '../api/auth.api'
 import { AlertTriangle, AtSign, Calendar, Clock, ExternalLink, ImagePlus, Plus, Sparkles, Trash2, Upload, UserRound, Video } from 'lucide-react'
@@ -86,6 +86,12 @@ export default function MentorProfilePage() {
   const [mentorPhoto, setMentorPhoto] = useState<string | null>(null)
   const [instagramUrl, setInstagramUrl] = useState('')
   const [photoSaving, setPhotoSaving] = useState(false)
+
+  const syncSessionPhoto = useCallback((nextPhoto: string | null) => {
+    if (sessionUser?.role === 'MENTOR') {
+      saveUserProfileEnhancements(sessionUser.id, { photoUrl: nextPhoto })
+    }
+  }, [sessionUser])
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const {
@@ -165,11 +171,12 @@ export default function MentorProfilePage() {
     setSelectedSkills(resource.selectedSkills)
     setAvailability(resource.availability)
     setMentorPhoto(resolvedProfile.photoUrl || enhancements.photoUrl)
+    syncSessionPhoto(resolvedProfile.photoUrl || enhancements.photoUrl || null)
     setInstagramUrl(enhancements.instagramUrl)
     reset(resource.profile)
 
     return resource
-  }, [reset, sessionUser])
+  }, [reset, sessionUser, syncSessionPhoto])
 
   const { data, loading, error, reload } = useAsyncResource<MentorProfileResource | null>({
     initialData: null,
@@ -251,6 +258,7 @@ export default function MentorProfilePage() {
     try {
       const result = await prepareProfilePhoto(file)
       saveMentorProfileEnhancements(resourceKey, { photoUrl: result })
+      syncSessionPhoto(result)
       setMentorPhoto(result)
       try {
         await authApi.updatePhoto(result)
@@ -271,6 +279,7 @@ export default function MentorProfilePage() {
     setPhotoSaving(true)
     try {
       clearMentorPhoto(resourceKey)
+      syncSessionPhoto(null)
       setMentorPhoto(null)
       try {
         await authApi.updatePhoto(null)
