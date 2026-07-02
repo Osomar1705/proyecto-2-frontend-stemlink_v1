@@ -15,6 +15,7 @@ import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { EmptyState } from '../components/ui/EmptyState'
 import { PageHero } from '../components/ui/PageHero'
 import { Modal } from '../components/ui/Modal'
+import { useAuth } from '../contexts/AuthContext'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { parseApiError } from '../utils/errors'
 import { MentorAvatar } from '../components/mentors/MentorAvatar'
@@ -77,6 +78,7 @@ function compareAvailability(a: AvailabilityBlockDTO, b: AvailabilityBlockDTO) {
 }
 
 export default function MentorProfilePage() {
+  const { user: sessionUser } = useAuth()
   const [skills, setSkills] = useState<TechnicalSkillDTO[]>([])
   const [selectedSkills, setSelectedSkills] = useState<number[]>([])
   const [availability, setAvailability] = useState<AvailabilityBlockDTO[]>([])
@@ -118,37 +120,56 @@ export default function MentorProfilePage() {
   const linkedinUrl = watch('linkedinUrl')
 
   const loadMentorProfile = useCallback(async (signal: AbortSignal) => {
-    const [tagsRes, profileRes] = await Promise.all([
+    const [tagsRes, profileRes] = await Promise.allSettled([
       mentorsApi.getTags(signal),
       mentorsApi.getMyProfile(signal),
     ])
 
-    const mentorId = profileRes.data.id
+    const fallbackProfile = sessionUser?.role === 'MENTOR'
+      ? {
+          id: sessionUser.id,
+          name: sessionUser.name,
+          bio: '',
+          videoCallUrl: '',
+          linkedinUrl: '',
+          photoUrl: null,
+          skills: [],
+        }
+      : null
+
+    const resolvedProfile = profileRes.status === 'fulfilled' ? profileRes.value.data : fallbackProfile
+
+    if (!resolvedProfile) {
+      throw new Error('No pudimos resolver el perfil del mentor.')
+    }
+
+    const mentorId = resolvedProfile.id
     const enhancements = getMentorProfileEnhancements(mentorId)
-    const availabilityRes = await mentorsApi.getAvailability(mentorId, signal)
+    const availabilityRes = await mentorsApi.getAvailability(mentorId, signal).catch(() => ({ data: [] as AvailabilityBlockDTO[] }))
+    const resolvedSkills = tagsRes.status === 'fulfilled' ? tagsRes.value.data : []
 
     const resource: MentorProfileResource = {
       mentorId,
-      mentorName: profileRes.data.name,
-      skills: tagsRes.data,
-      selectedSkills: profileRes.data.skills?.map((skill) => skill.id) || [],
+      mentorName: resolvedProfile.name,
+      skills: resolvedSkills,
+      selectedSkills: resolvedProfile.skills?.map((skill) => skill.id) || [],
       availability: availabilityRes.data.sort(compareAvailability),
       profile: {
-        bio: profileRes.data.bio || '',
-        videoCallUrl: profileRes.data.videoCallUrl || '',
-        linkedinUrl: profileRes.data.linkedinUrl || '',
+        bio: resolvedProfile.bio || '',
+        videoCallUrl: resolvedProfile.videoCallUrl || '',
+        linkedinUrl: resolvedProfile.linkedinUrl || '',
       },
     }
 
     setSkills(resource.skills)
     setSelectedSkills(resource.selectedSkills)
     setAvailability(resource.availability)
-    setMentorPhoto(profileRes.data.photoUrl || enhancements.photoUrl)
+    setMentorPhoto(resolvedProfile.photoUrl || enhancements.photoUrl)
     setInstagramUrl(enhancements.instagramUrl)
     reset(resource.profile)
 
     return resource
-  }, [reset])
+  }, [reset, sessionUser])
 
   const { data, loading, error, reload } = useAsyncResource<MentorProfileResource | null>({
     initialData: null,

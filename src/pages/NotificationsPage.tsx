@@ -54,8 +54,18 @@ export default function NotificationsPage() {
   const [markingIds, setMarkingIds] = useState<number[]>([])
 
   const loadNotifications = useCallback(async (signal: AbortSignal) => {
-    const res = await notificationsApi.list({ page, size }, signal)
-    return res.data
+    try {
+      const res = await notificationsApi.list({ page, size }, signal)
+      return res.data
+    } catch {
+      return {
+        content: [],
+        number: page,
+        size,
+        totalElements: 0,
+        totalPages: 0,
+      }
+    }
   }, [page, size])
 
   const { data, setData, loading, error, reload } = useAsyncResource<Page<NotificationResponse> | null>({

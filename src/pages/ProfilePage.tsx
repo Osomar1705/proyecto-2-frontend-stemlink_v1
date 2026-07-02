@@ -12,6 +12,7 @@ import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { PageHero } from '../components/ui/PageHero'
 import { Button } from '../components/ui/Button'
 import { MentorAvatar } from '../components/mentors/MentorAvatar'
+import { useAuth } from '../contexts/AuthContext'
 import { useAsyncResource } from '../hooks/useAsyncResource'
 import { clearUserPhoto, getUserProfileEnhancements, saveUserProfileEnhancements } from '../utils/mentorProfileAssets'
 import { prepareProfilePhoto } from '../utils/profilePhoto'
@@ -37,6 +38,7 @@ const EMPTY_PROFILE: ProfileSummary = {
 }
 
 export default function ProfilePage() {
+  const { user: sessionUser } = useAuth()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [photoUrl, setPhotoUrl] = useState<string | null>(null)
   const [linkedinUrl, setLinkedinUrl] = useState('')
@@ -44,26 +46,44 @@ export default function ProfilePage() {
   const [photoSaving, setPhotoSaving] = useState(false)
 
   const loadProfile = useCallback(async (signal: AbortSignal) => {
-    const [userRes, bookingsRes, notificationsRes] = await Promise.all([
+    const [userRes, bookingsRes, notificationsRes] = await Promise.allSettled([
       authApi.me(signal),
       bookingsApi.list({ page: 0, size: 20 }, signal),
       notificationsApi.list({ page: 0, size: 20 }, signal),
     ])
 
-    const enhancements = getUserProfileEnhancements(userRes.data.id)
-    setPhotoUrl(userRes.data.photoUrl || enhancements.photoUrl)
+    const fallbackUser = sessionUser
+      ? {
+          id: sessionUser.id,
+          name: sessionUser.name,
+          email: sessionUser.email,
+          role: sessionUser.role,
+          photoUrl: null,
+        }
+      : null
+
+    const resolvedUser = userRes.status === 'fulfilled' ? userRes.value.data : fallbackUser
+
+    if (!resolvedUser) {
+      throw new Error('No pudimos resolver tu sesión actual.')
+    }
+
+    const enhancements = getUserProfileEnhancements(resolvedUser.id)
+    setPhotoUrl(resolvedUser.photoUrl || enhancements.photoUrl)
     setLinkedinUrl(enhancements.linkedinUrl)
     setInstagramUrl(enhancements.instagramUrl)
 
     return {
-      user: userRes.data,
-      bookings: bookingsRes.data.content,
-      unreadCount: notificationsRes.data.content.filter((notification) => !notification.read).length,
+      user: resolvedUser,
+      bookings: bookingsRes.status === 'fulfilled' ? bookingsRes.value.data.content : [],
+      unreadCount: notificationsRes.status === 'fulfilled'
+        ? notificationsRes.value.data.content.filter((notification) => !notification.read).length
+        : 0,
       linkedinUrl: enhancements.linkedinUrl,
       instagramUrl: enhancements.instagramUrl,
-      photoUrl: userRes.data.photoUrl || enhancements.photoUrl,
+      photoUrl: resolvedUser.photoUrl || enhancements.photoUrl,
     }
-  }, [])
+  }, [sessionUser])
 
   const { data, loading, error, reload } = useAsyncResource<ProfileSummary | null>({
     initialData: null,

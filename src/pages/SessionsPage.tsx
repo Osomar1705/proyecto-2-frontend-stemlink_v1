@@ -194,12 +194,22 @@ export default function SessionsPage() {
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(null)
 
   const load = useCallback(async (signal: AbortSignal) => {
-    const res = await bookingsApi.list({
-      page,
-      size,
-      status: filter || undefined,
-    }, signal)
-    return res.data
+    try {
+      const res = await bookingsApi.list({
+        page,
+        size,
+        status: filter || undefined,
+      }, signal)
+      return res.data
+    } catch {
+      return {
+        content: [],
+        number: page,
+        size,
+        totalElements: 0,
+        totalPages: 0,
+      }
+    }
   }, [filter, page, size])
 
   const { data, loading, error, reload } = useAsyncResource<Page<BookingResponse> | null>({

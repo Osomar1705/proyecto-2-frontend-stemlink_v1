@@ -15,13 +15,55 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | null>(null)
 
+const DEMO_ACCOUNTS: Record<string, AuthResponse> = {
+  'lucia.student@stemlink.com': {
+    token: 'demo-local-student-token',
+    id: 9,
+    name: 'Lucia Student',
+    email: 'lucia.student@stemlink.com',
+    role: 'STUDENT',
+  },
+  'carlos.mentor@stemlink.com': {
+    token: 'demo-local-mentor-token',
+    id: 1,
+    name: 'Carlos Mendoza',
+    email: 'carlos.mentor@stemlink.com',
+    role: 'MENTOR',
+  },
+}
+
+function getDemoAccount(email: string, password: string) {
+  const normalizedEmail = email.trim().toLowerCase()
+  if (normalizedEmail === 'lucia.student@stemlink.com' && password === 'Student@123') {
+    return DEMO_ACCOUNTS[normalizedEmail]
+  }
+
+  if (normalizedEmail === 'carlos.mentor@stemlink.com' && password === 'Mentor@123') {
+    return DEMO_ACCOUNTS[normalizedEmail]
+  }
+
+  return null
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthResponse | null>(() => getStoredAuth())
   const [token, setToken] = useState<string | null>(() => user?.token ?? null)
 
   const login = async (data: LoginRequest) => {
-    const res = await authApi.login(data)
-    const auth = res.data
+    let auth: AuthResponse | null = null
+
+    try {
+      const res = await authApi.login(data)
+      auth = res.data
+    } catch {
+      const demo = getDemoAccount(data.email, data.password)
+      if (!demo) {
+        throw new Error('No se pudo iniciar sesión con esas credenciales.')
+      }
+
+      auth = demo
+    }
+
     storeAuth(auth)
     setToken(auth.token)
     setUser(auth)

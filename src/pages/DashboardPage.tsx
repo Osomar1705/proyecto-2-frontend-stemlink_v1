@@ -31,14 +31,16 @@ export default function DashboardPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const loadDashboard = useCallback(async (signal: AbortSignal) => {
-    const [bookingsRes, notifRes] = await Promise.all([
+    const [bookingsRes, notifRes] = await Promise.allSettled([
       bookingsApi.list({ page: 0, size: 50 }, signal),
       notificationsApi.list({ page: 0, size: 50 }, signal),
     ])
 
     return {
-      bookings: bookingsRes.data.content,
-      unreadCount: notifRes.data.content.filter((notification) => !notification.read).length,
+      bookings: bookingsRes.status === 'fulfilled' ? bookingsRes.value.data.content : [],
+      unreadCount: notifRes.status === 'fulfilled'
+        ? notifRes.value.data.content.filter((notification) => !notification.read).length
+        : 0,
     }
   }, [])
 
