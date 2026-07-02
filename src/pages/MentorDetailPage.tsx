@@ -21,7 +21,7 @@ import { parseApiError } from '../utils/errors'
 import { ArrowLeft, AtSign, Award, Calendar, Clock, ExternalLink, GraduationCap, Sparkles, Users, Video } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { MentorAvatar } from '../components/mentors/MentorAvatar'
-import { getMentorInstagram, getMentorPhoto } from '../utils/mentorProfileAssets'
+import { getMentorInstagram } from '../utils/mentorProfileAssets'
 
 const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
 const DAY_ES: Record<string, string> = {
@@ -93,7 +93,7 @@ export default function MentorDetailPage() {
 
   const mentor = data.mentor
   const availability = data.availability
-  const mentorPhoto = mentor ? (mentor.photoUrl || getMentorPhoto(mentor.id)) : null
+  const mentorPhoto = mentor?.photoUrl ?? null
   const instagramUrl = mentor ? getMentorInstagram(mentor.id) : ''
   const selectedAvailabilityId = watch('availabilityBlockId')
   const selectedAvailability = useMemo(

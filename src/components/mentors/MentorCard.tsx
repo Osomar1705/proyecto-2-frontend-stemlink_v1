@@ -4,7 +4,6 @@ import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 import { MentorAvatar } from './MentorAvatar'
 import { ArrowRight, Award, ExternalLink, Sparkles } from 'lucide-react'
-import { getMentorPhoto } from '../../utils/mentorProfileAssets'
 
 interface Props {
   mentor: MentorProfileResponse
@@ -13,7 +12,6 @@ interface Props {
 
 export function MentorCard({ mentor, onOpenProfile }: Props) {
   const skills = mentor.skills ?? []
-  const mentorPhoto = mentor.photoUrl || getMentorPhoto(mentor.id)
 
   return (
     <Card
@@ -22,7 +20,7 @@ export function MentorCard({ mentor, onOpenProfile }: Props) {
     >
       <div className="surface-tint border-b border-border/70 px-5 pb-5 pt-5">
         <div className="flex items-start justify-between gap-3">
-          <MentorAvatar name={mentor.name} src={mentorPhoto} size="md" />
+          <MentorAvatar name={mentor.name} src={mentor.photoUrl} size="md" />
 
           <div className="inline-flex items-center gap-1 rounded-full bg-surface/90 px-2.5 py-1 text-[11px] font-semibold text-muted ring-1 ring-border/60 shadow-[0_8px_18px_rgba(15,23,42,0.04)]">
             <Sparkles size={12} className="text-accent-500" aria-hidden />
